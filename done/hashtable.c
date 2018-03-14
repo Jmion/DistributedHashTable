@@ -16,6 +16,6 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	return table[k];
 }
 
-size_t hash_function(pps_key_t key, size_t size) {
-	return key % size;
+size_t hash_function(pps_key_t key, size_t table_size) {
+	return key % table_size;
 }
