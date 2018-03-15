@@ -17,10 +17,11 @@
  * @brief node data structure
  */
 typedef struct{
-	//char ip[which length?];
+	const char *ip;
 	uint16_t port;
-	size_t node_id;
-}node;
+	size_t id;
+	struct sockaddr_in *address;
+}node_t;
 
 /**
  * @brief node initialization function
