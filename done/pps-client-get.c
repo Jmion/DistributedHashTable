@@ -24,6 +24,7 @@ int main(void){
         } else {
             printf("OK %d\n",value);
         }
+        while(!feof(stdin) && ! ferror(stdin) && getc(stdin) != '\n');
 
     }while(!feof(stdin) && ! ferror(stdin));
 
