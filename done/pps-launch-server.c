@@ -12,7 +12,7 @@ int main(void) {
 	int socket = get_socket(0);
 	error_code srv_err = bind_server(socket, PPS_DEFAULT_IP,PPS_DEFAULT_PORT);
 
-
+	while(1){
 	struct sockaddr_in addr_cli;
 	socklen_t addr_cli_len = sizeof(addr_cli);
 
@@ -35,7 +35,7 @@ int main(void) {
 	 	char key = ntohl(in_msg[0]);
 
 	 }
-
+	}
 
 	return 0;
 }
