@@ -1,3 +1,12 @@
 LDLIBS = -lcheck -lsubunit -lrt -lm -pthread
 
-week04 : hashtable.c error.c
+all : pps-client-put pps-client-get
+
+pps-client-put : pps-client-put.c node.o client.o network.o system.o
+pps-client-get : pps-client-get.c node.o client.o network.o system.o
+
+
+node.o : node.h node.c system.o
+client.o : client.h client.c system.o
+network.o : network.h network.c
+system.o : system.h system.c
