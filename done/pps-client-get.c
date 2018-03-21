@@ -16,15 +16,19 @@ int main(void){
 
     do{
         char key;
-        scanf("%c", &key);
-        int value;
-        error_code error = network_get(*client, key, &value);
-        if (error != 0){
-            printf("FAIL\n");
-        } else {
-            printf("OK %d\n",value);
+        int read = scanf("%c", &key);
+        if (read == 1){
+
+            int value;
+            error_code error = network_get(*client, key, &value);
+            if (error != 0){
+                printf("FAIL\n");
+            } else {
+                printf("OK %d\n",value);
+            }
+            while(!feof(stdin) && ! ferror(stdin) && getc(stdin) != '\n');
+
         }
-        while(!feof(stdin) && ! ferror(stdin) && getc(stdin) != '\n');
 
     }while(!feof(stdin) && ! ferror(stdin));
 
