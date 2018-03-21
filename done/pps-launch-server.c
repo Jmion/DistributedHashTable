@@ -10,7 +10,9 @@
 
 int main(void) {
 	int socket = get_socket(0);
-	error_code srv_err = bind_server(socket, PPS_DEFAULT_IP,PPS_DEFAULT_PORT);
+
+	bind_server(socket, PPS_DEFAULT_IP,PPS_DEFAULT_PORT);
+	error_code addr_error = get_server_addr()
 
 	while(1){
 	struct sockaddr_in addr_cli;
