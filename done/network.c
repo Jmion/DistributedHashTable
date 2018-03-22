@@ -14,6 +14,13 @@ ssize_t send(client_t client, const void* msg, size_t size){
 	return sendto(client.socket, msg, size, 0, &client.node, sizeof(client.node));
 }
 
+/**
+ * Will return the size of the message reveiced. It will return 0 if it is properly exited. will return -1 in case of error
+ * @param client
+ * @param buffer
+ * @param size
+ * @return
+ */
 ssize_t receive_from_server(client_t client, void* buffer, size_t size){
 	return recvfrom(client.socket, buffer, size, 0, NULL, NULL);
 }
@@ -36,13 +43,15 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 
 	//Sending the message
 	if(-1 == send(client, msg, sisize)){
-		//error print HERE
+		//TODO error print HERE
 		return ERR_NETWORK;
 	}
 
 	//Receiving the reply/ sucessfull delivery
-	if(receive_from_server(client,value, sizeof(value))){
-
+	//shoudl reveice size of value as the response.
+	if(receive_from_server(client,value, sizeof(value)) != sizeof(value)){
+		//TODO print message here
+		return ERR_NETWORK;
 	}
 
     return ERR_NONE;
