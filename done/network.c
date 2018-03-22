@@ -9,6 +9,15 @@
 #define RETURN_MSG_LENGTH 4
 struct sockaddr_in srv_addr;
 
+//MODULARISATION
+ssize_t send(client_t client, const void* msg, size_t size){
+	return sendto(client.socket, msg, size, 0, &client.node, sizeof(client.node));
+}
+
+ssize_t receive_from_server(client_t client, void* buffer, size_t size){
+	return recvfrom(client.socket, buffer, size, 0, NULL, NULL);
+}
+//*******END OF MODULARISATION*****
 
 error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 
@@ -17,7 +26,24 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 };
 
 error_code network_put(client_t client, pps_key_t key, pps_value_t value){
+	size_t size = sizeof(key)+ sizeof(value);
+	unsigned char msg[size];
+	//filling the message array.
+	for(int i = 0 ; i < size-1; i++){
+		msg[i+1] = value >> (8 * i);
+	}
+	msg[0] = key;
 
+	//Sending the message
+	if(-1 == send(client, msg, sisize)){
+		//error print HERE
+		return ERR_NETWORK;
+	}
+
+	//Receiving the reply/ sucessfull delivery
+	if(receive_from_server(client,value, sizeof(value))){
+
+	}
 
     return ERR_NONE;
 };
@@ -36,6 +62,7 @@ error_code network_send(client_t client, char const* out_msg){
         die("sendto");
     return ERR_NONE;
 }
+
 
 error_code network_receive(){
     char in_msg[RETURN_MSG_LENGTH];
@@ -60,6 +87,3 @@ error_code network_receive(){
     }
 }
 
-error_code send(client_t client, const void* msg, size_t site){
-
-}
