@@ -28,7 +28,7 @@ ssize_t receive_from_server(client_t client, void* buffer, size_t size){
 
 error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 
-    char out_msg = htonl(key);
+    //char out_msg = htonl(key);
     network_send(client,&out_msg);
 };
 
@@ -64,15 +64,16 @@ error_code network_del(client_t client, pps_key_t key){
 
 
 
-error_code network_send(client_t client, char const* out_msg){
+/*error_code network_send(client_t client, char const* out_msg){
     struct sockaddr_in srv_addr = client.node.address;
     if (sendto(client.socket, &out_msg, sizeof(out_msg), 0,
                (struct sockaddr *) &srv_addr, sizeof(srv_addr)) == -1)
         die("sendto");
     return ERR_NONE;
-}
+}*/
 
 
+/*
 error_code network_receive(){
     char in_msg[RETURN_MSG_LENGTH];
     ssize_t in_msg_len = rec(s, &in_msg, sizeof(in_msg), 0);
@@ -96,3 +97,4 @@ error_code network_receive(){
     }
 }
 
+*/
