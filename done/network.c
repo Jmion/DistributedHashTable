@@ -64,7 +64,8 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	//Receiving the reply/ sucessfull delivery
 	//shoudl reveice size of value as the response.
 	//cannot differentiate no message and 0 bytes message
-	if(receive_from_server(client,NULL, 0) != 0){
+	char* in_msg;
+	if(receive_from_server(client,in_msg, 1) != 0){
 		//TODO print message here
 		return ERR_NETWORK;
 	}
