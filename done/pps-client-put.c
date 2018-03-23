@@ -16,14 +16,16 @@ int main(void){
 
     do{
         char key;
-        scanf("%c", &key);
+        int read = scanf("%c", &key);
         int value;
-        scanf("%d", &value);
-        error_code error = network_put(*client, key, value);
-        if (error != 0){
-            printf("FAIL\n");
-        } else {
-            printf("OK\n");
+        read += scanf("%d", &value);
+        if (read == 2) {
+            error_code error = network_put(*client, key, value);
+            if (error != 0){
+                printf("FAIL\n");
+            } else {
+                printf("OK\n");
+            }
         }
 
         while(!feof(stdin) && ! ferror(stdin) && getc(stdin) != '\n');

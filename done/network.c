@@ -64,7 +64,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 
 	//Receiving the reply/ sucessfull delivery
 	//shoudl reveice size of value as the response.
-	if(receive_from_server(client,value, sizeof(value)) != sizeof(value)){
+	if(receive_from_server(client,NULL, 0) != 0){
 		//TODO print message here
 		return ERR_NETWORK;
 	}
