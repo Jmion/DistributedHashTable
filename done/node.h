@@ -20,7 +20,7 @@ typedef struct{
 	const char *ip;
 	uint16_t port;
 	size_t id;
-	struct sockaddr_in *address;
+	struct sockaddr_in address;
 }node_t;
 
 /**

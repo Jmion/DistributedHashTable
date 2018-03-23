@@ -18,7 +18,7 @@ struct sockaddr_in srv_addr;
  * @return -1 in case of error
  */
 ssize_t send_server(client_t client, const void* msg, size_t size){
-	return sendto(client.socket, msg, size, 0, &client.node, sizeof(client.node));
+	return sendto(client.socket, msg, size, 0, (struct sockaddr *) &client.node.address, sizeof(client.node.address));
 }
 
 /**
@@ -44,6 +44,7 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 		//TODO error message
 		return ERR_NETWORK;
 	}
+	return ERR_NONE;
 };
 
 error_code network_put(client_t client, pps_key_t key, pps_value_t value){
@@ -51,12 +52,12 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	unsigned char msg[size];
 	//filling the message array.
 	for(int i = 0 ; i < size-1; i++){
-		msg[i+1] = value >> (8 * i);
+		msg[i+1] = htonl(value >> (8 * i));
 	}
-	msg[0] = key;
+	msg[0] = htonl(key);
 
 	//Sending the message
-	if(-1 == send_server(client, msg, size)){
+	if(-1 == send_server(client, &msg, size)){
 		//TODO error print HERE
 		return ERR_NETWORK;
 	}
