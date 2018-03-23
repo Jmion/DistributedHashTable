@@ -2,3 +2,4 @@ done/week04
 done/.idea/*
 done/cmake-build-debug
 done/CMakeLists.txt
+done/*.o
