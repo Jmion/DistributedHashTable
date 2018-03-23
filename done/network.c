@@ -54,6 +54,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	for(int i = 0 ; i < size-1; i++){
 		msg[i+1] = htonl(value >> (8 * i));
 	}
+	//possible cast error
 	msg[0] = htonl(key);
 
 	//Sending the message
