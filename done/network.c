@@ -4,6 +4,7 @@
 #include "error.h"
 #include "hashtable.h"
 #include "client.h"
+#include <stdio.h>
 
 
 #define RETURN_MSG_LENGTH 4
@@ -29,7 +30,7 @@ ssize_t send_server(client_t client, const void* msg, size_t size){
  * @return
  */
 ssize_t receive_from_server(client_t client, void* buffer, size_t size){
-	return recvfrom(client.socket, buffer, size, 0, NULL, NULL);
+	return recv(client.socket, buffer, size, 0);
 }
 //*******END OF MODULARISATION*****
 
@@ -50,26 +51,23 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	size_t size = sizeof(key)+ sizeof(value);
 	unsigned char msg[size];
-	//filling the message array.
-	for(int i = 0 ; i < size-1; i++){
-		msg[i+1] = htonl(value >> (8 * i));
-	}
-	//possible cast error
-	msg[0] = htonl(key);
+	msg[0] = key;
+	memcpy(&msg[1], &value, sizeof(value));
+
 
 	//Sending the message
-	if(-1 == send_server(client, &msg, size)){
+	if(-1 == send_server(client, msg, size)){
 		//TODO error print HERE
 		return ERR_NETWORK;
 	}
 
 	//Receiving the reply/ sucessfull delivery
 	//shoudl reveice size of value as the response.
+	//cannot differentiate no message and 0 bytes message
 	if(receive_from_server(client,NULL, 0) != 0){
 		//TODO print message here
 		return ERR_NETWORK;
 	}
-
     return ERR_NONE;
 };
 

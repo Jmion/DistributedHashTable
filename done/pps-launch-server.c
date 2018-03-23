@@ -32,26 +32,27 @@ int main(void) {
 	char in_msg[MSG_LENGTH];
 
 	ssize_t msg_len = recvfrom(socket, &in_msg,sizeof(in_msg), 0, (struct sockaddr *)&addr_cli, &addr_cli_len);
+
 	if ( msg_len == -1) {
-		printf("error");
+		printf("error\n");
 		M_EXIT(ERR_NETWORK,"Message received in not of appropriate length.");
+
+
 	} else  if (msg_len == 5){ //put request
 		printf("Put request OK\n");
-		char content[MSG_LENGTH];
-		for (int i = 0; i < MSG_LENGTH; ++i) {
-			content[i] = ntohl(in_msg[i]);
-		}
+		pps_value_t value;
+		memcpy(&value, &in_msg[1], sizeof(value));
+		pps_key_t key = in_msg[0];
 
-		//content is not readable
-		error_code e = add_Htable_value(hashtableTemp,content[0],content[1]);
+		error_code e = add_Htable_value(hashtableTemp,key,value);
 		M_EXIT_IF_ERR(e,"Issue adding key to hasahtable");
 
-		sendto(socket, NULL, 0,0, (struct sockaddr *) &addr_cli, addr_cli_len);
+		sendto(socket, &key, 0,0, (struct sockaddr *) &addr_cli, addr_cli_len);
+
 
 	 } else { //get request
 	 	printf("get request OK\n");
-	 	pps_key_t key = ntohl(in_msg[0]);
-	 	//key not readable
+	 	pps_key_t key = in_msg[0];
 	 	pps_value_t value = get_Htable_value(hashtableTemp, key);
 	 	sendto(socket, &value, sizeof(value),0, (struct sockaddr *) &addr_cli, addr_cli_len);
 		
