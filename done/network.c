@@ -17,7 +17,7 @@ struct sockaddr_in srv_addr;
  * @param size
  * @return -1 in case of error
  */
-ssize_t send(client_t client, const void* msg, size_t size){
+ssize_t send_server(client_t client, const void* msg, size_t size){
 	return sendto(client.socket, msg, size, 0, &client.node, sizeof(client.node));
 }
 
@@ -35,7 +35,7 @@ ssize_t receive_from_server(client_t client, void* buffer, size_t size){
 
 error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 	//send get request
-	if(send(client,&key, sizeof(key)) == -1){
+	if(send_server(client,&key, sizeof(key)) == -1){
 		//TODO error message
 		return ERR_NETWORK;
 	}
@@ -56,7 +56,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	msg[0] = key;
 
 	//Sending the message
-	if(-1 == send(client, msg, sisize)){
+	if(-1 == send_server(client, msg, size)){
 		//TODO error print HERE
 		return ERR_NETWORK;
 	}

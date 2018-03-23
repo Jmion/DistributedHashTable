@@ -43,6 +43,7 @@ int main(void) {
 
 	 } else { //get request
 	 	pps_key_t key = ntohl(in_msg[0]);
+	 	printf("%c\n",key);
 		get_Htable_value(hashtableTemp, key);
 	 }
 	}
