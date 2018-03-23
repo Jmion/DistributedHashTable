@@ -10,6 +10,8 @@
 
 int main(void){
     client_init_args_t init_client;
+    client_t cl;
+    init_client.client = &cl;
     init_client.name = "client";
     client_init(init_client);
     client_t* client = init_client.client;
