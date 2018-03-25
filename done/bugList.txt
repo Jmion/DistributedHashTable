@@ -1,1 +1,1 @@
-The server always repsonds with a value when the client-get asks for it. It does this even if there is no value that was been stored. Responds with random value. And the server says ok get request. The put fails but not the get. 
+FIXED The server always repsonds with a value when the client-get asks for it. It does this even if there is no value that was been stored. Responds with random value. And the server says ok get request. The put fails but not the get. 
