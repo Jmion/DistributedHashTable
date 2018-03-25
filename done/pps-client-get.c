@@ -23,7 +23,7 @@ int main(void){
 
             int value;
             error_code error = network_get(*client, key, &value);
-            if (error != 0){
+            if (error != ERR_NONE){
                 printf("FAIL\n");
             } else {
                 printf("OK %d\n",value);
