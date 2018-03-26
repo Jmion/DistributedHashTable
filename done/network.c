@@ -41,10 +41,12 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 		return ERR_NETWORK;
 	}
 	//receive response
-	if (receive_from_server(client,value, sizeof(*value)) != sizeof(*value)){
+	uint32_t netValue;
+	if (receive_from_server(client,&netValue, sizeof(netValue)) != sizeof(netValue)){
 		//TODO error message
 		return ERR_NETWORK;
 	}
+	*value = ntohl(netValue);
 	return ERR_NONE;
 };
 
@@ -52,7 +54,8 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	size_t size = sizeof(key)+ sizeof(value);
 	unsigned char msg[size];
 	msg[0] = key;
-	memcpy(&msg[1], &value, sizeof(value));
+	uint32_t netValue = htonl(value);
+	memcpy(&msg[1], &netValue, sizeof(netValue));
 
 
 	//Sending the message

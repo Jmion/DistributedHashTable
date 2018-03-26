@@ -36,8 +36,9 @@ int main(void) {
 			M_EXIT(ERR_NETWORK, "Message received in not of appropriate length.");
 		} else if (msg_len == 5) { //put request
 			printf("Put request OK\n");
-			pps_value_t value;
-			memcpy(&value, &in_msg[1], sizeof(value));
+			uint32_t netValue;
+			memcpy(&netValue, &in_msg[1], sizeof(netValue));
+			pps_value_t value = ntohl(netValue);
 			pps_key_t key = in_msg[0];
 
 			error_code e = add_Htable_value(hashtableTemp, key, value);
@@ -50,7 +51,9 @@ int main(void) {
 			printf("get request OK\n");
 			pps_key_t key = in_msg[0];
 			pps_value_t value = get_Htable_value(hashtableTemp, key);
-			if(sendto(socket, &value, sizeof(value), 0, (struct sockaddr *) &addr_cli, addr_cli_len)){
+
+			uint32_t netValue = htonl(value);
+			if(sendto(socket, &netValue, sizeof(netValue), 0, (struct sockaddr *) &addr_cli, addr_cli_len)){
 				debug_print("%s\n","Error responding to get request. Sending value failed");
 			}
 		}
