@@ -37,13 +37,13 @@ ssize_t receive_from_server(client_t client, void* buffer, size_t size){
 error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 	//send get request
 	if(send_server(client,&key, sizeof(key)) == -1){
-		//TODO error message
+		debug_print("%s\n", "NETWORK_GET : Sending key to server failed");
 		return ERR_NETWORK;
 	}
 	//receive response
 	uint32_t netValue;
 	if (receive_from_server(client,&netValue, sizeof(netValue)) != sizeof(netValue)){
-		//TODO error message
+		debug_print("%s\n", "NETWORK_GET : Receiving reply from server failed");
 		return ERR_NETWORK;
 	}
 	*value = ntohl(netValue);
@@ -60,16 +60,16 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 
 	//Sending the message
 	if(-1 == send_server(client, msg, size)){
-		//TODO error print HERE
+		debug_print("%s\n", "NETWORK_PUT : Sending failed.");
 		return ERR_NETWORK;
 	}
 
-	//Receiving the reply/ sucessfull delivery
+	//TODO Receiving the reply/ sucessfull delivery
 	//shoudl reveice size of value as the response.
 	//cannot differentiate no message and 0 bytes message
 	char* in_msg;
 	if(receive_from_server(client,in_msg, 1) != 0){
-		//TODO print message here
+		debug_print("%s\n", "NETWORK_PUT : receiving response uncsesfull");
 		return ERR_NETWORK;
 	}
     return ERR_NONE;
