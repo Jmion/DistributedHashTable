@@ -5,12 +5,22 @@
 #include <stdio.h>
 
 #define MSG_LENGTH 5
+#define IP_SIZE 15
 
 
 int main(void) {
 	int socket = get_socket(0);
 
-	if (bind_server(socket, PPS_DEFAULT_IP, PPS_DEFAULT_PORT)) {
+    char IP[IP_SIZE + 1];
+    int port = 0;
+
+
+    fprintf(stdout, "IP Port? ");
+    fflush(stdout);
+    fscanf(stdin, "%s", &IP[0]);
+    scanf("%d", &port);
+
+	if (bind_server(socket, IP, port)) {
 		debug_print("%s\n", "Server failed to bind to socket");
 	}
 

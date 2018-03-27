@@ -3,3 +3,4 @@ done/.idea/*
 done/cmake-build-debug
 done/CMakeLists.txt
 done/*.o
+done/*.dSYM

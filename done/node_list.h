@@ -17,10 +17,8 @@
  * @brief list of nodes
  */
 struct node_list {
-    /* TODO WEEK 06:
-     * Définir proprement le type node_list_t
-     */
-    char useless_to_be_removed_in_week_06;
+        node_t* nodes;
+        size_t size;
 };
 typedef struct node_list node_list_t;
 

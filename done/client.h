@@ -11,7 +11,7 @@
 
 #include "error.h"     // for error_code type
 #include "node.h"      // in week 5
-//#include "node_list.h" // weeks 6 to 10
+#include "node_list.h" // weeks 6 to 10
 //#include "args.h"      // weeks 10 and after
 //#include "ring.h"      // weeks 11 and after
 
@@ -20,7 +20,7 @@
  */
 typedef struct{
 	const char *name;
-	node_t node;
+	node_list_t* node_list;
 	int socket;
 }client_t;
 
