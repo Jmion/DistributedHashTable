@@ -5,7 +5,9 @@
 
 
 void client_end(client_t *client){
-	node_end(&client->node);
+    for (int i = 0; i < client->node_list->size; ++i) {
+	    node_end(&client->node_list[i]);
+    }
 }
 
 error_code client_init(client_init_args_t client_init){
