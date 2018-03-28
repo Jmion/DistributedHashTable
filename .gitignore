@@ -4,3 +4,7 @@ done/cmake-build-debug
 done/CMakeLists.txt
 done/*.o
 done/*.dSYM
+done/*
+!done/*.c
+!done/*.h
+!done/Makefile*
