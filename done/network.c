@@ -21,7 +21,7 @@ struct sockaddr_in srv_addr;
 ssize_t send_server(client_t client, const void* msg, size_t size){
 	//séparer get et put?
 	ssize_t flag = 0;
-	for (int i = 0; i < client.node_list->size; ++i) {
+	for (size_t i = 0; i < client.node_list->size; ++i) {
 		if (sendto(client.socket, msg, size, 0, (struct sockaddr *) &client.node_list[i].address, sizeof(client.node_list[i].address)) == -1){
 			flag = -1;
 		}
@@ -36,8 +36,14 @@ ssize_t send_server(client_t client, const void* msg, size_t size){
  * @param size
  * @return
  */
-ssize_t receive_from_server(client_t client, void* buffer, size_t size){
-	return recv(client.socket, buffer, size, 0);
+ssize_t receive_from_server(client_t client, void* buffer, size_t size,size_t* counter){
+	ssize_t total = 0;
+	for(size_t i = 0; i < client.node_list->size; ++i){
+		if(total += recvfrom(client.socket, buffer, size, 0,&client.node_list[i].address,sizeof(client.node_list[i].address)) != -1 ){
+			(*counter)++;
+		}
+	}
+	return total / client.node_list -> size;
 }
 //*******END OF MODULARISATION*****
 
@@ -55,7 +61,7 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 	}
 	*value = ntohl(netValue);
 	return ERR_NONE;
-};
+}
 
 error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	size_t size = sizeof(key)+ sizeof(value);
@@ -71,7 +77,6 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 		return ERR_NETWORK;
 	}
 
-	//TODO Receiving the reply/ sucessfull delivery
 	//shoudl reveice size of value as the response.
 	char* in_msg;
 	if(receive_from_server(client,in_msg, 1) != 0){
