@@ -1,8 +1,9 @@
-LDLIBS = -lcheck -lm -pthread
+LDLIBS = -lm -lcheck -pthread
 #debug flag
-#CFLAGS += -g
+#CFLAGS += -g 
+CFLAGS += -DDEBUG
 
- all : node_list #pps-client-put pps-client-get pps-launch-server
+all : node_list #pps-client-put pps-client-get pps-launch-server
 
 # pps-client-put : pps-client-put.c node.o client.o network.o system.o
 # pps-client-get : pps-client-get.c node.o client.o network.o system.o
