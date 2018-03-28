@@ -19,10 +19,9 @@ struct sockaddr_in srv_addr;
  * @return -1 in case of error
  */
 ssize_t send_server(client_t client, const void* msg, size_t size){
-	//séparer get et put?
 	ssize_t flag = 0;
-	for (size_t i = 0; i < client.node_list->size; ++i) {
-		if (sendto(client.socket, msg, size, 0, (struct sockaddr *) &client.node_list[i].address, sizeof(client.node_list[i].address)) == -1){
+	for (int i = 0; i < client.node_list->size; ++i) {
+		if(sendto(client.socket, msg, size, 0, (struct sockaddr *) &client.node_list->nodes[i].address, sizeof(client.node_list->nodes[i].address)) == -1){
 			flag = -1;
 		}
 	}
@@ -81,7 +80,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	//shoudl reveice size of value as the response.
 	char* in_msg;
 	if(receive_from_server(client,in_msg, 1) != 0){
-		debug_print("%s\n", "NETWORK_PUT : receiving response uncsesfull");
+		debug_print("%s\n", "NETWORK_PUT : receiving response unsuccessful");
 		return ERR_NETWORK;
 	}
     return ERR_NONE;
