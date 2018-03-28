@@ -12,15 +12,12 @@
 
 
 node_list_t *node_list_new(){
-    size_t size = 10; //arbitrary how much?
-    node_list_t* list = malloc(sizeof(node_list_t));
+    size_t size = 0;
+    node_list_t* list = calloc(1,sizeof(node_list_t));
     if (list == NULL) {
         return NULL;
     }
-    node_t* nodes = calloc(size, sizeof(nodes));
-    if (nodes == NULL) {
-        return NULL;
-    }
+    node_t* nodes = NULL;
     list->nodes = nodes;
     list->size = size;
     return list;
@@ -46,10 +43,16 @@ node_list_t *get_nodes(){
             if (port <= 0 || port > 65535) {
                 return NULL;
             }
+            list->nodes = realloc(list->nodes, list->size + 1);
+            list->size += 1;
+            if (list->nodes == NULL) {
+                return NULL;
+            }
             if(node_init(&list->nodes[index], IP, port, index) != ERR_NONE){
                 debug_print("Error initialising node");
                 return NULL;
             }    
+            ++index;
 
         }
     }

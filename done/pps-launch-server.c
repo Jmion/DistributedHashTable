@@ -11,7 +11,7 @@
 int main(void) {
 	int socket = get_socket(0);
 
-    char IP[IP_SIZE + 1];
+    char IP[IP_SIZE];
     int port = 0;
 
 
