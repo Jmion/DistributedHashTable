@@ -36,14 +36,15 @@ ssize_t send_server(client_t client, const void* msg, size_t size){
  * @param size
  * @return
  */
-ssize_t receive_from_server(client_t client, void* buffer, size_t size,size_t* counter){
+ssize_t receive_from_server(client_t client, void* buffer, size_t size,size_t nbToReceiveFrom){
 	ssize_t total = 0;
-	for(size_t i = 0; i < client.node_list->size; ++i){
+	ssize_t nbRemainingToReceive = nbRemianingToReceive;
+	for(size_t i = 0; i < client.node_list->size && nbToReceiveFrom >0; ++i){
 		if(total += recvfrom(client.socket, buffer, size, 0,&client.node_list[i].address,sizeof(client.node_list[i].address)) != -1 ){
-			(*counter)++;
+			--nbRemainingToReceive;
 		}
 	}
-	return total / client.node_list -> size;
+	return total / min(client.node_list->size,nbToReceiveFrom);
 }
 //*******END OF MODULARISATION*****
 
