@@ -31,6 +31,7 @@ typedef struct{
 typedef struct{
 	const char *name;
 	client_t* client;
+	node_list_t* nodes_list;
 }client_init_args_t;
 
 /**

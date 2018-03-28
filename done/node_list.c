@@ -26,12 +26,12 @@ node_list_t *node_list_new(){
 node_list_t *get_nodes(){
     node_list_t* list = node_list_new();
     if (list == NULL) {
-        debug_print("Error initialising node list");
+        debug_print("%s\n","Error initialising node list");
         return NULL;
     }
     FILE* in = fopen(PPS_SERVERS_LIST_FILENAME, "r");
     if (in == NULL) {
-        debug_print("Lecture error");
+        debug_print("%s\n","Lecture error");
         return NULL;
     } else {
         char IP[IP_SIZE];
@@ -49,7 +49,7 @@ node_list_t *get_nodes(){
                 return NULL;
             }
             if(node_init(&list->nodes[index], IP, port, index) != ERR_NONE){
-                debug_print("Error initialising node");
+                debug_print("%s\n","Error initialising node");
                 return NULL;
             }    
             ++index;
