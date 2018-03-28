@@ -6,6 +6,7 @@
 #include "node.h"
 #include "network.h"
 #include <stdio.h>
+#include "node_list.h"
 
 
 int main(void){
@@ -13,6 +14,7 @@ int main(void){
     client_t cl;
     init_client.client = &cl;
     init_client.name = "client";
+    init_client.nodes_list = get_nodes();
     client_init(init_client);
     client_t* client = init_client.client;
 

@@ -22,9 +22,10 @@ ssize_t send_server(client_t client, const void* msg, size_t size){
 	//séparer get et put?
 	ssize_t flag = 0;
 	for (int i = 0; i < client.node_list->size; ++i) {
-		if (sendto(client.socket, msg, size, 0, (struct sockaddr *) &client.node_list[i].address, sizeof(client.node_list[i].address)) == -1){
-			flag = -1;
-		}
+		printf("%zu",sendto(client.socket, msg, size, 0, (struct sockaddr *) &client.node_list->nodes[i].address, sizeof(client.node_list->nodes[i].address)));// == -1){
+			//printf("Timeout for server %d\n",i);
+			//flag = -1;
+		//}
 	}
 	return flag;
 }
