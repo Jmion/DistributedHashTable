@@ -45,7 +45,7 @@ int main(void) {
 
 		if (msg_len == -1) {
 			//TODO compilation error here.
-			M_EXIT(ERR_NETWORK, "Message received in not of appropriate length.");
+			M_EXIT_IF_ERR(ERR_NETWORK, "Message received in not of appropriate length.");
 		} else if (msg_len == 5) { //put request
 			printf("Put request OK\n");
 			uint32_t netValue;
@@ -65,7 +65,7 @@ int main(void) {
 			pps_value_t value = get_Htable_value(hashtableTemp, key);
 
 			uint32_t netValue = htonl(value);
-			if(sendto(socket, &netValue, sizeof(netValue), 0, (struct sockaddr *) &addr_cli, addr_cli_len)){
+			if(sendto(socket, &netValue, sizeof(netValue), 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
 				debug_print("%s\n","Error responding to get request. Sending value failed");
 			}
 		}

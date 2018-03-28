@@ -35,13 +35,16 @@ ssize_t send_server(client_t client, const void* msg, size_t size){
  * @param size
  * @return
  */
-ssize_t receive_from_server(client_t client, void* buffer, size_t size,size_t nbToReceiveFrom){
+ssize_t receive_from_server(client_t client, void* buffer, size_t size,size_t nbToReceiveFrom, size_t* nbResponse){
 	ssize_t total = 0;
 	ssize_t nbRemainingToReceive = nbToReceiveFrom;
 	for(size_t i = 0; i < client.node_list->size && nbToReceiveFrom >0; ++i){
 		ssize_t temp = 0;
-		if(temp = recv(client.socket, buffer, size, 0) != -1 ){
+		if((temp = recv(client.socket, buffer, size, 0)) != -1 ){
 			--nbRemainingToReceive;
+			if (nbResponse != NULL) {
+				*nbResponse += 1;
+			}
 			total = temp;
 		}
 	}
@@ -58,7 +61,7 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 	}
 	//receive response
 	uint32_t netValue;
-	if (receive_from_server(client,&netValue, sizeof(netValue),nbToReceiveFrom) != sizeof(netValue)){
+	if (receive_from_server(client,&netValue, sizeof(netValue),nbToReceiveFrom, NULL) != sizeof(netValue)){
 		debug_print("%s\n", "NETWORK_GET : Receiving reply from server failed");
 		return ERR_NETWORK;
 	}
@@ -82,8 +85,13 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 
 	//shoudl receive size of value as the response.
 	char* in_msg;
-	if(receive_from_server(client,in_msg, 1,1) != 0){
+	size_t nbResponse = 0;
+	if(receive_from_server(client,in_msg, 1,client.node_list->size, &nbResponse) != 0){
 		debug_print("%s\n", "NETWORK_PUT : receiving response unsuccessful");
+		return ERR_NETWORK;
+	}
+	if (nbResponse != client.node_list->size) {
+		debug_print("%s %zu\n", "Missing response from server, only got ", nbResponse);
 		return ERR_NETWORK;
 	}
     return ERR_NONE;

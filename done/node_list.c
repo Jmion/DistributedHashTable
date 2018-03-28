@@ -67,7 +67,7 @@ node_list_t* node_list_enlarge(node_list_t* list) {
 	if (result != NULL) {
 		node_t *oldNode = list->nodes;
 		result->allocated += ENLARGE_PADDING;
-		debug_print("Allocated is %d",result->allocated);
+		debug_print("Allocated is %zu",result->allocated);
 		if ((result->allocated > SIZE_MAX / sizeof(node_t)) ||
 		    ((result->nodes = realloc(result->nodes, result->allocated * sizeof(node_t))) == NULL)) {
 			result->nodes = oldNode;
