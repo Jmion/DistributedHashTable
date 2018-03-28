@@ -60,6 +60,19 @@ node_list_t *get_nodes(){
 }
 
 error_code node_list_add(node_list_t *list, node_t node){
+    if (list == NULL || node == NULL) {
+        return ERR_BAD_PARAMETER;
+    }
+    if(list->size >= SIZE_MAX/ sizeof(node)){
+        return ERR_NOMEM;
+    }
+    node_t * oldNodeList = list->nodes;
+    list->size++;
+    if(list = realloc(list,((list->size)+1)* sizeof(node)) == NULL){
+        list->size--;
+        list->nodes = oldnodeList;
+        return ERR_NOMEM;
+    }
     return ERR_NONE;
 }
 
@@ -77,9 +90,4 @@ void node_list_free(node_list_t *list){
     list->nodes = NULL;
     free(list);
     list = NULL;
-}
-
-
-int main(void){
-    get_nodes();
 }
