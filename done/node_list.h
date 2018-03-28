@@ -19,6 +19,7 @@
 struct node_list {
         node_t* nodes;
         size_t size;
+		size_t allocated;
 };
 typedef struct node_list node_list_t;
 

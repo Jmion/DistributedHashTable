@@ -7,6 +7,7 @@
 #include "error.h"
 #include "config.h"
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #define IP_SIZE 15
 
@@ -59,22 +60,39 @@ node_list_t *get_nodes(){
     return list;
 }
 
+//Modular
+#define ENLARGE_PADDING 2
+node_list_t* node_list_enlarge(node_list_t* list) {
+	node_list_t *result = list;
+	if (result != NULL) {
+		node_t *oldNode = list->nodes;
+		result->allocated += ENLARGE_PADDING;
+		if ((result->allocated > SIZE_MAX / sizeof(node_t)) ||
+		    ((result->nodes = realloc(result->nodes, result->allocated * sizeof(node_t))) == NULL)) {
+			result->nodes = oldNode;
+			result->allocated -= ENLARGE_PADDING;
+			result = NULL;
+		}
+	}
+	return result;
+}
+
+
 error_code node_list_add(node_list_t *list, node_t node){
-    if (list == NULL || node == NULL) {
-        return ERR_BAD_PARAMETER;
-    }
-    if(list->size >= SIZE_MAX/ sizeof(node)){
-        return ERR_NOMEM;
-    }
-    node_t * oldNodeList = list->nodes;
-    list->size++;
-    if(list = realloc(list,((list->size)+1)* sizeof(node)) == NULL){
-        list->size--;
-        list->nodes = oldnodeList;
-        return ERR_NOMEM;
-    }
+	M_REQUIRE_NON_NULL(list);
+	M_REQUIRE_NON_NULL(list->nodes);
+	while(list->size >= list->allocated) {
+		if (node_list_enlarge(list) == NULL) {
+			return ERR_NOMEM;
+		}
+	}
+	list->nodes[list->size] = node;
+	++(list->size);
     return ERR_NONE;
 }
+
+
+
 
 
 void node_list_sort(node_list_t *list, int (*comparator)(const node_t *, const node_t *)){
