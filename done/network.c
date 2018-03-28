@@ -77,7 +77,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 		return ERR_NETWORK;
 	}
 
-	//shoudl reveice size of value as the response.
+	//shoudl receive size of value as the response.
 	char* in_msg;
 	if(receive_from_server(client,in_msg, 1) != 0){
 		debug_print("%s\n", "NETWORK_PUT : receiving response unsuccessful");
