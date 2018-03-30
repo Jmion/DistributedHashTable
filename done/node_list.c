@@ -36,6 +36,7 @@ node_list_t *get_nodes(){
         return NULL;
     } else {
         char IP[IP_SIZE];
+        memset(&IP,0, sizeof(IP));
         int port = 0;
         size_t index = 0;
         while(!feof(in) && ! ferror(in)){
@@ -44,12 +45,7 @@ node_list_t *get_nodes(){
             if (port <= 0 || port > 65535) {
                 return NULL;
             }
-	        //TODO ERROR here core dumped
-            list->nodes = realloc(list->nodes, list->size + 1);
-            list->size += 1;
-            if (list->nodes == NULL) {
-                return NULL;
-            }
+
 	        node_t tempNode;
 	        memset(&tempNode, 0, sizeof(node_t));
             if(node_init(&tempNode, IP, port, index) != ERR_NONE){
@@ -58,7 +54,10 @@ node_list_t *get_nodes(){
             }
 
             ++index;
-	        node_list_add(list,tempNode);
+	        if(node_list_add(list,tempNode) != ERR_NONE){
+	        	debug_print("%s\n", "issue with adding a node to the list.");
+		        return NULL;
+	        };
         }
     }
     return list;
@@ -83,9 +82,9 @@ node_list_t* node_list_enlarge(node_list_t* list) {
 }
 
 
-error_code node_list_add(node_list_t *list, node_t node){
+error_code node_list_add(node_list_t *list, node_t const node){
 	M_REQUIRE_NON_NULL(list);
-	M_REQUIRE_NON_NULL(list->nodes);
+	debug_print("The size is : %zu and the allocated size is : %zu", list->size, list->allocated);
 	while(list->size >= list->allocated) {
 		if (node_list_enlarge(list) == NULL) {
 			return ERR_NOMEM;
