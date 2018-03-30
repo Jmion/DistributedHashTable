@@ -44,17 +44,21 @@ node_list_t *get_nodes(){
             if (port <= 0 || port > 65535) {
                 return NULL;
             }
+	        //TODO ERROR here core dumped
             list->nodes = realloc(list->nodes, list->size + 1);
             list->size += 1;
             if (list->nodes == NULL) {
                 return NULL;
             }
-            if(node_init(&list->nodes[index], IP, port, index) != ERR_NONE){
+	        node_t tempNode;
+	        memset(&tempNode, 0, sizeof(node_t));
+            if(node_init(&tempNode, IP, port, index) != ERR_NONE){
                 debug_print("%s\n","Error initialising node");
                 return NULL;
-            }    
-            ++index;
+            }
 
+            ++index;
+	        node_list_add(list,tempNode);
         }
     }
     return list;
