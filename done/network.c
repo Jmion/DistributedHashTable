@@ -91,7 +91,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 		return ERR_NETWORK;
 	}
 	if (nbResponse != client.node_list->size) {
-		debug_print("%s %zu\n", "Missing response from server, only got ", nbResponse);
+		debug_print("%s %zu %s", "Missing response from server, only got ", nbResponse, "response(s)");
 		return ERR_NETWORK;
 	}
     return ERR_NONE;

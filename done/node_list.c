@@ -60,6 +60,7 @@ node_list_t *get_nodes(){
 	        };
         }
     }
+    fclose(in);
     return list;
 }
 
