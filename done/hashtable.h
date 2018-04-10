@@ -8,19 +8,18 @@
  */
 
 #include <stddef.h> // for size_t
-#include <stdint.h> // for int32_t (weeks 04 to 06)
 
 #include "error.h" // for error_code
 
 /*
  * Definition of type for local hash-tables keys
  */
-typedef char pps_key_t;
+typedef const char* pps_key_t;
 
 /*
  * Definition of type for local hash-tables values
  */
-typedef int32_t pps_value_t;
+typedef const char* pps_value_t;
 
 /*
  * key-value pair
@@ -32,14 +31,21 @@ typedef struct {
 /*
  * Definition of type for local hash-tables buckets
  */
-typedef pps_value_t bucket_t;
+typedef struct{
+	//size_t Hvalue;
+	kv_pair_t* pairs;
+	size_t size;
+} bucket_t;
 
 /*
  * Definition of local hash-table type
  */
 #define HTABLE_SIZE 256
 
-typedef bucket_t Htable_t[HTABLE_SIZE];
+typedef struct{
+	bucket_t* content;
+	size_t size;
+}Htable_t;
 
 // Only from week 07
 #define NO_HTABLE ((Htable_t) NULL)
@@ -51,16 +57,11 @@ typedef void kv_list_t;
 
 /**
  * @brief construct a hash-table of the given size.
- *    Note: does NOTHING until week 07.
  * @param size number of buckets in the new hash-table
  * @return the newly allocated hash-table
  */
-/* TODO WEEK 07:
- * Définir le bon type de retour ici
- * (remplacer void et ces 4 lignes de commentaire).
- */
-void
-construct_Htable(size_t size);
+
+Htable_t construct_Htable(size_t size);
 
 /**
  * @brief delete the given hash-table
