@@ -44,7 +44,6 @@ int main(void) {
 		ssize_t msg_len = recvfrom(socket, &in_msg, sizeof(in_msg), 0, (struct sockaddr *) &addr_cli, &addr_cli_len);
 
 		if (msg_len == -1) {
-			//TODO compilation error here.
 			M_EXIT_IF_ERR(ERR_NETWORK, "Message received in not of appropriate length.");
 		} else if (msg_len == 5) { //put request
 			printf("Put request OK\n");

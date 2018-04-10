@@ -7,6 +7,7 @@
 #include "network.h"
 #include <stdio.h>
 #include "node_list.h"
+#include "config.h"
 
 
 int main(void){
@@ -19,10 +20,10 @@ int main(void){
     client_t* client = init_client.client;
 
     do{
-        char key;
-        int read = scanf("%c", &key);
-        int value;
-        read += scanf("%d", &value);
+        char key[MAX_MSG_ELEM_SIZE+1];
+        int read = scanf("%s", key);
+        char value[MAX_MSG_ELEM_SIZE+1];
+        read += scanf("%s", value);
         if (read == 2) {
             error_code error = network_put(*client, key, value);
             if (error != 0){

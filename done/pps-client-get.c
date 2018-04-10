@@ -7,6 +7,7 @@
 #include "network.h"
 #include <stdio.h>
 #include "node_list.h"
+#include "config.h"
 
 
 int main(void){
@@ -19,16 +20,17 @@ int main(void){
     client_t* client = init_client.client;
 
     do{
-        char key;
-        int read = scanf("%c", &key);
+        char key[MAX_MSG_ELEM_SIZE+1];
+        int read = scanf("%s", key);
         if (read == 1){
 
-            int value;
-            error_code error = network_get(*client, key, &value);
+            char value[MAX_MSG_ELEM_SIZE+1];
+            //value pointer of pointer???
+            error_code error = network_get(*client, key, value);
             if (error != ERR_NONE){
                 printf("FAIL\n");
             } else {
-                printf("OK %d\n",value);
+                printf("OK %s\n",value);
             }
             while(!feof(stdin) && ! ferror(stdin) && getc(stdin) != '\n');
 
