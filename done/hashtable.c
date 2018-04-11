@@ -2,6 +2,7 @@
 #include "hashtable.h"
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 
 
 Htable_t construct_Htable(size_t size){
