@@ -1,1 +1,1 @@
-FIXED The server always repsonds with a value when the client-get asks for it. It does this even if there is no value that was been stored. Responds with random value. And the server says ok get request. The put fails but not the get. 
+If a servers responds with \0 because it has not this key in store, it doesn't ask to the next. Review the behaviour of receive_from_server to handle these cases, maybe a table of answers? 

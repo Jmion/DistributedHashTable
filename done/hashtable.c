@@ -21,6 +21,7 @@ void delete_Htable_and_content(Htable_t* table){
 		free(table->content[i].pair.value);
 		table->content[i].pair.key = NULL;
 		table->content[i].pair.value = NULL;
+		free(&table->content[i]);
 	}
 	free(table->content);
 	table->content = NULL;
@@ -46,23 +47,33 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		pair.value = value_final;
 
 
-		 while(first != NULL && first->pair.key != NULL){
+		 while(first->next != NULL && first->pair.key != NULL){
 			if (strcmp(first->pair.key, key) == 0) {
 				first->pair.value = pair.value;
 				return ERR_NONE;
 			} else {
+				//printf("Go to next bucket\n");
 				first = first->next;
 			}
 		 }
+		if (first->pair.key == NULL) {
+			//first one to be inserted in the list
+			first->pair = pair;
+			first->next = NULL;
+		} else {
+			bucket_t* bucket = calloc(1, sizeof(bucket_t));
+			if (bucket == NULL) {
+				debug_print("%s", "Could not create new bucket");
+				return ERR_NOMEM;
+			}
+			bucket->pair = pair;
+			bucket->next = NULL;
+			first->next = bucket;
+		}
 
-		bucket_t bucket;
-		bucket.pair = pair;
-		bucket.next = NULL;
-		*first = bucket;
-
-		printf("%zu\n",index);
-		//printf("%s\n",table.content[index].pair.value);
-		fflush(stdout);
+		//printf("%zu\n",index);
+		//printf("%s\n",first->next->pair.value);
+		//fflush(stdout);
 
 
 		return ERR_NONE;
@@ -75,18 +86,18 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	}
 	size_t index = hash_function(key, table.size);
 	bucket_t *first = &table.content[index];
-	printf("%zu\n",index);
-	printf("%s\n",table.content[index].pair.value);
+	//printf("%zu\n",index);
+	//printf("%s\n",first->pair.key);
 
 
 	while(first != NULL && first->pair.key != NULL){
 		printf("%s\n", first->pair.key);
-		printf("%s\n", key);
+		//printf("%s\n", key);
 		if (strncmp(first->pair.key, key, strlen(key)) == 0) {
-			printf("%s, %s\n", "Found something", first->pair.value);
+			//printf("%s, %s\n", "Found something", first->pair.value);
 			return first->pair.value;
 		} else {
-			printf("%s\n", "Go to next");
+			//printf("%s\n", "Go to next");
 			first = first->next;
 		}
 	}

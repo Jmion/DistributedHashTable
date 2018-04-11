@@ -37,7 +37,7 @@ ssize_t send_server(client_t client, const void* msg, size_t size){
  * @return
  */
 ssize_t receive_from_server(client_t client, void* buffer, size_t size,size_t nbToReceiveFrom, size_t* nbResponse){
-	ssize_t total = 0;
+	ssize_t total = -1;
 	ssize_t nbRemainingToReceive = nbToReceiveFrom;
 	for(size_t i = 0; i < client.node_list->size && nbToReceiveFrom >0; ++i){
 		ssize_t temp = 0;
@@ -70,10 +70,11 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 	//receive response
 	
 	char value_msg[MAX_MSG_ELEM_SIZE];
-	ssize_t msg_length = receive_from_server(client, value_msg, MAX_MSG_ELEM_SIZE ,nbToReceiveFrom, NULL);
+	size_t nbResponse = 0;
+	ssize_t msg_length = receive_from_server(client, value_msg, MAX_MSG_ELEM_SIZE ,nbToReceiveFrom, &nbResponse);
 	
-	if (msg_length == -1){
-		debug_print("%s\n", "NETWORK_GET : Receiving reply from server failed");
+	if (msg_length == -1 || nbResponse == 0){
+		debug_print("%s", "NETWORK_GET : Receiving reply from server failed");
 		return ERR_NETWORK;
 	}
 	value_msg[msg_length] = '\0';
