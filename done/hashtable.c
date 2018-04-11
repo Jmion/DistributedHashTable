@@ -9,7 +9,7 @@ Htable_t construct_Htable(size_t size){
 	table.content = calloc(size, sizeof(bucket_t));
 	if (table.content == NULL) {
 		debug_print("%s", "Allocation error. Content for htable could not be allocated");
-		return NO_HTABLE;
+		return table;
 	}
 	table.size = size;
 	return table;
@@ -24,46 +24,52 @@ void delete_Htable_and_content(Htable_t* table){
 
 
 error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
-	if (table == NO_HTABLE || value == NULL) {
+	if (table.content == NULL || value == NULL) {
 		return ERR_BAD_PARAMETER;
 	} else {
 		size_t index = hash_function(key,table.size);
 		bucket_t* first = &table.content[index];
 		kv_pair_t pair;
 
-		//copy key and value
-		strncpy(pair.key, key, strlen(key + 1));
-		strncpy(pair.value, value, strlen(value +1));
+		char key_final[strlen(key) + 1];
+		char value_final[strlen(value) +1];
+		strcpy(key_final, key);
+		strcpy(value_final, value);
+		pair.key = key_final;
+		pair.value = value_final;
 
-		while(first != NULL){
-			if (strcmp(first.pair.key, key) == 0) {
-				first.pair.value = pair.value;
+
+		 while(first != NULL && first->pair.key != NULL){
+			if (strcmp(first->pair.key, key) == 0) {
+				first->pair.value = pair.value;
+				return ERR_NONE;
 			} else {
-				first = first.next;
+				first = first->next;
 			}
-		}
+		 }
 
 		bucket_t bucket;
 		bucket.pair = pair;
 		bucket.next = NULL;
 		*first = bucket;
 
+
 		return ERR_NONE;
 	}
 }
 
 pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
-	if (table == NO_HTABLE || key == NULL) {
+	if (table.content == NULL || key == NULL) {
 		return NULL;
 	}
 	size_t index = hash_function(key, table.size);
 	bucket_t *first = &table.content[index];
 
-	while(first != NULL){
-		if (strcmp(first.pair.key, key) == 0) {
-			return first.pair.value;
+	while(first != NULL && first->pair.key != NULL){
+		if (strcmp(first->pair.key, key) == 0) {
+			return first->pair.value;
 		} else {
-			first = first.next;
+			first = first->next;
 		}
 	}
 	return NULL;

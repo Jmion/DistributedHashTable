@@ -29,8 +29,10 @@ int main(void){
             error_code error = network_get(*client, key, &value_get);
             if (error != ERR_NONE){
                 printf("FAIL\n");
+            } else if (value_get[0] == '\0') {
+                printf("FAIL\n");
             } else {
-                printf("OK %s\n",value);
+                printf("OK %s\n",value_get);
             }
             while(!feof(stdin) && ! ferror(stdin) && getc(stdin) != '\n');
 

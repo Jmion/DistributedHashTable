@@ -59,6 +59,9 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 	//send get request
 	char key_msg[strlen(key)];
 	strncpy(key_msg,key,strlen(key));
+
+
+
 	if(send_server(client,key_msg, strlen(key)) == -1){
 		debug_print("%s\n", "NETWORK_GET : Sending key to server failed");
 		return ERR_NETWORK;

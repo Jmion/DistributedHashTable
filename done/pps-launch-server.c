@@ -25,7 +25,7 @@ int main(void) {
 	}
 
 	Htable_t htable = construct_Htable(HTABLE_SIZE);
-	(void) memset(&htable, 0, sizeof(bucket_t) * HTABLE_SIZE); //Htable is formed of 32 bit ints. Therefor we
+	//(void) memset(&htable, 0, sizeof(bucket_t) * HTABLE_SIZE); //Htable is formed of 32 bit ints. Therefor we
 
 
 #pragma clang diagnostic push
@@ -41,17 +41,17 @@ int main(void) {
 
 		if (msg_len == -1) {
 			M_EXIT_IF_ERR(ERR_NETWORK, "Message received in not of appropriate length.");
-		} else if (memchr(&in_msg,'\0', sizeof(in_msg)) != NULL) { //put request
+		} else if (memchr(&in_msg,'\0', msg_len) != NULL) { //put request
 			printf("Put request OK\n");
 
-			size_t locationOfKVSeperator = strlen(in_msg); // locates the \o in the string
-			char key[locationOfKVSeperator+1]; //extra space of '\0' at the end
-			char value [msg_len-locationOfKVSeperator];
-			strncpy(key,in_msg,locationOfKVSeperator);
-			strncpy(value, &in_msg[locationOfKVSeperator+1], msg_len-locationOfKVSeperator-1);
-			key[locationOfKVSeperator + 1] = '\0';
-			value[msg_len - locationOfKVSeperator] = '\0';
-
+			size_t key_len = strlen(in_msg); // locates the \0 in the string
+			size_t value_len = msg_len - key_len - 1;
+			char key[key_len+1]; //extra space of '\0' at the end
+			char value [value_len + 1];
+			strncpy(key,in_msg,key_len);
+			strncpy(value, &in_msg[key_len+1], value_len);
+			key[key_len] = '\0';
+			value[value_len] = '\0';
 
 
 			error_code e = add_Htable_value(htable, key, value);
