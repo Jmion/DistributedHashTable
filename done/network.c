@@ -31,9 +31,11 @@ ssize_t send_server(client_t client, const void* msg, size_t size){
 
 /**
  * Will return the size of the message reveiced. It will return 0 if it is properly exited. will return -1 in case of error
- * @param client
- * @param buffer
- * @param size
+ * @param client client to receive from
+ * @param buffer location where the data received from the server will be stored
+ * @param size size of the buffer
+ * @param nbToReceiveFrom number of servers that need to respond for valide response
+ * @param nbResponse number of servers that responded
  * @return
  */
 ssize_t receive_from_server(client_t client, void* buffer, size_t size,size_t nbToReceiveFrom, size_t* nbResponse){
