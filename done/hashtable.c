@@ -16,8 +16,6 @@ Htable_t construct_Htable(size_t size){
 }
 
 void delete_Htable_and_content(Htable_t* table){
-	free(table->content->pairs);
-	table->content->pairs = NULL;
 	free(table->content);
 	table->content = NULL;
 	free(table);
@@ -30,28 +28,25 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		return ERR_BAD_PARAMETER;
 	} else {
 		size_t index = hash_function(key,table.size);
-		bucket_t* list = &table.content[index];
+		bucket_t* first = &table.content[index];
 		kv_pair_t pair;
 
 		//copy key and value
-		pair.key = key;
-		pair.value = value;
+		strncpy(pair.key, key, strlen(key + 1));
+		strncpy(pair.value, value, strlen(value +1));
 
-		for (int i = 0; i < list->size; ++i) {
-			if (strcmp(list->pairs[i].key, key) == 0) {
-				strcpy(list->pairs[i].value, value);
-				return ERR_NONE;
+		while(first != NULL){
+			if (strcmp(first.pair.key, key) == 0) {
+				first.pair.value = pair.value;
+			} else {
+				first = first.next;
 			}
 		}
 
-		list->size += 1;
-		//realloc
-		list->pairs = calloc(list->size, sizeof(kv_pair_t));
-		if (list->pairs == NULL) {
-			debug_print("%s", "Allocation problem, could not create list in bucket");
-			return ERR_NOMEM;
-		}
-		list->pairs[list->size] = pair;
+		bucket_t bucket;
+		bucket.pair = pair;
+		bucket.next = NULL;
+		*first = bucket;
 
 		return ERR_NONE;
 	}
@@ -62,10 +57,13 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 		return NULL;
 	}
 	size_t index = hash_function(key, table.size);
-	bucket_t list = table.content[index];
-	for (int i = 0; i < list.size; ++i) {
-		if (strcmp(list.pairs[i].key, key) == 0) {
-			return list.pairs[i].value;
+	bucket_t *first = &table.content[index];
+
+	while(first != NULL){
+		if (strcmp(first.pair.key, key) == 0) {
+			return first.pair.value;
+		} else {
+			first = first.next;
 		}
 	}
 	return NULL;
