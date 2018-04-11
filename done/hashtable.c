@@ -17,8 +17,8 @@ Htable_t construct_Htable(size_t size){
 
 void delete_Htable_and_content(Htable_t* table){
 	for (int i = 0; i < table->size; ++i) {
-		free(table->content[i].pair.key);
-		free(table->content[i].pair.value);
+		free((char*) table->content[i].pair.key);
+		free((char*) table->content[i].pair.value);
 		table->content[i].pair.key = NULL;
 		table->content[i].pair.value = NULL;
 		free(&table->content[i]);
