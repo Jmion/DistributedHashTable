@@ -32,7 +32,6 @@ typedef struct {
  * Definition of type for local hash-tables buckets
  */
 typedef struct{
-	//size_t Hvalue;
 	kv_pair_t* pairs;
 	size_t size;
 } bucket_t;

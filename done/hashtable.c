@@ -9,13 +9,15 @@ Htable_t construct_Htable(size_t size){
 	table.content = calloc(size, sizeof(bucket_t));
 	if (table.content == NULL) {
 		debug_print("%s", "Allocation error. Content for htable could not be allocated");
-		//error, content will be NULL
+		return NO_HTABLE;
 	}
 	table.size = size;
 	return table;
 }
 
 void delete_Htable_and_content(Htable_t* table){
+	free(table->content->pairs);
+	table->content->pairs = NULL;
 	free(table->content);
 	table->content = NULL;
 	free(table);
@@ -24,12 +26,14 @@ void delete_Htable_and_content(Htable_t* table){
 
 
 error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
-	if (table.content == NULL || value == NULL) {
+	if (table == NO_HTABLE || value == NULL) {
 		return ERR_BAD_PARAMETER;
 	} else {
 		size_t index = hash_function(key,table.size);
 		bucket_t* list = &table.content[index];
 		kv_pair_t pair;
+
+		//copy key and value
 		pair.key = key;
 		pair.value = value;
 
@@ -41,6 +45,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		}
 
 		list->size += 1;
+		//realloc
 		list->pairs = calloc(list->size, sizeof(kv_pair_t));
 		if (list->pairs == NULL) {
 			debug_print("%s", "Allocation problem, could not create list in bucket");
@@ -53,7 +58,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 }
 
 pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
-	if (table.content == NULL || key == NULL) {
+	if (table == NO_HTABLE || key == NULL) {
 		return NULL;
 	}
 	size_t index = hash_function(key, table.size);
