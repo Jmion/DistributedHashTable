@@ -4,7 +4,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#define MSG_LENGTH 5
 #define IP_SIZE 15
 
 
@@ -25,11 +24,8 @@ int main(void) {
 		debug_print("%s\n", "Server failed to bind to socket");
 	}
 
-
-
-	//creating hashtable. Should call construct hashtable when implemented.
-	Htable_t hashtableTemp;
-	(void) memset(&hashtableTemp, 0, sizeof(bucket_t) * HTABLE_SIZE); //Htable is formed of 32 bit ints. Therefor we
+	Htable_t htable = construct_Htable(HTABLE_SIZE);
+	(void) memset(&htable, 0, sizeof(bucket_t) * HTABLE_SIZE); //Htable is formed of 32 bit ints. Therefor we
 
 
 #pragma clang diagnostic push
@@ -39,20 +35,26 @@ int main(void) {
 		socklen_t addr_cli_len = sizeof(addr_cli);
 		memset(&addr_cli, 0, addr_cli_len);
 
-		char in_msg[MSG_LENGTH];
+		char in_msg[MAX_MSG_SIZE];
 
 		ssize_t msg_len = recvfrom(socket, &in_msg, sizeof(in_msg), 0, (struct sockaddr *) &addr_cli, &addr_cli_len);
 
 		if (msg_len == -1) {
 			M_EXIT_IF_ERR(ERR_NETWORK, "Message received in not of appropriate length.");
-		} else if (msg_len == 5) { //put request
+		} else if (memchr(&in_msg,'\0', sizeof(in_msg)) != NULL) { //put request
 			printf("Put request OK\n");
-			uint32_t netValue;
-			memcpy(&netValue, &in_msg[1], sizeof(netValue));
-			pps_value_t value = ntohl(netValue);
-			pps_key_t key = in_msg[0];
 
-			error_code e = add_Htable_value(hashtableTemp, key, value);
+			size_t locationOfKVSeperator = strlen(in_msg); // locates the \o in the string
+			char key[locationOfKVSeperator+1]; //extra space of '\0' at the end
+			char value [msg_len-locationOfKVSeperator];
+			strncpy(key,in_msg,locationOfKVSeperator);
+			strncpy(value, &in_msg[locationOfKVSeperator+1], msg_len-locationOfKVSeperator-1);
+			key[locationOfKVSeperator + 1] = '\0';
+			value[msg_len - locationOfKVSeperator] = '\0';
+
+
+
+			error_code e = add_Htable_value(htable, key, value);
 			M_EXIT_IF_ERR(e, "Issue adding key to hasahtable");
 
 			if(sendto(socket, &key, 0, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
@@ -60,11 +62,13 @@ int main(void) {
 			}
 		} else { //get request
 			printf("get request OK\n");
-			pps_key_t key = in_msg[0];
-			pps_value_t value = get_Htable_value(hashtableTemp, key);
+			char key[msg_len+1];
+			strncpy(key, in_msg, msg_len);
+			key[msg_len + 1] = '\0';
 
-			uint32_t netValue = htonl(value);
-			if(sendto(socket, &netValue, sizeof(netValue), 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
+			pps_value_t value = get_Htable_value(htable, key);
+
+			if(sendto(socket, &value, sizeof(value), 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
 				debug_print("%s\n","Error responding to get request. Sending value failed");
 			}
 		}
