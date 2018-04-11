@@ -25,8 +25,8 @@ int main(void){
         if (read == 1){
 
             char value[MAX_MSG_ELEM_SIZE+1];
-            //value pointer of pointer???
-            error_code error = network_get(*client, key, value);
+            pps_value_t value_get = (pps_value_t) value;
+            error_code error = network_get(*client, key, &value_get);
             if (error != ERR_NONE){
                 printf("FAIL\n");
             } else {

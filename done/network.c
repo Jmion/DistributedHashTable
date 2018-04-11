@@ -5,6 +5,7 @@
 #include "hashtable.h"
 #include "client.h"
 #include <stdio.h>
+#include "config.h"
 
 
 #define RETURN_MSG_LENGTH 4
@@ -53,21 +54,31 @@ ssize_t receive_from_server(client_t client, void* buffer, size_t size,size_t nb
 //*******END OF MODULARISATION*****
 #define nbToReceiveFrom 1
 
-error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
+error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 
-	//how to modify mem zone pointed by value, if pps_value is const char*?
 	//send get request
-	if(send_server(client,&key, sizeof(key)) == -1){
+	char key_msg[strlen(key)];
+	strncpy(key_msg,key,strlen(key));
+	if(send_server(client,key_msg, strlen(key)) == -1){
 		debug_print("%s\n", "NETWORK_GET : Sending key to server failed");
 		return ERR_NETWORK;
 	}
+
 	//receive response
-	uint32_t netValue;
-	if (receive_from_server(client,&netValue, sizeof(netValue),nbToReceiveFrom, NULL) != sizeof(netValue)){
+	
+	char value_msg[MAX_MSG_ELEM_SIZE];
+	ssize_t msg_length = receive_from_server(client, value_msg, MAX_MSG_ELEM_SIZE ,nbToReceiveFrom, NULL);
+	
+	if (msg_length == -1){
 		debug_print("%s\n", "NETWORK_GET : Receiving reply from server failed");
 		return ERR_NETWORK;
 	}
-	*value = ntohl(netValue);
+	value_msg[msg_length] = '\0';
+	char value_get[msg_length + 1];
+	strncpy(value_get, value_msg, msg_length + 1);
+
+
+	*value = value_get;
 	return ERR_NONE;
 }
 
@@ -83,7 +94,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 
 
 	//Sending the message
-	if(-1 == send_server(client, msg, size)){
+	if(-1 == send_server(client, msg, size+1)){
 		debug_print("%s\n", "NETWORK_PUT : Sending failed.");
 		return ERR_NETWORK;
 	}

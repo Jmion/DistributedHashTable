@@ -9,7 +9,7 @@ Htable_t construct_Htable(size_t size){
 	table.content = calloc(size, sizeof(bucket_t));
 	if (table.content == NULL) {
 		debug_print("%s", "Allocation error. Content for htable could not be allocated");
-		//error, content will be NULL
+		return NO_HTABLE;
 	}
 	table.size = size;
 	return table;
@@ -24,43 +24,46 @@ void delete_Htable_and_content(Htable_t* table){
 
 
 error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
-	if (table.content == NULL || value == NULL) {
+	if (table == NO_HTABLE || value == NULL) {
 		return ERR_BAD_PARAMETER;
 	} else {
 		size_t index = hash_function(key,table.size);
-		bucket_t* list = &table.content[index];
+		bucket_t* first = &table.content[index];
 		kv_pair_t pair;
-		pair.key = key;
-		pair.value = value;
 
-		for (int i = 0; i < list->size; ++i) {
-			if (strcmp(list->pairs[i].key, key) == 0) {
-				strcpy(list->pairs[i].value, value);
-				return ERR_NONE;
+		//copy key and value
+		strncpy(pair.key, key, strlen(key + 1));
+		strncpy(pair.value, value, strlen(value +1));
+
+		while(first != NULL){
+			if (strcmp(first.pair.key, key) == 0) {
+				first.pair.value = pair.value;
+			} else {
+				first = first.next;
 			}
 		}
 
-		list->size += 1;
-		list->pairs = calloc(list->size, sizeof(kv_pair_t));
-		if (list->pairs == NULL) {
-			debug_print("%s", "Allocation problem, could not create list in bucket");
-			return ERR_NOMEM;
-		}
-		list->pairs[list->size] = pair;
+		bucket_t bucket;
+		bucket.pair = pair;
+		bucket.next = NULL;
+		*first = bucket;
 
 		return ERR_NONE;
 	}
 }
 
 pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
-	if (table.content == NULL || key == NULL) {
+	if (table == NO_HTABLE || key == NULL) {
 		return NULL;
 	}
 	size_t index = hash_function(key, table.size);
-	bucket_t list = table.content[index];
-	for (int i = 0; i < list.size; ++i) {
-		if (strcmp(list.pairs[i].key, key) == 0) {
-			return list.pairs[i].value;
+	bucket_t *first = &table.content[index];
+
+	while(first != NULL){
+		if (strcmp(first.pair.key, key) == 0) {
+			return first.pair.value;
+		} else {
+			first = first.next;
 		}
 	}
 	return NULL;
