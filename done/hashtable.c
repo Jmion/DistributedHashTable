@@ -16,6 +16,12 @@ Htable_t construct_Htable(size_t size){
 }
 
 void delete_Htable_and_content(Htable_t* table){
+	for (int i = 0; i < table->size; ++i) {
+		free(table->content[i].pair.key);
+		free(table->content[i].pair.value);
+		table->content[i].pair.key = NULL;
+		table->content[i].pair.value = NULL;
+	}
 	free(table->content);
 	table->content = NULL;
 	free(table);
@@ -28,13 +34,14 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		return ERR_BAD_PARAMETER;
 	} else {
 		size_t index = hash_function(key,table.size);
+
 		bucket_t* first = &table.content[index];
 		kv_pair_t pair;
 
-		char key_final[strlen(key) + 1];
-		char value_final[strlen(value) +1];
-		strcpy(key_final, key);
-		strcpy(value_final, value);
+		char* key_final = calloc(strlen(key) + 1, sizeof(char));
+		char* value_final = calloc(strlen(value) +1, sizeof(char));
+		strncpy(key_final, key, strlen(key) + 1);
+		strncpy(value_final, value, strlen(value) +1);
 		pair.key = key_final;
 		pair.value = value_final;
 
@@ -53,6 +60,10 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		bucket.next = NULL;
 		*first = bucket;
 
+		printf("%zu\n",index);
+		//printf("%s\n",table.content[index].pair.value);
+		fflush(stdout);
+
 
 		return ERR_NONE;
 	}
@@ -64,11 +75,18 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	}
 	size_t index = hash_function(key, table.size);
 	bucket_t *first = &table.content[index];
+	printf("%zu\n",index);
+	printf("%s\n",table.content[index].pair.value);
+
 
 	while(first != NULL && first->pair.key != NULL){
-		if (strcmp(first->pair.key, key) == 0) {
+		printf("%s\n", first->pair.key);
+		printf("%s\n", key);
+		if (strncmp(first->pair.key, key, strlen(key)) == 0) {
+			printf("%s, %s\n", "Found something", first->pair.value);
 			return first->pair.value;
 		} else {
+			printf("%s\n", "Go to next");
 			first = first->next;
 		}
 	}

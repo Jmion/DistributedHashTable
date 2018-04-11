@@ -64,11 +64,12 @@ int main(void) {
 			printf("get request OK\n");
 			char key[msg_len+1];
 			strncpy(key, in_msg, msg_len);
-			key[msg_len + 1] = '\0';
+			key[msg_len] = '\0';
 
 			pps_value_t value = get_Htable_value(htable, key);
+			printf("Sending %s\n",value );
 
-			if(sendto(socket, &value, sizeof(value), 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
+			if(sendto(socket, value, strlen(value), 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
 				debug_print("%s\n","Error responding to get request. Sending value failed");
 			}
 		}
