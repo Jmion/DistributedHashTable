@@ -54,6 +54,8 @@ ssize_t receive_from_server(client_t client, void* buffer, size_t size,size_t nb
 #define nbToReceiveFrom 1
 
 error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
+
+	//how to modify mem zone pointed by value, if pps_value is const char*?
 	//send get request
 	if(send_server(client,&key, sizeof(key)) == -1){
 		debug_print("%s\n", "NETWORK_GET : Sending key to server failed");
@@ -70,11 +72,14 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t *value){
 }
 
 error_code network_put(client_t client, pps_key_t key, pps_value_t value){
-	size_t size = sizeof(key)+ sizeof(value);
-	unsigned char msg[size];
-	msg[0] = key;
-	uint32_t netValue = htonl(value);
-	memcpy(&msg[1], &netValue, sizeof(netValue));
+	size_t size = strlen(key)+ strlen(value);
+	char msg[size + 1];
+
+	strncpy(&msg[0], key, strlen(key));
+	msg[strlen(key)] = '\0';
+	strncpy(&msg[strlen(key) + 1], value, strlen(value));
+
+
 
 
 	//Sending the message
