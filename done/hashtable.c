@@ -1,5 +1,6 @@
 #include "error.h"
 #include "hashtable.h"
+#include "util.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -18,8 +19,8 @@ Htable_t construct_Htable(size_t size){
 
 void delete_Htable_and_content(Htable_t* table){
 	for (int i = 0; i < table->size; ++i) {
-		free((char*) table->content[i].pair.key);
-		free((char*) table->content[i].pair.value);
+		free_const_ptr(table->content[i].pair.key);
+		free_const_ptr(table->content[i].pair.value);
 		table->content[i].pair.key = NULL;
 		table->content[i].pair.value = NULL;
 		free(&table->content[i]);
