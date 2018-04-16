@@ -58,7 +58,6 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 				first->pair.value = pair.value;
 				return ERR_NONE;
 			} else {
-				//printf("Go to next bucket\n");
 				first = first->next;
 			}
 		 }
@@ -77,11 +76,6 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			first->next = bucket;
 		}
 
-		//printf("%zu\n",index);
-		//printf("%s\n",first->next->pair.value);
-		//fflush(stdout);
-
-
 		return ERR_NONE;
 	}
 }
@@ -92,18 +86,12 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	}
 	size_t index = hash_function(key, table.size);
 	bucket_t *first = &table.content[index];
-	//printf("%zu\n",index);
-	//printf("%s\n",first->pair.key);
 
 
 	while(first != NULL && first->pair.key != NULL){
-		printf("%s\n", first->pair.key);
-		//printf("%s\n", key);
 		if (strncmp(first->pair.key, key, strlen(key)) == 0) {
-			//printf("%s, %s\n", "Found something", first->pair.value);
 			return first->pair.value;
 		} else {
-			//printf("%s\n", "Go to next");
 			first = first->next;
 		}
 	}
