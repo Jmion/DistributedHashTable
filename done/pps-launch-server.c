@@ -40,6 +40,17 @@ int main(void) {
 
 		if (msg_len == -1) {
 			M_EXIT_IF_ERR(ERR_NETWORK, "Message received in not of appropriate length.");
+		} else if (msg_len == 0){ //check request
+			printf("Check request OK\n");
+			if(sendto(socket, NULL, 0, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
+				debug_print("%s\n","Error sending acknoledgement of check request.");
+			}
+
+			
+		} else if (msg_len == 1 && in_msg[0] == '\0'){//dump request
+			printf("Dump request OK\n");
+
+
 		} else if (memchr(&in_msg,'\0', msg_len) != NULL) { //put request
 			printf("Put request OK\n");
 
