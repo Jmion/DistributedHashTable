@@ -21,9 +21,9 @@ int main(void){
 
     do{
         char key[MAX_MSG_ELEM_SIZE+1];
-        int read = scanf("%s", key);
+        int read = scanf(MAX_MSG_ELEM_SCANF, key);
         char value[MAX_MSG_ELEM_SIZE+1];
-        read += scanf("%s", value);
+        read += scanf(MAX_MSG_ELEM_SCANF, value);
 
         if (read == 2) {
             error_code error = network_put(*client, key, value);
