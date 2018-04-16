@@ -19,10 +19,7 @@ Htable_t construct_Htable(size_t size){
 
 void delete_Htable_and_content(Htable_t* table){
 	for (int i = 0; i < table->size; ++i) {
-		free_const_ptr(table->content[i].pair.key);
-		free_const_ptr(table->content[i].pair.value);
-		table->content[i].pair.key = NULL;
-		table->content[i].pair.value = NULL;
+		kv_pair_free(&table->content[i].pair);
 		free(&table->content[i]);
 	}
 	free(table->content);
@@ -30,6 +27,13 @@ void delete_Htable_and_content(Htable_t* table){
 	free(table);
 	table = NULL;
 };
+
+void kv_pair_free(kv_pair_t *kv){
+		free_const_ptr(kv->key);
+		free_const_ptr(kv->value);
+		kv->key = NULL;
+		kv->value = NULL;
+}
 
 
 error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
