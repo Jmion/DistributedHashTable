@@ -41,7 +41,7 @@ int main(void) {
 		if (msg_len == -1) {
 			M_EXIT_IF_ERR(ERR_NETWORK, "Message received in not of appropriate length.");
 		} else if (memchr(&in_msg,'\0', msg_len) != NULL) { //put request
-			printf("Put request OK\n");
+			debug_print("Put request OK");
 
 			size_t key_len = strlen(in_msg); // locates the \0 in the string
 			size_t value_len = msg_len - key_len - 1;
@@ -60,7 +60,7 @@ int main(void) {
 				debug_print("%s\n","Error sending acknoledgement of put request.");
 			}
 		} else { //get request
-			printf("get request OK\n");
+			debug_print("get request OK");
 			char key[msg_len+1];
 			strncpy(key, in_msg, msg_len);
 			key[msg_len] = '\0';
