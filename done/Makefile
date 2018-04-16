@@ -3,11 +3,12 @@ LDLIBS = -lm -lcheck -pthread
 CFLAGS += -g 
 CFLAGS += -DDEBUG
 
-all : pps-client-put pps-client-get pps-launch-server week07
+all : pps-client-put pps-client-get pps-launch-server pps-list-nodes week07
 
 pps-client-put : pps-client-put.c node.o node_list.o client.o network.o system.o error.o
 pps-client-get : pps-client-get.c node.o node_list.o client.o network.o system.o error.o
 pps-launch-server : pps-launch-server.c node.o client.o network.o system.o hashtable.o error.o
+pps-list-nodes : pps-list-nodes.c node.o node_list.o client.o network.o system.o error.o
 
 week07 : week07.c hashtable.o
 node_list.o : node_list.h node_list.c node.o system.o error.o
