@@ -1,0 +1,104 @@
+Submission correctly tagged with: 'week06' (sha: f609faac8b53e9bbeb6bf5079e5176404cd03081)
+--------
+Checking for expected files
+Found expected file done/node.c on tag week06
+Found expected file done/network.h on tag week06
+Found expected file done/network.c on tag week06
+Found expected file done/hashtable.c on tag week06
+Found expected file done/Makefile on tag week06
+Found expected file done/client.h on tag week06
+Found expected file done/pps-client-put.c on tag week06
+Found expected file done/log-packets.c on tag week06
+Found expected file done/node_list.h on tag week06
+Found expected file done/ring.h on tag week06
+Found expected file done/pps-launch-server.c on tag week06
+Found expected file done/hashtable.h on tag week06
+Found expected file done/pps-client-get.c on tag week06
+Found expected file done/client.c on tag week06
+Found expected file done/node.h on tag week06
+Found expected file done/node_list.c on tag week06
+--------
+Got error code 2 when running trying to build target 'test-hashtable' with command 'make test-hashtable'
+stdout: cc -g  -DDEBUG    test-hashtable.c  -lm -lcheck -pthread -o test-hashtable
+<builtin>: recipe for target 'test-hashtable' failed
+
+---
+stderr: /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check.o): In function `tcase_create':
+(.text+0x1a4): undefined reference to `floor'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check.o): In function `tcase_create':
+(.text+0x1b8): undefined reference to `floor'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check.o): In function `tcase_set_timeout':
+(.text+0x465): undefined reference to `floor'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check.o): In function `tcase_set_timeout':
+(.text+0x479): undefined reference to `floor'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check.o): In function `check_get_clockid':
+(.text+0xaa3): undefined reference to `timer_create'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check.o): In function `check_get_clockid':
+(.text+0xac5): undefined reference to `timer_delete'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check_run.o): In function `srunner_run':
+(.text+0xa3f): undefined reference to `timer_create'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check_run.o): In function `srunner_run':
+(.text+0xa8d): undefined reference to `timer_settime'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check_run.o): In function `srunner_run':
+(.text+0xab9): undefined reference to `timer_delete'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check_log.o): In function `subunit_lfun':
+(.text+0x584): undefined reference to `subunit_test_start'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check_log.o): In function `subunit_lfun':
+(.text+0x63f): undefined reference to `subunit_test_fail'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check_log.o): In function `subunit_lfun':
+(.text+0x654): undefined reference to `subunit_test_pass'
+/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/libcheck.a(check_log.o): In function `subunit_lfun':
+(.text+0x66f): undefined reference to `subunit_test_error'
+/tmp/ccCEUtx1.o: In function `add_value_does_retrieve_same_value':
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:68: undefined reference to `add_Htable_value'
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:69: undefined reference to `get_Htable_value'
+/tmp/ccCEUtx1.o: In function `add_value_twice_erase_older':
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:85: undefined reference to `add_Htable_value'
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:86: undefined reference to `add_Htable_value'
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:88: undefined reference to `get_Htable_value'
+/tmp/ccCEUtx1.o: In function `should_be_in_range':
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:99: undefined reference to `hash_function'
+/tmp/ccCEUtx1.o: In function `zero_size_return_0':
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:107: undefined reference to `hash_function'
+/tmp/ccCEUtx1.o: In function `invalid_size_return_0':
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:116: undefined reference to `hash_function'
+/tmp/ccCEUtx1.o: In function `add_with_NULL_table_return_ERR_BAD_PARAMETER':
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:134: undefined reference to `add_Htable_value'
+/tmp/ccCEUtx1.o: In function `get_with_NULL_table_return_0':
+/home/whitlock/pps/pps_repos/team/repositories/pps18-team-flyingnerds/repository/done/test-hashtable.c:135: undefined reference to `get_Htable_value'
+collect2: error: ld returned 1 exit status
+make: *** [test-hashtable] Error 1
+
+Got error code 2 when running trying to build target 'test-hashtable' with command '[staff makefile]'
+Got error code 2 when running trying to build target 'test-hashtable' with command '[staff makefile]'
+Unable to build target 'test-hashtable'
+Unable to run test-hashtable. Executable couldn't build
+
+-------------------------
+Running test scripts
+
+
+Test 05.basic.sh returned code 0
+stdout:
+>> running 05.basic.sh
+Test 1 (server launch): PASS
+Test 2 (client put): PASS
+Test 3 (client get): PASS
+SUCCESS
+
+------
+stderr:
+
+-----------
+Test 06.basic.sh returned code 0
+stdout:
+>> running 06.basic.sh
+Test 1 (launch 1st server): PASS
+Test 2 (launch 2nd server): PASS
+Test 3 (put, 2 servers): PASS
+Test 4 (get, 2 servers): PASS
+SUCCESS
+
+------
+stderr:
+
