@@ -15,7 +15,7 @@ int main(void) {
 
     fprintf(stdout, "IP Port? ");
     fflush(stdout);
-	//TODO render this abble to get bad imput
+
     fscanf(stdin, "%s", &IP[0]);
     scanf("%d", &port);
     struct sockaddr_in address;
@@ -34,7 +34,7 @@ int main(void) {
         debug_print("%s", "No answers");
     }
 
-    nbAnswers = buffer[0];
+    memcpy(&nbAnswers, buffer, sizeof(unsigned int));
     nbAnswers = ntohl(nbAnswers);
     printf("%d\n",nbAnswers );
 	return 0;

@@ -54,8 +54,6 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 	if (table.content == NULL || value == NULL) {
 		return ERR_BAD_PARAMETER;
 	} else {
-		printf("%d\n",*table.nbElements);
-		fprintf(stderr, "%s\n", "Test");
 		size_t index = hash_function(key,table.size);
 
 		bucket_t* first = &table.content[index];
@@ -74,7 +72,6 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			if (strcmp(first->pair.key, key) == 0) {
 				debug_print("%s","VALUE MODIFIED");
 				first->pair.value = pair.value;
-				printf("KEY MODIFIED\n");
 				return ERR_NONE;
 			} else {
 				first = first->next;
@@ -101,7 +98,6 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			first->next = bucket;
 			*table.nbElements += 1;
 		}
-		printf("%d\n",*table.nbElements);
 		return ERR_NONE;
 	}
 }

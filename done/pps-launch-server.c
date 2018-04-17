@@ -52,7 +52,8 @@ int main(void) {
 			debug_print("%s", "Dump request OK");
 			char msg[UDP_MAX_SIZE];
 			size_t msg_len = 0;
-			msg[0] = htonl(*htable.nbElements);
+			unsigned int size_send = htonl(*htable.nbElements);
+			memcpy(&msg[0],&size_send,sizeof(size_send));
 			msg_len += sizeof(unsigned int);
 
 
