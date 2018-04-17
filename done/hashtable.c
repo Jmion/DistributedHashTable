@@ -5,6 +5,10 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+struct bucket_t{
+	kv_pair_t pair;
+	bucket_t* next;
+};
 
 Htable_t construct_Htable(size_t size){
 	Htable_t table;
@@ -80,6 +84,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 
 		 //new key in this bucket
 		first = &table.content[index];
+
 		if (first->pair.key == NULL) {
 			//first one to be inserted in the list
 			first->pair = pair;
@@ -87,6 +92,9 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			debug_print("%s","FIRST KEY");
 			*table.nbElements += 1;
 		} else {
+			while(first->next != NULL) {
+				first = first->next;
+			}
 			debug_print("%s","COLLISION");
 			bucket_t* bucket = calloc(1, sizeof(bucket_t));
 			if (bucket == NULL) {
@@ -109,9 +117,9 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	size_t index = hash_function(key, table.size);
 	bucket_t *first = &table.content[index];
 
-
 	while(first != NULL && first->pair.key != NULL){
-		if (strncmp(first->pair.key, key, strlen(key)) == 0) {
+		if (strncmp(first->pair.key, key, strlen(key)&& strlen(key) == strlen(first->pair.key)) == 0) {
+			debug_print("%s","returning value");
 			return first->pair.value;
 		} else {
 			first = first->next;
