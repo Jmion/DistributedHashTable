@@ -69,21 +69,28 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		pair.value = value_final;
 
 
-		 while(first->next != NULL && first->pair.key != NULL){
+		//checking if key already here
+		while(first != NULL && first->pair.key != NULL){
 			if (strcmp(first->pair.key, key) == 0) {
+				debug_print("%s","VALUE MODIFIED");
 				first->pair.value = pair.value;
 				printf("KEY MODIFIED\n");
 				return ERR_NONE;
 			} else {
 				first = first->next;
 			}
-		 }
+		}
+
+		 //new key in this bucket
+		first = &table.content[index];
 		if (first->pair.key == NULL) {
 			//first one to be inserted in the list
 			first->pair = pair;
 			first->next = NULL;
+			debug_print("%s","FIRST KEY");
 			*table.nbElements += 1;
 		} else {
+			debug_print("%s","COLLISION");
 			bucket_t* bucket = calloc(1, sizeof(bucket_t));
 			if (bucket == NULL) {
 				debug_print("%s", "Could not create new bucket");
