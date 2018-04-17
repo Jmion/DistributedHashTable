@@ -16,7 +16,6 @@ int main(void) {
 
     fprintf(stdout, "IP Port? ");
     fflush(stdout);
-	//TODO render this abble to get bad imput
     fscanf(stdin, "%s", &IP[0]);
     fscanf(stdin,"%d", &port);
 
