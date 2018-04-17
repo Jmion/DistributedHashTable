@@ -18,13 +18,23 @@ Htable_t construct_Htable(size_t size){
 }
 
 void delete_Htable_and_content(Htable_t* table){
-	for (int i = 0; i < table->size; ++i) {
-		kv_pair_free(&table->content[i].pair);
-		free(&table->content[i]);
-	}
+	 for (int i = 0; i < table->size; ++i) {
+	 	//first bucket is not allocated, no need to free
+	 	bucket_t* bucket = &table->content[i];
+	 	if (bucket->pair.key != NULL) {
+	 		kv_pair_free(&bucket->pair);
+	 	}
+	 	bucket = bucket->next;
+	 	//freeing the linked list
+	 	while(bucket != NULL && bucket->pair.key != NULL){
+	 		bucket_t* next = bucket->next;
+	 		kv_pair_free(&bucket->pair);
+	 		free(bucket);
+	 		bucket = bucket->next;
+	 	}
+	 }
 	free(table->content);
 	table->content = NULL;
-	free(table);
 	table = NULL;
 };
 

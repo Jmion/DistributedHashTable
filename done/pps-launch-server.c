@@ -18,13 +18,14 @@ int main(void) {
     fflush(stdout);
 	//TODO render this abble to get bad imput
     fscanf(stdin, "%s", &IP[0]);
-    scanf("%d", &port);
+    fscanf(stdin,"%d", &port);
 
 	if (bind_server(socket, IP, port)) {
 		debug_print("%s\n", "Server failed to bind to socket");
 	}
 
 	Htable_t htable = construct_Htable(HTABLE_SIZE);
+
 
 
 #pragma clang diagnostic push
@@ -94,7 +95,6 @@ int main(void) {
 		}
 	}
 #pragma clang diagnostic pop
-
 	return 0;
 }
 
