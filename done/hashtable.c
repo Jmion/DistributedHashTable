@@ -118,7 +118,8 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	bucket_t *first = &table.content[index];
 
 	while(first != NULL && first->pair.key != NULL){
-		if (strncmp(first->pair.key, key, strlen(key)&& strlen(key) == strlen(first->pair.key)) == 0) {
+		//if (strncmp(first->pair.key, key, strlen(key)&& strlen(key) == strlen(first->pair.key)) == 0) {
+		if (strcmp(first->pair.key, key) == 0) {
 			debug_print("%s","returning value");
 			return first->pair.value;
 		} else {
