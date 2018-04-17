@@ -16,7 +16,6 @@ int main(void) {
 
     fprintf(stdout, "IP Port? ");
     fflush(stdout);
-	//TODO render this abble to get bad imput
     fscanf(stdin, "%s", &IP[0]);
     fscanf(stdin,"%d", &port);
 
@@ -50,7 +49,7 @@ int main(void) {
 			
 		} else if (msg_len == 1 && in_msg[0] == '\0'){//dump request
 			debug_print("%s", "Dump request OK");
-
+			//TODO Parse htable and send values
 
 		} else if (memchr(&in_msg,'\0', msg_len) != NULL) { //put request
 			debug_print("%s", "Put request OK");
