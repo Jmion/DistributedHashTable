@@ -28,7 +28,7 @@ int main(void) {
 		return -1;
 	}
 
-	unsigned int nbAnswers = 0;
+	unsigned int nbAnswers = 1;
     char buffer[UDP_MAX_SIZE];
     if(recv(socket, &buffer, UDP_MAX_SIZE, 0) == -1){
         debug_print("%s", "No answers");

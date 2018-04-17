@@ -51,11 +51,38 @@ int main(void) {
 		} else if (msg_len == 1 && in_msg[0] == '\0'){//dump request
 			debug_print("%s", "Dump request OK");
 			char msg[UDP_MAX_SIZE];
+			memset(msg,0,UDP_MAX_SIZE);
 			size_t msg_len = 0;
 			unsigned int size_send = htonl(*htable.nbElements);
 			memcpy(&msg[0],&size_send,sizeof(size_send));
 			msg_len += sizeof(unsigned int);
 
+
+
+			for (int i = 0; i < htable.size; ++i) {
+				bucket_t* bucket = &htable.content[i];
+				while(bucket != NULL && bucket->pair.key != NULL){
+
+					if (msg_len + strlen(bucket->pair.key) + strlen(bucket->pair.value) + 2 > UDP_MAX_SIZE) {
+						if(sendto(socket, &msg, msg_len, 0, (struct sockaddr *) &addr_cli, addr_cli_len)== -1){
+							debug_print("%s","Could not send ");
+						}
+						msg_len = 0;
+						memset(msg,0,UDP_MAX_SIZE);
+
+					}
+
+					strncpy(&msg[msg_len], bucket->pair.key, strlen(bucket->pair.key));
+					msg_len += strlen(bucket->pair.key);
+					msg[msg_len] = '\0';
+					msg_len += 1;
+					strncpy(&msg[msg_len], bucket->pair.value, strlen(bucket->pair.value));
+					msg_len += strlen(bucket->pair.value);
+					msg[msg_len] = '\0';
+					msg_len += 1;
+
+				}
+			}
 
 			if(sendto(socket, &msg, msg_len, 0, (struct sockaddr *) &addr_cli, addr_cli_len)== -1){
 				debug_print("%s","Could not send ");
