@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #define IP_SIZE 15
+#define UDP_MAX_SIZE 65507
 
 
 int main(void) {
@@ -27,8 +28,15 @@ int main(void) {
 		return -1;
 	}
 
-	//TODO handle answers
-	printf("OK\n");
+	unsigned int nbAnswers = 0;
+    char buffer[UDP_MAX_SIZE];
+    if(recv(socket, &buffer, UDP_MAX_SIZE, 0) == -1){
+        debug_print("%s", "No answers");
+    }
+
+    nbAnswers = buffer[0];
+    nbAnswers = ntohl(nbAnswers);
+    printf("%d\n",nbAnswers );
 	return 0;
 }
 

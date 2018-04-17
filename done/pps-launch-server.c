@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 #define IP_SIZE 15
+#define UDP_MAX_SIZE 65507
 
 
 int main(void) {
@@ -49,6 +50,15 @@ int main(void) {
 			
 		} else if (msg_len == 1 && in_msg[0] == '\0'){//dump request
 			debug_print("%s", "Dump request OK");
+			char msg[UDP_MAX_SIZE];
+			size_t msg_len = 0;
+			msg[0] = htonl(*htable.nbElements);
+			msg_len += sizeof(unsigned int);
+
+
+			if(sendto(socket, &msg, msg_len, 0, (struct sockaddr *) &addr_cli, addr_cli_len)== -1){
+				debug_print("%s","Could not send ");
+			}
 			//TODO Parse htable and send values
 
 		} else if (memchr(&in_msg,'\0', msg_len) != NULL) { //put request

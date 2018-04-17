@@ -14,6 +14,8 @@ Htable_t construct_Htable(size_t size){
 		return table;
 	}
 	table.size = size;
+	table.nbElements = malloc(sizeof(unsigned int));
+	*table.nbElements = 0;
 	return table;
 }
 
@@ -35,6 +37,8 @@ void delete_Htable_and_content(Htable_t* table){
 	 }
 	free(table->content);
 	table->content = NULL;
+	free(table->nbElements);
+	table->nbElements = NULL;
 	table = NULL;
 };
 
@@ -50,6 +54,8 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 	if (table.content == NULL || value == NULL) {
 		return ERR_BAD_PARAMETER;
 	} else {
+		printf("%d\n",*table.nbElements);
+		fprintf(stderr, "%s\n", "Test");
 		size_t index = hash_function(key,table.size);
 
 		bucket_t* first = &table.content[index];
@@ -66,6 +72,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		 while(first->next != NULL && first->pair.key != NULL){
 			if (strcmp(first->pair.key, key) == 0) {
 				first->pair.value = pair.value;
+				printf("KEY MODIFIED\n");
 				return ERR_NONE;
 			} else {
 				first = first->next;
@@ -75,6 +82,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			//first one to be inserted in the list
 			first->pair = pair;
 			first->next = NULL;
+			*table.nbElements += 1;
 		} else {
 			bucket_t* bucket = calloc(1, sizeof(bucket_t));
 			if (bucket == NULL) {
@@ -84,8 +92,9 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			bucket->pair = pair;
 			bucket->next = NULL;
 			first->next = bucket;
+			*table.nbElements += 1;
 		}
-
+		printf("%d\n",*table.nbElements);
 		return ERR_NONE;
 	}
 }
