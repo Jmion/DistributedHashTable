@@ -5,11 +5,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-typedef struct bucket bucket;
-
-struct bucket{
+struct bucket_t{
 	kv_pair_t pair;
-	bucket* next;
+	bucket_t* next;
 };
 
 Htable_t construct_Htable(size_t size){
