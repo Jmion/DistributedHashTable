@@ -25,18 +25,42 @@ int main(void) {
     if (sendto(socket, &msg, 1, 0, (struct sockaddr *) &address, sizeof(address)) == -1){
 		debug_print("%s", "Sending failed.");
 		fprintf(stdout, "FAIL\n");
-		return -1;
+		return 1;
 	}
 
 	unsigned int nbAnswers = 1;
     char buffer[UDP_MAX_SIZE];
-    if(recv(socket, &buffer, UDP_MAX_SIZE, 0) == -1){
+    size_t msg_length;
+    msg_length = recv(socket, &buffer, UDP_MAX_SIZE, 0);
+    if( msg_length== -1){
         debug_print("%s", "No answers");
+        fprintf(stdout, "FAIL\n");
+        return 1;
     }
 
     memcpy(&nbAnswers, buffer, sizeof(unsigned int));
     nbAnswers = ntohl(nbAnswers);
-    printf("%d\n",nbAnswers );
+    size_t index = sizeof(unsigned int);
+
+    while(nbAnswers > 0){
+        if (index < msg_length) {
+            printf("%s", buffer[index]);
+            index += strlen(buffer[index]) + 1;
+            printf(" = %s\n",buffer[index]);
+            index += strlen(buffer[index]) + 1;
+            nbAnswers -= 1;
+        } else {
+            msg_length = recv(socket, &buffer, UDP_MAX_SIZE, 0);
+            index = 0;
+            if( msg_length== -1){
+                debug_print("%s", "No answers");
+                fprintf(stdout, "FAIL\n");
+            return 1;
+            }
+        }
+
+    }
+
 	return 0;
 }
 
