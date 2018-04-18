@@ -34,7 +34,19 @@ ssize_t send_and_get(int socket, struct sockaddr_in* address, const void* msg, s
 	}
 	return recv(socket, buffer, buffer_size, 0);
 }
-
+/**
+ * @brief      Handles the communication with all nodes of a client
+ *
+ * @param[in]  client                  The client
+ * @param[in]  msg                     The message to send
+ * @param[in]  msg_size                The message size
+ * @param      buffer                  The buffer
+ * @param[in]  buffer_size             The buffer size
+ * @param[in]  nbValidAnswersRequired  The number of valid answers required
+ * @param[in]  nbResponseRequired      The number of response required
+ *
+ * @return     the length of the last answer, or -1 if something failed
+ */
 ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buffer, size_t buffer_size, size_t nbValidAnswersRequired, size_t nbResponseRequired){
 	size_t index = 0;
 	size_t nbValidAnswers = 0;
