@@ -32,8 +32,6 @@ int main(void){
 
             if (error != ERR_NONE){
                 printf("FAIL\n");
-            // } else if (value_get[0] == '\0') {
-            //     printf("FAIL NULL\n");
             } else {
                 printf("OK %s\n",value_get);
             }
