@@ -24,7 +24,7 @@ int main(void) {
 		debug_print("%s\n", "Server failed to bind to socket");
 	}
 
-	Htable_t htable = construct_Htable(HTABLE_SIZE);
+	Htable_t htable = construct_Htable(1);
 
 
 
@@ -67,11 +67,12 @@ int main(void) {
 						if(sendto(socket, &msg, msg_len, 0, (struct sockaddr *) &addr_cli, addr_cli_len)== -1){
 							debug_print("%s","Could not send ");
 						}
+						debug_print("%s","New message");
 						msg_len = 0;
 						memset(msg,0,UDP_MAX_SIZE);
 
 					}
-
+					debug_print("%s", "Copying key-value");
 					strncpy(&msg[msg_len], bucket->pair.key, strlen(bucket->pair.key));
 					msg_len += strlen(bucket->pair.key);
 					msg[msg_len] = '\0';
@@ -80,6 +81,7 @@ int main(void) {
 					msg_len += strlen(bucket->pair.value);
 					msg[msg_len] = '\0';
 					msg_len += 1;
+					bucket = bucket->next;
 
 				}
 			}

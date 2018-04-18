@@ -41,13 +41,14 @@ int main(void) {
     memcpy(&nbAnswers, buffer, sizeof(unsigned int));
     nbAnswers = ntohl(nbAnswers);
     size_t index = sizeof(unsigned int);
+    printf("%d\n",nbAnswers);
 
     while(nbAnswers > 0){
         if (index < msg_length) {
-            printf("%s", buffer[index]);
-            index += strlen(buffer[index]) + 1;
-            printf(" = %s\n",buffer[index]);
-            index += strlen(buffer[index]) + 1;
+            printf("%s", &buffer[index]);
+            index += strlen(&buffer[index]) + 1;
+            printf(" = %s\n",&buffer[index]);
+            index += strlen(&buffer[index]) + 1;
             nbAnswers -= 1;
         } else {
             msg_length = recv(socket, &buffer, UDP_MAX_SIZE, 0);

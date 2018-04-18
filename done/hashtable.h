@@ -33,6 +33,11 @@ typedef struct {
  */
 typedef struct bucket_t bucket_t;
 
+struct bucket_t{
+	kv_pair_t pair;
+	bucket_t* next;
+};
+
 
 
 /*
