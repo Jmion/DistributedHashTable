@@ -31,7 +31,7 @@ typedef struct {
 /*
  * Definition of type for local hash-tables buckets
  */
-typedef struct bucket_t bucket_t;
+typedef struct bucket bucket_t;
 
 
 
