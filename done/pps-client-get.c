@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "node_list.h"
 #include "config.h"
+#include "error.h"
 
 
 int main(void){
@@ -16,7 +17,8 @@ int main(void){
     init_client.client = &cl;
     init_client.name = "client";
     init_client.nodes_list = get_nodes();
-    client_init(init_client);
+    error_code errCode = client_init(init_client);
+    M_EXIT_IF_ERR(errCode,"Error initializing client");
     client_t* client = init_client.client;
 
     do{
