@@ -35,7 +35,7 @@ node_list_t *get_nodes(){
         debug_print("%s\n","Lecture error");
         return NULL;
     } else {
-        char IP[IP_SIZE];
+        char IP[IP_SIZE+1];
         memset(&IP,0, sizeof(IP));
         int port = 0;
         size_t index = 0;
@@ -46,18 +46,18 @@ node_list_t *get_nodes(){
                 return NULL;
             }
 
-	        node_t tempNode;
-	        memset(&tempNode, 0, sizeof(node_t));
+            node_t tempNode;
+            memset(&tempNode, 0, sizeof(node_t));
             if(node_init(&tempNode, IP, port, index) != ERR_NONE){
                 debug_print("%s\n","Error initialising node");
                 return NULL;
             }
 
             ++index;
-	        if(node_list_add(list,tempNode) != ERR_NONE){
-	        	debug_print("%s\n", "issue with adding a node to the list.");
-		        return NULL;
-	        };
+            if(node_list_add(list,tempNode) != ERR_NONE){
+                debug_print("%s\n", "issue with adding a node to the list.");
+                return NULL;
+            };
         }
     }
     fclose(in);
