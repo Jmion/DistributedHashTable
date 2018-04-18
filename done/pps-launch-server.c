@@ -11,7 +11,7 @@
 int main(void) {
 	int socket = get_socket(0);
 
-    char IP[IP_SIZE];
+    char IP[IP_SIZE+1];
     int port = 0;
 
 
@@ -41,6 +41,7 @@ int main(void) {
 
 		if (msg_len == -1) {
 			M_EXIT_IF_ERR(ERR_NETWORK, "Message received in not of appropriate length.");
+
 		} else if (msg_len == 0){ //check request
 			debug_print("%s", "Check request OK");
 			if(sendto(socket, NULL, 0, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
@@ -89,7 +90,7 @@ int main(void) {
 			if(sendto(socket, &msg, msg_len, 0, (struct sockaddr *) &addr_cli, addr_cli_len)== -1){
 				debug_print("%s","Could not send ");
 			}
-			//TODO Parse htable and send values
+
 
 		} else if (memchr(&in_msg,'\0', msg_len) != NULL) { //put request
 			debug_print("%s", "Put request OK");

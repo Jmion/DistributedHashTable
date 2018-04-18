@@ -9,7 +9,7 @@
 
 
 int main(void) {
-    char IP[IP_SIZE];
+    char IP[IP_SIZE+];
     int port = 0;
 
 
