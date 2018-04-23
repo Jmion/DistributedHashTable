@@ -25,8 +25,8 @@ int main(void) {
 	size_t value_len = 0;
 
 	M_EXIT_IF_ERR(client_init_err, "Error initializing client");
-		char key1[MAX_MSG_ELEM_SIZE + 1];
-		scanf(MAX_MSG_ELEM_SCANF, key1);
+	char key1[MAX_MSG_ELEM_SIZE + 1];
+	scanf(MAX_MSG_ELEM_SCANF, key1);
 	do {
 		char key2[MAX_MSG_ELEM_SIZE + 1];
 		int read = scanf(MAX_MSG_ELEM_SCANF, key2);
