@@ -33,6 +33,11 @@ typedef struct {
  */
 typedef struct bucket_t bucket_t;
 
+struct bucket_t{
+	kv_pair_t pair;
+	bucket_t* next;
+};
+
 
 
 /*
@@ -43,6 +48,7 @@ typedef struct bucket_t bucket_t;
 typedef struct{
 	bucket_t* content;
 	size_t size;
+	unsigned int* nbElements;
 }Htable_t;
 
 // Only from week 07

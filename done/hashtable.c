@@ -18,6 +18,8 @@ Htable_t construct_Htable(size_t size){
 		return table;
 	}
 	table.size = size;
+	table.nbElements = malloc(sizeof(unsigned int));
+	*table.nbElements = 0;
 	return table;
 }
 
@@ -39,6 +41,8 @@ void delete_Htable_and_content(Htable_t* table){
 	 }
 	free(table->content);
 	table->content = NULL;
+	free(table->nbElements);
+	table->nbElements = NULL;
 	table = NULL;
 };
 
@@ -86,6 +90,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			first->pair = pair;
 			first->next = NULL;
 			debug_print("%s","FIRST KEY");
+			*table.nbElements += 1;
 		} else {
 			while(first->next != NULL) {
 				first = first->next;
@@ -99,6 +104,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			bucket->pair = pair;
 			bucket->next = NULL;
 			first->next = bucket;
+			*table.nbElements += 1;
 		}
 		return ERR_NONE;
 	}
@@ -112,7 +118,6 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	bucket_t *first = &table.content[index];
 
 	while(first != NULL && first->pair.key != NULL){
-		//if (strncmp(first->pair.key, key, strlen(key)&& strlen(key) == strlen(first->pair.key)) == 0) {
 		if (strcmp(first->pair.key, key) == 0) {
 			debug_print("%s","returning value");
 			return first->pair.value;
