@@ -39,11 +39,11 @@ int main(void) {
 				printf("FAIL\n");
 				return 0;
 			}
+			debug_print("Searching for '%s' in '%s'",value2, value1);
 			const char * location = strstr(value1,value2);
 			if(location == NULL){
 				fprintf(stdout,"OK -1\n");
 			}else{
-				debug_print("String start at location : %s",location);
 				fprintf(stdout,"OK %ld\n",location - value1);
 			}
 		}

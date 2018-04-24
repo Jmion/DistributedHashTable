@@ -23,6 +23,7 @@ int main(void) {
 	char value[MAX_MSG_ELEM_SIZE + 1];
 	memset(value, 0, MAX_MSG_ELEM_SIZE + 1);
 	size_t value_len = 0;
+	error_code error = 0;
 
 	M_EXIT_IF_ERR(client_init_err, "Error initializing client");
 	char key1[MAX_MSG_ELEM_SIZE + 1];
@@ -32,22 +33,20 @@ int main(void) {
 		int read = scanf(MAX_MSG_ELEM_SCANF, key2);
 		 if (read == 1) {
 		 	pps_value_t value_get;
-		 	error_code error = network_get(*client, key1, &value_get);
-		 	if (error != 0) {
-		 		printf("FAIL\n");
-		 		return 0;
+		 	error += network_get(*client, key1, &value_get);
+		 	if (error == 0) {
+				strcpy(&value[value_len], value_get);
+			 	value_len = strlen(value);
 		 	} 
-			strcpy(&value[value_len], value_get);
-		 	value_len = strlen(value);
 		}
 		strcpy(key1, key2);
-		printf("%s\n", value);
+		debug_print("New value is currently '%s'. Error code is %d", value, error);
 
 		while (!feof(stdin) && !ferror(stdin) && getc(stdin) != '\n');
 
 	} while (!feof(stdin) && !ferror(stdin));
 
-	error_code error = network_put(*client, key1, value);
+	error += network_put(*client, key1, value);
 
  	if (error == 0) {
 		printf("OK\n");
