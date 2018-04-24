@@ -112,7 +112,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	msg[strlen(key)] = '\0';
 	strncpy(&msg[strlen(key) + 1], value, strlen(value));
 
-	char* in_msg;
+	char in_msg[1];
 
 	ssize_t msg_length = network_comm(client, msg, size +1, in_msg, 1, client.node_list->size, client.node_list->size);
 
