@@ -1,7 +1,7 @@
 LDLIBS = -lcheck -lm -lrt -pthread -lsubunit
 #debug flag
 CFLAGS += -g 
-CFLAGS += -DDEBUG
+#CFLAGS += -DDEBUG
 
 all : pps-client-put pps-client-get pps-launch-server pps-list-nodes pps-dump-node pps-client-cat pps-client-substr pps-client-find
 clean : rm *.o

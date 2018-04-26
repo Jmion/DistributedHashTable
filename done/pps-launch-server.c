@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #define IP_SIZE 15
-#define UDP_MAX_SIZE 65507 //9217
+#define UDP_MAX_SIZE 65507
 
 
 int main(void) {

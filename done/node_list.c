@@ -40,24 +40,27 @@ node_list_t *get_nodes(){
         int port = 0;
         size_t index = 0;
         while(!feof(in) && ! ferror(in)){
-            fscanf(in, "%s", IP);
-            fscanf(in, "%d", &port);
-            if (port <= 0 || port > 65535) {
-                return NULL;
-            }
+            int read = 0;
+            read += fscanf(in, "%s", IP);
+            read += fscanf(in, "%d", &port);
+            if (read == 2){
+                if (port <= 0 || port > 65535) {
+                    return NULL;
+                }
 
-            node_t tempNode;
-            memset(&tempNode, 0, sizeof(node_t));
-            if(node_init(&tempNode, IP, port, index) != ERR_NONE){
-                debug_print("%s\n","Error initialising node");
-                return NULL;
-            }
+                node_t tempNode;
+                memset(&tempNode, 0, sizeof(node_t));
+                if(node_init(&tempNode, IP, port, index) != ERR_NONE){
+                    debug_print("%s\n","Error initialising node");
+                    return NULL;
+                }
 
-            ++index;
-            if(node_list_add(list,tempNode) != ERR_NONE){
-                debug_print("%s\n", "issue with adding a node to the list.");
-                return NULL;
-            };
+                ++index;
+                if(node_list_add(list,tempNode) != ERR_NONE){
+                    debug_print("%s\n", "issue with adding a node to the list.");
+                    return NULL;
+                }
+            }
         }
     }
     fclose(in);
