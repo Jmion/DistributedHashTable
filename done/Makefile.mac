@@ -1,5 +1,8 @@
 LDLIBS = -lcheck -lm -pthread
 
+CFLAGS += -g 
+CFLAGS += -DDEBUG
+
 all : pps-client-put pps-client-get pps-launch-server pps-list-nodes pps-dump-node pps-client-cat pps-client-substr pps-client-find clean
 
 clean : 
