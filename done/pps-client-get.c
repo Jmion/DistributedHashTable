@@ -30,6 +30,7 @@ int main(int argc,char *argv[]){
 
     char value[MAX_MSG_ELEM_SIZE+1];
     pps_value_t value_get = (pps_value_t) value;
+    printf("%s\n", argv[0]);
     error_code error = network_get(*client, argv[0], &value_get);
 
     if (error != ERR_NONE){

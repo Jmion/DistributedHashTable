@@ -9,36 +9,30 @@
 #include "node_list.h"
 #include "config.h"
 #include "error.h"
+#include "args.h"
 
 
-int main(void) {
-	client_init_args_t init_client;
-	client_t cl;
-	init_client.client = &cl;
-	init_client.name = "client";
-	init_client.nodes_list = get_nodes();
-	error_code client_init_err = client_init(init_client);
-	client_t *client = init_client.client;
+int main(int argc,char *argv[]){
 
-	M_EXIT_IF_ERR(client_init_err, "Error initializing client");
-	do {
-		char key[MAX_MSG_ELEM_SIZE + 1];
-		int read = scanf(MAX_MSG_ELEM_SCANF, key);
-		char value[MAX_MSG_ELEM_SIZE + 1];
-		read += scanf(MAX_MSG_ELEM_SCANF, value);
+    client_init_args_t init_client;
+    client_t cl;
+    init_client.client = &cl;
+    init_client.argv = &argv;
+    init_client.argc = argc;
+    init_client.nodes_list = get_nodes();
+    init_client.argsRequired = TOTAL_SERVERS | PUT_NEEDED;
+    error_code errCode = client_init(init_client);
+    M_EXIT_IF_ERR(errCode,"Error initializing client");
+    client_t* client = init_client.client;
 
-		if (read == 2) {
-			error_code error = network_put(*client, key, value);
-			if (error != 0) {
-				printf("FAIL\n");
-			} else {
-				printf("OK\n");
-			}
-		}
 
-		while (!feof(stdin) && !ferror(stdin) && getc(stdin) != '\n');
+	error_code error = network_put(*client, argv[0], argv[1]);
+	if (error != 0) {
+		printf("FAIL\n");
+	} else {
+		printf("OK\n");
+	}
 
-	} while (!feof(stdin) && !ferror(stdin));
 
 
 	return 0;
