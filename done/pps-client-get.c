@@ -9,9 +9,11 @@
 #include "node_list.h"
 #include "config.h"
 #include "error.h"
+#include "args.h"
 
 
-int main(void){
+int main(int argc,char *argv[]){
+
     client_init_args_t init_client;
     client_t cl;
     init_client.client = &cl;
