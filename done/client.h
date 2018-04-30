@@ -22,16 +22,19 @@ typedef struct{
 	const char *name;
 	node_list_t* node_list;
 	int socket;
+	args_t* args;
 }client_t;
 
 /**
  * @brief client_init function arguments.
- *        To be defined in week 05 and THEN UPDATED in week 10.
  */
 typedef struct{
-	const char *name;
 	client_t* client;
 	node_list_t* nodes_list;
+	char*** argv;
+	size_t argsRequired;
+	size_t nbArgsValid;
+	size_t argc;
 }client_init_args_t;
 
 /**
