@@ -13,11 +13,13 @@
 int main(int argc,char *argv[]) {
     if (argc != 3) {
         debug_print("%s", "Wrong number of arguments");
+        printf("FAIL\n");
         return 1;
     }
     int port = strtol(argv[2]);
     if (port == 0) {
         debug_print("%s", "Couldn't parse port number");
+        printf("FAIL\n");
         return 1;
     }
 

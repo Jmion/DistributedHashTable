@@ -29,6 +29,7 @@ int main(int argc,char *argv[]){
 
     if ( nbArgsLeft < 2) {
         debug_print("%s","Not enough argument");
+        printf("FAIL\n");
         return 1;
     }
 

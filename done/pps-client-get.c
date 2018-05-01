@@ -30,6 +30,7 @@ int main(int argc,char *argv[]){
 
     if ( argc - 1  - nbArgsUsed != 1) {
         debug_print("Wrong number of arguments, %zu arguments", argc - 1 - nbArgsUsed);
+        printf("FAIL\n");
         return 1;
     }
 
