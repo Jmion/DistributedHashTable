@@ -46,7 +46,6 @@ int main(int argc,char *argv[]) {
     memcpy(&nbAnswers, buffer, sizeof(unsigned int));
     nbAnswers = ntohl(nbAnswers);
     size_t index = sizeof(unsigned int);
-    printf("%d\n",nbAnswers);
 
     while(nbAnswers > 0){
         if (index < msg_length) {
