@@ -33,7 +33,6 @@ typedef struct{
 	node_list_t* nodes_list;
 	char*** argv;
 	size_t argsRequired;
-	size_t nbArgsValid;
 	size_t argc;
 }client_init_args_t;
 
@@ -48,4 +47,4 @@ void client_end(client_t *client);
  * @param client the client to initialize
  * @return some error code, if any.
  */
-error_code client_init(client_init_args_t);
+error_code client_init(client_init_args_t, size_t*);

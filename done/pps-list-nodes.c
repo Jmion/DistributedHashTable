@@ -16,7 +16,7 @@ int main(int argc,char *argv[]){
     init_client.argc = argc;
     init_client.nodes_list = get_nodes();
     init_client.argsRequired = 0;
-    error_code errCode = client_init(init_client);
+    error_code errCode = client_init(init_client, NULL);
     M_EXIT_IF_ERR(errCode,"Error initializing client");
     client_t* client = init_client.client;
 

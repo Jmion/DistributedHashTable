@@ -15,7 +15,7 @@ void client_end(client_t *client){
     client->args = NULL;
 }
 
-error_code client_init(client_init_args_t client_init){
+error_code client_init(client_init_args_t client_init, size_t* nbArgsUsed){
 	client_t* client = client_init.client;
 	client->socket = get_socket(1);
 	client->node_list = client_init.nodes_list;
@@ -37,7 +37,9 @@ error_code client_init(client_init_args_t client_init){
 	args_t* args= parse_opt_args(client_init.argsRequired,client_init.argv);
 	client->args = args;
 	//number of args used
-	client_init.nbArgsValid = &(*client_init.argv)[0] - first;
+	if (nbArgsUsed != NULL) {
+		*nbArgsUsed = &(*client_init.argv)[0] - first;
+	}
 	if (args == NULL) {
 		return ERR_BAD_PARAMETER;
 	}
