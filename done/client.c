@@ -4,6 +4,7 @@
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "args.h"
 
 
 void client_end(client_t *client){
@@ -29,10 +30,14 @@ error_code client_init(client_init_args_t client_init){
 
 	debug_print("%s", "Calling parse_opt_args");
 	client->name = (*client_init.argv)[0];
-	debug_print("%zu", client_init.argsRequired);
+	++(*client_init.argv);
+
+	char** first = &(*client_init.argv)[0];
 
 	args_t* args= parse_opt_args(client_init.argsRequired,client_init.argv);
 	client->args = args;
+	//number of args used
+	client_init.nbArgsValid = &(*client_init.argv)[0] - first;
 	if (args == NULL) {
 		return ERR_BAD_PARAMETER;
 	}

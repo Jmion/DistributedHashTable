@@ -15,8 +15,6 @@ args_t *parse_opt_args(size_t supported_args, char ***rem_argv){
 	args->N = DEFAULT_N;
 	args->R = DEFAULT_R;
 	args->W = DEFAULT_W;
-	//discarding programm name
-	++(*rem_argv);
 
 	//looking for -n
 	if (supported_args & TOTAL_SERVERS) {
@@ -63,6 +61,10 @@ args_t *parse_opt_args(size_t supported_args, char ***rem_argv){
 			++(*rem_argv);
 			return args;
 		}
+	}
+
+	if (strcmp((*rem_argv)[0], "--") == 0) {
+		++(*rem_argv);
 	}
 
 

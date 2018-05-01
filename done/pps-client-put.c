@@ -13,7 +13,6 @@
 
 
 int main(int argc,char *argv[]){
-
     client_init_args_t init_client;
     client_t cl;
     init_client.client = &cl;
@@ -24,6 +23,11 @@ int main(int argc,char *argv[]){
     error_code errCode = client_init(init_client);
     M_EXIT_IF_ERR(errCode,"Error initializing client");
     client_t* client = init_client.client;
+
+    if ( argc - init_client.nbArgsValid != 2) {
+        debug_print("%s","Not enough argument");
+        return 1;
+    }
 
 
 	error_code error = network_put(*client, argv[0], argv[1]);

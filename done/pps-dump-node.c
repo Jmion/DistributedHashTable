@@ -18,6 +18,7 @@ int main(int argc,char *argv[]) {
     int port = strtol(argv[2]);
     if (port == 0) {
         debug_print("%s", "Couldn't parse port number");
+        return 1;
     }
 
     struct sockaddr_in address;
