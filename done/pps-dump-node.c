@@ -13,9 +13,6 @@ int main(void) {
     int port = 0;
 
 
-    fprintf(stdout, "IP Port? ");
-    fflush(stdout);
-
     fscanf(stdin, "%s", &IP[0]);
     scanf("%d", &port);
     struct sockaddr_in address;
@@ -41,7 +38,6 @@ int main(void) {
     memcpy(&nbAnswers, buffer, sizeof(unsigned int));
     nbAnswers = ntohl(nbAnswers);
     size_t index = sizeof(unsigned int);
-    printf("%d\n",nbAnswers);
 
     while(nbAnswers > 0){
         if (index < msg_length) {
