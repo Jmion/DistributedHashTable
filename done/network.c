@@ -53,6 +53,10 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 	size_t nbResponse = 0;
 	ssize_t length = -1;
 
+	//the while loop must loop on client.args->N
+	//nbResponseRequired is client.args->W if put request
+	//nbValidAnswersRequired is client.args->R if get request. Check the equality of the value
+
 	//R must be smaller than S
 	if (nbValidAnswersRequired > client.node_list->size) {
 		nbValidAnswersRequired = client.node_list->size;

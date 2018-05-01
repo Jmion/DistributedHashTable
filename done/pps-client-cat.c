@@ -48,7 +48,7 @@ int main(int argc,char *argv[]){
 		debug_print("New value is currently '%s'. Error code is %d", value, error);
 	}
 
-	error += network_put(*client, argv[nbArgsLeft], value);
+	error += network_put(*client, argv[nbArgsLeft - 1], value);
 
  	if (error == 0) {
 		printf("OK\n");
