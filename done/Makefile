@@ -10,9 +10,9 @@ clean :
 
 pps-client-put : pps-client-put.c node.o node_list.o client.o network.o system.o error.o
 pps-client-get : pps-client-get.c node.o node_list.o client.o network.o system.o error.o
-pps-launch-server : pps-launch-server.c node.o client.o network.o system.o hashtable.o error.o
+pps-launch-server : pps-launch-server.c system.o hashtable.o error.o
 pps-list-nodes : pps-list-nodes.c node.o node_list.o client.o network.o system.o error.o
-pps-dump-node : pps-dump-node.c node.o node_list.o client.o network.o system.o error.o
+pps-dump-node : pps-dump-node.c system.o
 pps-client-cat : pps-client-cat.c node.o node_list.o client.o network.o system.o error.o
 pps-client-substr : pps-client-substr.c node.o node_list.o client.o network.o system.o error.o
 pps-client-find : pps-client-find.c node.o node_list.o client.o network.o system.o error.o
