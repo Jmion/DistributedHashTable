@@ -53,6 +53,16 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 	size_t nbResponse = 0;
 	ssize_t length = -1;
 
+	//R must be smaller than S
+	if (nbValidAnswersRequired > client.node_list->size) {
+		nbValidAnswersRequired = client.node_list->size;
+	}
+
+	//W must be smaller than S
+	if (nbResponseRequired > client.node_list->size) {
+		nbResponseRequired = client.node_list->size;
+	}
+
 	while(index < client.node_list->size && nbValidAnswers < nbValidAnswersRequired){
 		ssize_t msg_length = send_and_get(client.socket, &client.node_list->nodes[index].address, msg, msg_size, buffer, buffer_size);
 		if(msg_length != -1){
