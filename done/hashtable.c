@@ -85,7 +85,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			//first one to be inserted in the list
 			first->pair = pair;
 			first->next = NULL;
-			debug_print("%s","FIRST KEY");
+			debug_print("%s %s %s","FIRST KEY", pair.key, "(end of key)");
 			*table.nbElements += 1;
 		} else {
 			while(first->next != NULL) {
