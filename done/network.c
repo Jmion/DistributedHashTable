@@ -63,7 +63,7 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 		ssize_t msg_length = send_and_get(client.socket, &client.node_list->nodes[index].address, msg, msg_size, buffer, buffer_size);
 		if(msg_length != -1){
 			nbResponse += 1;
-			if(msg_length != 0 || ((char*) buffer)[0] != '\0') {
+			if(msg_length != 0 && ((char*) buffer)[0] != '\0') {
 				pps_key_t tempKey = buffer;
 				pps_value_t responsePoint = get_Htable_value(local_htable, tempKey);
 				if (responsePoint == NULL) { //first time the receive this value
@@ -86,14 +86,15 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 		}
 		++index;
 	}
-
 	if ((nbResponse < client.args->W && putRequest) ) {
 		debug_print("%s %zu %s %zu", "Missing response from server, only got ", nbResponse, "response(s), needing ", client.args->W);
 		return -1;
 	}
-	if(nbResponse > client.args->W && putRequest){
+	if(nbResponse >= client.args->W && putRequest){
 		return 1;
 	}
+
+	debug_print("%s", "GET didn't get enough identical responses");
 	return -1;
 }
 
@@ -103,7 +104,8 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 #define nbValidAnswersNeeded 1
 
 error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
-
+	debug_print("N is %zu", client.args->N);
+	debug_print("R is %zu", client.args->R);
 	//send get request
 	char key_msg[strlen(key)];
 	strncpy(key_msg,key,strlen(key));
@@ -123,6 +125,8 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 }
 
 error_code network_put(client_t client, pps_key_t key, pps_value_t value){
+	debug_print("N is %zu", client.args->N);
+	debug_print("W is %zu", client.args->W);
 	size_t size = strlen(key)+ strlen(value);
 	char msg[size + 1];
 
