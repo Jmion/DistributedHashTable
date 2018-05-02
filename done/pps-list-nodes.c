@@ -4,15 +4,20 @@
 #include <stdio.h>
 #include "node_list.h"
 #include "config.h"
+#include "args.h"
+#include "error.h"
 
 
-int main(void){
+int main(int argc,char *argv[]){
     client_init_args_t init_client;
     client_t cl;
     init_client.client = &cl;
-    init_client.name = "client";
+    init_client.argv = &argv;
+    init_client.argc = argc;
     init_client.nodes_list = get_nodes();
-    client_init(init_client);
+    init_client.argsRequired = 0;
+    error_code errCode = client_init(init_client);
+    M_EXIT_IF_ERR(errCode,"Error initializing client");
     client_t* client = init_client.client;
 
     char* msg[1];

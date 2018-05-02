@@ -26,8 +26,6 @@ int main(void) {
 
 	Htable_t htable = construct_Htable(HTABLE_SIZE);
 
-
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-noreturn"
 	while (1) {
@@ -54,14 +52,14 @@ int main(void) {
 			char msg[UDP_MAX_SIZE];
 			memset(msg,0,UDP_MAX_SIZE);
 			size_t msg_len = 0;
-			unsigned int size_send = htonl(*htable.nbElements);
+			unsigned int size_send = htonl(htable->nbElements);
 			memcpy(&msg[0],&size_send,sizeof(size_send));
 			msg_len += sizeof(unsigned int);
 
 
 
-			for (int i = 0; i < htable.size; ++i) {
-				bucket_t* bucket = &htable.content[i];
+			for (int i = 0; i < htable->size; ++i) {
+				bucket_t* bucket = &htable->content[i];
 				while(bucket != NULL && bucket->pair.key != NULL){
 
 					if (msg_len + strlen(bucket->pair.key) + strlen(bucket->pair.value) + 2 > UDP_MAX_SIZE) {

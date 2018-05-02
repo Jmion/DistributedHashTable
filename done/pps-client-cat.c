@@ -12,41 +12,43 @@
 #include <string.h>
 
 
-int main(void) {
-	client_init_args_t init_client;
-	client_t cl;
-	init_client.client = &cl;
-	init_client.name = "client";
-	init_client.nodes_list = get_nodes();
-	error_code client_init_err = client_init(init_client);
-	client_t *client = init_client.client;
+int main(int argc,char *argv[]){
+    client_init_args_t init_client;
+    client_t cl;
+    init_client.client = &cl;
+    init_client.argv = &argv;
+    init_client.argc = argc;
+    init_client.nodes_list = get_nodes();
+    init_client.argsRequired = TOTAL_SERVERS | PUT_NEEDED | GET_NEEDED;
+    char** first = &argv[0];
+    error_code errCode = client_init(init_client);
+    M_EXIT_IF_ERR(errCode,"Error initializing client");
+    client_t* client = init_client.client;
+    size_t nbArgsLeft = argc - (&argv[0] - first);
+
+
+    if ( nbArgsLeft < 2) {
+        debug_print("%s","Not enough argument");
+        printf("FAIL\n");
+        return 1;
+    }
+
 	char value[MAX_MSG_ELEM_SIZE + 1];
 	memset(value, 0, MAX_MSG_ELEM_SIZE + 1);
 	size_t value_len = 0;
 	error_code error = 0;
 
-	M_EXIT_IF_ERR(client_init_err, "Error initializing client");
-	char key1[MAX_MSG_ELEM_SIZE + 1];
-	scanf(MAX_MSG_ELEM_SCANF, key1);
-	do {
-		char key2[MAX_MSG_ELEM_SIZE + 1];
-		int read = scanf(MAX_MSG_ELEM_SCANF, key2);
-		 if (read == 1) {
-		 	pps_value_t value_get;
-		 	error += network_get(*client, key1, &value_get);
-		 	if (error == 0) {
-				strcpy(&value[value_len], value_get);
-			 	value_len = strlen(value);
-		 	} 
-		}
-		strcpy(key1, key2);
+	for (size_t i = 0; i < nbArgsLeft - 1; ++i) {
+	 	pps_value_t value_get;
+	 	error += network_get(*client, argv[i], &value_get);
+	 	if (error == 0) {
+			strcpy(&value[value_len], value_get);
+		 	value_len = strlen(value);
+	 	} 
 		debug_print("New value is currently '%s'. Error code is %d", value, error);
+	}
 
-		while (!feof(stdin) && !ferror(stdin) && getc(stdin) != '\n');
-
-	} while (!feof(stdin) && !ferror(stdin));
-
-	error += network_put(*client, key1, value);
+	error += network_put(*client, argv[nbArgsLeft - 1], value);
 
  	if (error == 0) {
 		printf("OK\n");

@@ -4,23 +4,25 @@ CFLAGS += -g
 CFLAGS += -DDEBUG
 
 all : pps-client-put pps-client-get pps-launch-server pps-list-nodes pps-dump-node pps-client-cat pps-client-substr pps-client-find clean
-clean : 
+clean :
 	rm *.o
 
 
-pps-client-put : pps-client-put.c node.o node_list.o client.o network.o system.o error.o
-pps-client-get : pps-client-get.c node.o node_list.o client.o network.o system.o error.o
+pps-client-put : pps-client-put.c hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
+pps-client-get : pps-client-get.c hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
 pps-launch-server : pps-launch-server.c system.o hashtable.o error.o
-pps-list-nodes : pps-list-nodes.c node.o node_list.o client.o network.o system.o error.o
+pps-list-nodes : pps-list-nodes.c node.o node_list.o client.o system.o error.o args.o
 pps-dump-node : pps-dump-node.c system.o
-pps-client-cat : pps-client-cat.c node.o node_list.o client.o network.o system.o error.o
-pps-client-substr : pps-client-substr.c node.o node_list.o client.o network.o system.o error.o
-pps-client-find : pps-client-find.c node.o node_list.o client.o network.o system.o error.o
+pps-client-cat : pps-client-cat.c hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
+pps-client-substr : pps-client-substr.c hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
+pps-client-find : pps-client-find.c hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
+
 
 node_list.o : node_list.h node_list.c node.o system.o error.o
 node.o : node.h node.c system.o error.o
 client.o : client.h client.c system.o error.o
-network.o : network.h network.c error.o
+network.o : network.h network.c hashtable.o error.o
 system.o : system.h system.c error.o
 hashtable.o : hashtable.h hashtable.c error.o
 error.o : error.h error.c
+args.o : args.h args.c

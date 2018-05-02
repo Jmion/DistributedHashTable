@@ -3,20 +3,28 @@
 #include "hashtable.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define IP_SIZE 15
 #define UDP_MAX_SIZE 65507
+#define strtol(x) strtol(x, NULL, 10)
 
 
-int main(void) {
-    char IP[IP_SIZE+1];
-    int port = 0;
+int main(int argc,char *argv[]) {
+    if (argc != 3) {
+        debug_print("%s", "Wrong number of arguments");
+        printf("FAIL\n");
+        return 1;
+    }
+    int port = strtol(argv[2]);
+    if (port == 0) {
+        debug_print("%s", "Couldn't parse port number");
+        printf("FAIL\n");
+        return 1;
+    }
 
-
-    fscanf(stdin, "%s", &IP[0]);
-    scanf("%d", &port);
     struct sockaddr_in address;
-    get_server_addr(IP, port,&address);
+    get_server_addr(argv[1], port,&address);
     int socket = get_socket(1);
     char msg = '\0';
     if (sendto(socket, &msg, 1, 0, (struct sockaddr *) &address, sizeof(address)) == -1){

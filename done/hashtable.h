@@ -48,8 +48,10 @@ struct bucket_t{
 typedef struct{
 	bucket_t* content;
 	size_t size;
-	unsigned int* nbElements;
-}Htable_t;
+	unsigned int nbElements;
+}Htable;
+
+typedef Htable* Htable_t;
 
 // Only from week 07
 #define NO_HTABLE ((Htable_t) NULL)

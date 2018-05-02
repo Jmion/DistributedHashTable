@@ -7,22 +7,21 @@
 
 
 Htable_t construct_Htable(size_t size){
-	Htable_t table;
-	table.content = calloc(size, sizeof(bucket_t));
-	if (table.content == NULL) {
+	Htable_t table = calloc(1, sizeof(Htable_t));
+	table->content = calloc(size, sizeof(bucket_t));
+	if (table->content == NULL) {
 		debug_print("%s", "Allocation error. Content for htable could not be allocated");
 		return table;
 	}
-	table.size = size;
-	table.nbElements = malloc(sizeof(unsigned int));
-	*table.nbElements = 0;
+	table->size = size;
+	table->nbElements = 0;
 	return table;
 }
 
 void delete_Htable_and_content(Htable_t* table){
-	 for (int i = 0; i < table->size; ++i) {
+	 for (int i = 0; i < (*table)->size; ++i) {
 	 	//first bucket is not allocated, no need to free
-	 	bucket_t* bucket = &table->content[i];
+	 	bucket_t* bucket = &(*table)->content[i];
 	 	if (bucket->pair.key != NULL) {
 	 		kv_pair_free(&bucket->pair);
 	 	}
@@ -35,11 +34,9 @@ void delete_Htable_and_content(Htable_t* table){
 	 		bucket = bucket->next;
 	 	}
 	 }
-	free(table->content);
-	table->content = NULL;
-	free(table->nbElements);
-	table->nbElements = NULL;
-	table = NULL;
+	free((*table)->content);
+	(*table)->content = NULL;
+	*table = NULL;
 };
 
 void kv_pair_free(kv_pair_t *kv){
@@ -51,12 +48,12 @@ void kv_pair_free(kv_pair_t *kv){
 
 
 error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
-	if (table.content == NULL || value == NULL) {
+	if (table->content == NULL || value == NULL) {
 		return ERR_BAD_PARAMETER;
 	} else {
-		size_t index = hash_function(key,table.size);
+		size_t index = hash_function(key,table->size);
 
-		bucket_t* first = &table.content[index];
+		bucket_t* first = &table->content[index];
 		kv_pair_t pair;
 
 		char* key_final = calloc(strlen(key) + 1, sizeof(char));
@@ -79,14 +76,14 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		}
 
 		 //new key in this bucket
-		first = &table.content[index];
+		first = &table->content[index];
 
 		if (first->pair.key == NULL) {
 			//first one to be inserted in the list
 			first->pair = pair;
 			first->next = NULL;
-			debug_print("%s","FIRST KEY");
-			*table.nbElements += 1;
+			debug_print("%s %s %s","FIRST KEY", pair.key, "(end of key)");
+			table->nbElements += 1;
 		} else {
 			while(first->next != NULL) {
 				first = first->next;
@@ -100,18 +97,19 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			bucket->pair = pair;
 			bucket->next = NULL;
 			first->next = bucket;
-			*table.nbElements += 1;
+			table->nbElements += 1;
 		}
+		fprintf(stderr, "%u\n", table->nbElements);
 		return ERR_NONE;
 	}
 }
 
 pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
-	if (table.content == NULL || key == NULL) {
+	if (table->content == NULL || key == NULL) {
 		return NULL;
 	}
-	size_t index = hash_function(key, table.size);
-	bucket_t *first = &table.content[index];
+	size_t index = hash_function(key, table->size);
+	bucket_t *first = &table->content[index];
 
 	while(first != NULL && first->pair.key != NULL){
 		if (strcmp(first->pair.key, key) == 0) {

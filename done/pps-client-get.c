@@ -9,37 +9,45 @@
 #include "node_list.h"
 #include "config.h"
 #include "error.h"
+#include "args.h"
 
 
-int main(void){
+int main(int argc,char *argv[]){
+
+
     client_init_args_t init_client;
     client_t cl;
     init_client.client = &cl;
-    init_client.name = "client";
+    init_client.argv = &argv;
+    init_client.argc = argc;
     init_client.nodes_list = get_nodes();
+    init_client.argsRequired = TOTAL_SERVERS | GET_NEEDED;
+    char** first = &argv[0];
     error_code errCode = client_init(init_client);
     M_EXIT_IF_ERR(errCode,"Error initializing client");
     client_t* client = init_client.client;
 
-    do{
-        char key[MAX_MSG_ELEM_SIZE+1];
-        int read = scanf("%s", key);
-        if (read == 1){
+    size_t nbArgsLeft = argc - (&argv[0] - first);
 
-            char value[MAX_MSG_ELEM_SIZE+1];
-            pps_value_t value_get = (pps_value_t) value;
-            error_code error = network_get(*client, key, &value_get);
 
-            if (error != ERR_NONE){
-                printf("FAIL\n");
-            } else {
-                printf("OK %s\n",value_get);
-            }
-            while(!feof(stdin) && ! ferror(stdin) && getc(stdin) != '\n');
+    if ( nbArgsLeft != 1) {
+        debug_print("Wrong number of arguments, %zu arguments", nbArgsLeft);
+        printf("FAIL\n");
+        return 1;
+    }
 
-        }
 
-    }while(!feof(stdin) && ! ferror(stdin));
+
+    char value[MAX_MSG_ELEM_SIZE+1];
+    pps_value_t value_get = (pps_value_t) value;
+    error_code error = network_get(*client, argv[0], &value_get);
+
+    if (error != ERR_NONE){
+        printf("FAIL\n");
+    } else {
+        printf("OK %s\n",value_get);
+    }
+
 
 
 
