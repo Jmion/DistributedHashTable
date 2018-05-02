@@ -59,35 +59,29 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 	Htable_t local_htable = construct_Htable(HTABLE_SIZE);
 	size_t max_value = 0;
 
-	//the while loop must loop on client.args->N
-	//nbResponseRequired is client.args->W if put request
-	//nbValidAnswersRequired is client.args->R if get request. Check the equality of the value
-
-	while(index < client.node_list->size){
+	while(index < client.args->N){
 		ssize_t msg_length = send_and_get(client.socket, &client.node_list->nodes[index].address, msg, msg_size, buffer, buffer_size);
 		if(msg_length != -1){
 			nbResponse += 1;
-			pps_key_t tempKey = buffer;
-			pps_value_t responsePoint = get_Htable_value(local_htable, tempKey);
-			if(responsePoint == NULL){ //first time the receive this value
-				add_Htable_value(local_htable, tempKey, "\x01"); //initialising count to 1
-				max_value = max_value > 1 ? max_value : 1;
-				if(1 >= client.args->R){
-					return msg_length;
+			if(msg_length != 0 || ((char*) buffer)[0] != '\0') {
+				pps_key_t tempKey = buffer;
+				pps_value_t responsePoint = get_Htable_value(local_htable, tempKey);
+				if (responsePoint == NULL) { //first time the receive this value
+					add_Htable_value(local_htable, tempKey, "\x01"); //initialising count to 1
+					max_value = max_value > 1 ? max_value : 1;
+					if (1 >= client.args->R) {
+						return msg_length;
+					}
+				} else {
+					char nbRes = responsePoint[0];
+					++nbRes;
+					add_Htable_value(local_htable, tempKey,
+					                 (pps_value_t) (&nbRes)); // increasing the count of the know value
+					max_value = max_value > nbRes ? max_value : nbRes;
+					if (nbRes >= client.args->R) {
+						return msg_length;
+					}
 				}
-			}else{
-				char nbRes = responsePoint[0];
-				++nbRes;
-				add_Htable_value(local_htable,tempKey,(pps_value_t)(&nbRes)); // increasing the count of the know value
-				max_value = max_value > nbRes ? max_value : nbRes;
-				if(nbRes >= client.args->R){
-					return msg_length;
-				}
-			}
-			//valid if not '\0'
-			if(msg_length != 1 || ((char*) buffer)[0] != '\0'){
-				nbValidAnswers += 1;
-				length = msg_length;
 			}
 		}
 		++index;
@@ -96,6 +90,9 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 	if ((nbResponse < client.args->W && putRequest) ) {
 		debug_print("%s %zu %s %zu", "Missing response from server, only got ", nbResponse, "response(s), needing ", client.args->W);
 		return -1;
+	}
+	if(nbResponse > client.args->W && putRequest){
+		return 1;
 	}
 	return -1;
 }
