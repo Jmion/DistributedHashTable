@@ -22,14 +22,16 @@ int main(int argc,char *argv[]){
     init_client.argc = argc;
     init_client.nodes_list = get_nodes();
     init_client.argsRequired = TOTAL_SERVERS | GET_NEEDED;
-    size_t nbArgsUsed = 0;
-    error_code errCode = client_init(init_client, &nbArgsUsed);
+    char** first = &argv[0];
+    error_code errCode = client_init(init_client);
     M_EXIT_IF_ERR(errCode,"Error initializing client");
     client_t* client = init_client.client;
 
+    size_t nbArgsLeft = argc - (&argv[0] - first);
 
-    if ( argc - 1  - nbArgsUsed != 1) {
-        debug_print("Wrong number of arguments, %zu arguments", argc - 1 - nbArgsUsed);
+
+    if ( nbArgsLeft != 1) {
+        debug_print("Wrong number of arguments, %zu arguments", nbArgsLeft);
         printf("FAIL\n");
         return 1;
     }

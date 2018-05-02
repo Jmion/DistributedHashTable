@@ -4,6 +4,7 @@
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "args.h"
 
 
@@ -15,7 +16,7 @@ void client_end(client_t *client){
     client->args = NULL;
 }
 
-error_code client_init(client_init_args_t client_init, size_t* nbArgsUsed){
+error_code client_init(client_init_args_t client_init){
 	client_t* client = client_init.client;
 	client->socket = get_socket(1);
 	client->node_list = client_init.nodes_list;
@@ -28,21 +29,18 @@ error_code client_init(client_init_args_t client_init, size_t* nbArgsUsed){
 
     //args parsing
 
-	debug_print("%s", "Calling parse_opt_args");
 	client->name = (*client_init.argv)[0];
 	++(*client_init.argv);
 
-	char** first = &(*client_init.argv)[0];
-
 	args_t* args= parse_opt_args(client_init.argsRequired,client_init.argv);
 	client->args = args;
-	//number of args used
-	if (nbArgsUsed != NULL) {
-		*nbArgsUsed = &(*client_init.argv)[0] - first;
-	}
 	if (args == NULL) {
 		return ERR_BAD_PARAMETER;
 	}
+
+	args->N = args->N > client->node_list->size ? client->node_list->size : args->N;
+	args->R = args->R > args->N ? args->N : args->R;
+	args->W = args->W > args->N ? args->N : args->W;
 
 	return errCode;
 	

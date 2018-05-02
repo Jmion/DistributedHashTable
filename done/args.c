@@ -67,9 +67,10 @@ args_t *parse_opt_args(size_t supported_args, char ***rem_argv){
 			return args;
 		}
 	}
-
-	if (strcmp((*rem_argv)[0], "--") == 0) {
-		++(*rem_argv);
+	if (supported_args & (TOTAL_SERVERS | GET_NEEDED | PUT_NEEDED)) {
+		if (strcmp((*rem_argv)[0], "--") == 0) {
+			++(*rem_argv);
+		}
 	}
 
 
