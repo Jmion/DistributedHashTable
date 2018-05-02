@@ -95,12 +95,7 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 		debug_print("%s %zu %s %zu", "Missing response from server, only got ", nbResponse, "response(s), needing ", client.args->W);
 		return -1;
 	}
-
-	if (nbValidAnswers < nbValidAnswersRequired) {
-		debug_print("%s %zu %s", "Not enough valid answers, only got ", nbValidAnswers, "valid answer(s)");
-		return -1;
-	}
-	return length;
+	return -1;
 }
 
 //*******END NEW MODULARISATION***
