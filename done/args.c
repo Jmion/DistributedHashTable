@@ -18,58 +18,66 @@ args_t *parse_opt_args(size_t supported_args, char ***rem_argv){
 
 	//looking for -n
 	if (supported_args & TOTAL_SERVERS) {
-		if (strcmp((*rem_argv)[0], "-n") == 0) {
-			args->N = strtol((*rem_argv)[1]);
-			if (errno != 0) {
-				debug_print("%s", "Couldn't convert option for N");
-				return NULL;
+		if ((*rem_argv)[0] != NULL && (*rem_argv)[1] != NULL) {
+			if (strcmp((*rem_argv)[0], "-n") == 0) {
+				args->N = strtol((*rem_argv)[1]);
+				if (errno != 0) {
+					debug_print("%s", "Couldn't convert option for N");
+					return NULL;
+				}
+				debug_print("N is %zu",args->N);
+				(*rem_argv) += 2;
+			} else if (strcmp((*rem_argv)[0], "--") == 0) {
+				debug_print("%s", "END OF OPTION");
+				++(*rem_argv);
+				return args;
 			}
-			debug_print("N is %zu",args->N);
-			(*rem_argv) += 2;
-		} else if (strcmp((*rem_argv)[0], "--") == 0) {
-			debug_print("%s", "END OF OPTION");
-			++(*rem_argv);
-			return args;
 		}
 	}
 
 	//looking for -r
 	if (supported_args & GET_NEEDED) {
-		if (strcmp((*rem_argv)[0], "-r") == 0){
-			args->R = strtol((*rem_argv)[1]);
-			if (errno != 0) {
-				debug_print("%s", "Couldn't convert option for R");
-				return NULL;
+		if ((*rem_argv)[0] != NULL && (*rem_argv)[1] != NULL) {
+			if (strcmp((*rem_argv)[0], "-r") == 0){
+				args->R = strtol((*rem_argv)[1]);
+				if (errno != 0) {
+					debug_print("%s", "Couldn't convert option for R");
+					return NULL;
+				}
+				debug_print("R is %zu",args->R);
+				(*rem_argv) += 2;
+			} else if (strcmp((*rem_argv)[0], "--") == 0) {
+				debug_print("%s", "END OF OPTION");
+				++(*rem_argv);
+				return args;		
 			}
-			debug_print("R is %zu",args->R);
-			(*rem_argv) += 2;
-		} else if (strcmp((*rem_argv)[0], "--") == 0) {
-			debug_print("%s", "END OF OPTION");
-			++(*rem_argv);
-			return args;		
 		}
 
 	}
 	
 	//looking for w
 	if (supported_args & PUT_NEEDED) {
-		if (strcmp((*rem_argv)[0], "-w") == 0) {
-			args->W = strtol((*rem_argv)[1]);
-			if (errno != 0) {
-				debug_print("%s", "Couldn't convert option for W");
-				return NULL;
+		if ((*rem_argv)[0] != NULL && (*rem_argv)[1] != NULL) {
+			if (strcmp((*rem_argv)[0], "-w") == 0) {
+				args->W = strtol((*rem_argv)[1]);
+				if (errno != 0) {
+					debug_print("%s", "Couldn't convert option for W");
+					return NULL;
+				}
+				debug_print("W is %zu",args->W);
+				(*rem_argv) += 2;
+			} else if (strcmp((*rem_argv)[0], "--") == 0) {
+				debug_print("%s", "END OF OPTION");		
+				++(*rem_argv);
+				return args;
 			}
-			debug_print("W is %zu",args->W);
-			(*rem_argv) += 2;
-		} else if (strcmp((*rem_argv)[0], "--") == 0) {
-			debug_print("%s", "END OF OPTION");		
-			++(*rem_argv);
-			return args;
 		}
 	}
 	if (supported_args & (TOTAL_SERVERS | GET_NEEDED | PUT_NEEDED)) {
-		if (strcmp((*rem_argv)[0], "--") == 0) {
-			++(*rem_argv);
+		if ((*rem_argv)[0] != NULL) {
+			if (strcmp((*rem_argv)[0], "--") == 0) {
+				++(*rem_argv);
+			}
 		}
 	}
 
