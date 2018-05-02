@@ -1,5 +1,1 @@
 Not a bug, but good to know : key "abd" is in collision with key "EPF" whithout quote
-
-SEGV on entry like :
-	./pps-client-put -n 3				#will look for -w and SEGV
-	./pps-client-put -n 3 -w 4			#will lok for -- and SEGV 
