@@ -9,6 +9,8 @@
 
 
 #define RETURN_MSG_LENGTH 4
+#define PUT_REQUEST 1
+#define GET_REQUEST 0
 struct sockaddr_in srv_addr;
 
 
@@ -106,7 +108,7 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 	char key_msg[strlen(key)];
 	strncpy(key_msg,key,strlen(key));
 	char value_msg[MAX_MSG_ELEM_SIZE];
-	ssize_t msg_length = network_comm(client, key_msg, strlen(key), value_msg, MAX_MSG_ELEM_SIZE, nbValidAnswersNeeded, 0);
+	ssize_t msg_length = network_comm(client, key_msg, strlen(key), value_msg, MAX_MSG_ELEM_SIZE,GET_REQUEST);
 
 	if (msg_length == -1) {
 		debug_print("%s", "NETWORK_COMM : Something failed");
@@ -130,7 +132,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 
 	char in_msg[1];
 
-	ssize_t msg_length = network_comm(client, msg, size +1, in_msg, 1, client.node_list->size, client.node_list->size);
+	ssize_t msg_length = network_comm(client, msg, size +1, in_msg, 1,PUT_REQUEST);
 
 	if (msg_length == -1) {
 		debug_print("%s", "NETWORK_COMM : Something failed");
