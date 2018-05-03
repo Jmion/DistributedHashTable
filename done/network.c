@@ -104,6 +104,8 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 #define nbValidAnswersNeeded 1
 
 error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
+	M_EXIT_IF_TOO_LONG(key, MAX_MSG_ELEM_SIZE, "Key too long");
+
 	debug_print("N is %zu", client.args->N);
 	debug_print("R is %zu", client.args->R);
 	//send get request
@@ -127,6 +129,8 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 	debug_print("N is %zu", client.args->N);
 	debug_print("W is %zu", client.args->W);
+	M_EXIT_IF_TOO_LONG(key, MAX_MSG_ELEM_SIZE, "Key too long");
+	M_EXIT_IF_TOO_LONG(value, MAX_MSG_ELEM_SIZE, "Value too long");	
 	size_t size = strlen(key)+ strlen(value);
 	char msg[size + 1];
 
