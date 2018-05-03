@@ -99,7 +99,6 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			first->next = bucket;
 			table->nbElements += 1;
 		}
-		fprintf(stderr, "%u\n", table->nbElements);
 		return ERR_NONE;
 	}
 }
