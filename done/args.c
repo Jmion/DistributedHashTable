@@ -20,9 +20,10 @@ args_t *parse_opt_args(size_t supported_args, char ***rem_argv){
 	if (supported_args & TOTAL_SERVERS) {
 		if ((*rem_argv)[0] != NULL && (*rem_argv)[1] != NULL) {
 			if (strcmp((*rem_argv)[0], "-n") == 0) {
+				errno = 0;
 				args->N = strtol((*rem_argv)[1]);
-				if (errno != 0) {
-					debug_print("%s", "Couldn't convert option for N");
+				if (errno != 0 || args->N <= 0) {
+					debug_print("%s", "Couldn't convert option for N, or N smaller than 0");
 					return NULL;
 				}
 				debug_print("N is %zu",args->N);
@@ -39,9 +40,10 @@ args_t *parse_opt_args(size_t supported_args, char ***rem_argv){
 	if (supported_args & GET_NEEDED) {
 		if ((*rem_argv)[0] != NULL && (*rem_argv)[1] != NULL) {
 			if (strcmp((*rem_argv)[0], "-r") == 0){
+				errno = 0;
 				args->R = strtol((*rem_argv)[1]);
-				if (errno != 0) {
-					debug_print("%s", "Couldn't convert option for R");
+				if (errno != 0 || args->R <= 0) {
+					debug_print("%s", "Couldn't convert option for R, or R smaller than 0");
 					return NULL;
 				}
 				debug_print("R is %zu",args->R);
@@ -59,9 +61,10 @@ args_t *parse_opt_args(size_t supported_args, char ***rem_argv){
 	if (supported_args & PUT_NEEDED) {
 		if ((*rem_argv)[0] != NULL && (*rem_argv)[1] != NULL) {
 			if (strcmp((*rem_argv)[0], "-w") == 0) {
+				errno = 0;
 				args->W = strtol((*rem_argv)[1]);
 				if (errno != 0) {
-					debug_print("%s", "Couldn't convert option for W");
+					debug_print("%s", "Couldn't convert option for W, or W smaller than 0");
 					return NULL;
 				}
 				debug_print("W is %zu",args->W);
