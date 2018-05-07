@@ -12,6 +12,8 @@ void client_end(client_t *client){
     for (int i = 0; i < client->node_list->size; ++i) {
 	    node_end(&client->node_list->nodes[i]);
     }
+    free(client->node_list);
+    client->node_list = NULL;
     free(client->args);
     client->args = NULL;
 }
