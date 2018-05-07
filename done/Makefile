@@ -1,4 +1,4 @@
-LDLIBS = -lcheck -lm -pthread
+LDLIBS = -lcheck -lm -pthread -lsubunit
 #debug flag
 CFLAGS += -g 
 CFLAGS += -DDEBUG
