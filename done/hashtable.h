@@ -46,7 +46,7 @@ struct bucket_t{
 #define HTABLE_SIZE 256
 
 typedef struct{
-	bucket_t* content;
+	bucket_t* map;
 	size_t size;
 	unsigned int nbElements;
 }Htable;
