@@ -30,6 +30,7 @@ int main(int argc,char *argv[]){
     if ( nbArgsLeft < 2) {
         debug_print("%s","Not enough argument");
         printf("FAIL\n");
+    	client_end(client);
         return 1;
     }
 
@@ -55,6 +56,6 @@ int main(int argc,char *argv[]){
 	} else {
 		printf("FAIL\n");
 	};
-
+	client_end(client);
 	return 0;
 }

@@ -34,6 +34,7 @@ int main(int argc,char *argv[]){
     if ( nbArgsLeft != 4) {
         debug_print("Wrong number of arguments, %zu arguments", nbArgsLeft);
         printf("FAIL\n");
+        client_end(client);
         return 1;
     }
 
@@ -54,6 +55,7 @@ int main(int argc,char *argv[]){
     ssize_t position = strtol(argv[1]);
     if (errno != 0) {
     	debug_print("%s", "Conversion of position failed");
+        client_end(client);
     	return 1;
     }
     if (position < 0) {
@@ -61,7 +63,8 @@ int main(int argc,char *argv[]){
     }
 	if (position >= strlen(value)) {
 		printf("FAIL\n");
-        return 0;
+        client_end(client);
+        return 1;
 	}
 
 
@@ -73,7 +76,8 @@ int main(int argc,char *argv[]){
     }
 	if (position + length > strlen(value)) {
 		printf("FAIL\n");
-        return 0;
+        client_end(client);
+        return 1;
 	}	
 
 
@@ -86,10 +90,12 @@ int main(int argc,char *argv[]){
 
     if (error != ERR_NONE){
         printf("FAIL\n");
-        return 0;
+        client_end(client);
+        return 1;
     }
 
 	printf("OK\n");
 
+    client_end(client);
     return 0;
 }

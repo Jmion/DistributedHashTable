@@ -41,6 +41,6 @@ int main(int argc,char *argv[]){
 
 
 
-
+    client_end(client);
     return 0;
 }
