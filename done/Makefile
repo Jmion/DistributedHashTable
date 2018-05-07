@@ -17,12 +17,3 @@ pps-client-cat : pps-client-cat.c hashtable.o node.o node_list.o client.o networ
 pps-client-substr : pps-client-substr.c hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
 pps-client-find : pps-client-find.c hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
 
-
-node_list.o : node_list.h node_list.c node.o system.o error.o
-node.o : node.h node.c system.o error.o
-client.o : client.h client.c system.o error.o
-network.o : network.h network.c hashtable.o error.o
-system.o : system.h system.c error.o
-hashtable.o : hashtable.h hashtable.c error.o
-error.o : error.h error.c
-args.o : args.h args.c
