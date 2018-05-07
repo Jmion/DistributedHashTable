@@ -30,6 +30,7 @@ int main(int argc,char *argv[]){
     if ( nbArgsLeft != 2) {
         debug_print("Wrong number of arguments, %zu arguments", nbArgsLeft);
         printf("FAIL\n");
+        client_end(client);
         return 1;
     }
 
@@ -42,6 +43,6 @@ int main(int argc,char *argv[]){
 	}
 
 
-
+    client_end(client);
 	return 0;
 }
