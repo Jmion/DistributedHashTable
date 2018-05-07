@@ -43,22 +43,23 @@ node_list_t *get_nodes(){
             int read = 0;
             read += fscanf(in, "%s", IP);
             read += fscanf(in, "%d", &port);
-            if (read == 2){
+            read += fscanf(in, "%zu", &index);
+            if (read == 3){
                 if (port <= 0 || port > 65535) {
                     return NULL;
                 }
+                for (size_t i = 1; i <= index; ++i) {
+                    node_t tempNode;
+                    memset(&tempNode, 0, sizeof(node_t));
+                    if(node_init(&tempNode, IP, port, i) != ERR_NONE){
+                        debug_print("%s\n","Error initialising node");
+                        return NULL;
+                    }
 
-                node_t tempNode;
-                memset(&tempNode, 0, sizeof(node_t));
-                if(node_init(&tempNode, IP, port, index) != ERR_NONE){
-                    debug_print("%s\n","Error initialising node");
-                    return NULL;
-                }
-
-                ++index;
-                if(node_list_add(list,tempNode) != ERR_NONE){
-                    debug_print("%s\n", "issue with adding a node to the list.");
-                    return NULL;
+                    if(node_list_add(list,tempNode) != ERR_NONE){
+                        debug_print("%s\n", "issue with adding a node to the list.");
+                        return NULL;
+                    }
                 }
             }
         }
@@ -104,7 +105,7 @@ error_code node_list_add(node_list_t *list, node_t const node){
 
 
 void node_list_sort(node_list_t *list, int (*comparator)(const node_t *, const node_t *)){
-    //not yet to be implemented
+    //TODO implement this
 }
 
 

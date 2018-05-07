@@ -6,12 +6,11 @@
 #include "client.h"
 #include <stdio.h>
 #include "config.h"
+#include "ring.h"
 
 
-#define RETURN_MSG_LENGTH 4
 #define PUT_REQUEST 1
 #define GET_REQUEST 0
-struct sockaddr_in srv_addr;
 
 
 //*******NEW MODULARISATION*******
@@ -51,16 +50,17 @@ ssize_t send_and_get(int socket, struct sockaddr_in* address, const void* msg, s
  *
  * @return     the length of the last answer, or -1 if something failed
  */
-ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buffer, size_t buffer_size, int putRequest){
+ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buffer, size_t buffer_size, int putRequest, pps_key_t key){
 	size_t index = 0;
 	size_t nbValidAnswers = 0;
 	size_t nbResponse = 0;
 	ssize_t length = -1;
 	Htable_t local_htable = construct_Htable(HTABLE_SIZE);
 	size_t max_value = 0;
+	node_list_t* storingList = ring_get_nodes_for_key(client.node_list, client.args->N, key);
 
 	while(index < client.args->N){
-		ssize_t msg_length = send_and_get(client.socket, &client.node_list->nodes[index].address, msg, msg_size, buffer, buffer_size);
+		ssize_t msg_length = send_and_get(client.socket, &storingList->nodes[index].address, msg, msg_size, buffer, buffer_size);
 		if(msg_length != -1){
 			nbResponse += 1;
 			if(msg_length != 0 && ((char*) buffer)[0] != '\0') {
@@ -101,8 +101,6 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 //*******END NEW MODULARISATION***
 
 
-#define nbValidAnswersNeeded 1
-
 error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 	M_EXIT_IF_TOO_LONG(key, MAX_MSG_ELEM_SIZE, "Key too long");
 
@@ -112,7 +110,7 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 	char key_msg[strlen(key)];
 	strncpy(key_msg,key,strlen(key));
 	char value_msg[MAX_MSG_ELEM_SIZE];
-	ssize_t msg_length = network_comm(client, key_msg, strlen(key), value_msg, MAX_MSG_ELEM_SIZE,GET_REQUEST);
+	ssize_t msg_length = network_comm(client, key_msg, strlen(key), value_msg, MAX_MSG_ELEM_SIZE,GET_REQUEST, key);
 
 	if (msg_length == -1) {
 		debug_print("%s", "NETWORK_COMM : Something failed");
@@ -140,7 +138,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 
 	char in_msg[1];
 
-	ssize_t msg_length = network_comm(client, msg, size +1, in_msg, 1,PUT_REQUEST);
+	ssize_t msg_length = network_comm(client, msg, size +1, in_msg, 1,PUT_REQUEST, key);
 
 	if (msg_length == -1) {
 		debug_print("%s", "NETWORK_COMM : Something failed");
