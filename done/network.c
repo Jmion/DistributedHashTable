@@ -8,10 +8,8 @@
 #include "config.h"
 
 
-#define RETURN_MSG_LENGTH 4
 #define PUT_REQUEST 1
 #define GET_REQUEST 0
-struct sockaddr_in srv_addr;
 
 
 //*******NEW MODULARISATION*******
