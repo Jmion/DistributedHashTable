@@ -3,7 +3,7 @@ LDLIBS = -lcheck -lm -pthread
 CFLAGS += -g 
 CFLAGS += -DDEBUG
 
-all : pps-client-put pps-client-get pps-launch-server pps-list-nodes pps-dump-node pps-client-cat pps-client-substr pps-client-find
+all : pps-client-put pps-client-get pps-launch-server pps-list-nodes pps-dump-node pps-client-cat pps-client-substr pps-client-find test-hashtable
 
 
 pps-client-put : hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
@@ -14,4 +14,5 @@ pps-dump-node : system.o
 pps-client-cat : hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
 pps-client-substr : hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
 pps-client-find : hashtable.o node.o node_list.o client.o network.o system.o error.o args.o
+test-hashtable : hashtable.o error.o
 

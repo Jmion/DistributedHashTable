@@ -59,7 +59,7 @@ int main(void) {
 
 
 			for (int i = 0; i < htable->size; ++i) {
-				bucket_t* bucket = &htable->content[i];
+				bucket_t* bucket = &htable->map[i];
 				while(bucket != NULL && bucket->pair.key != NULL){
 
 					if (msg_len + strlen(bucket->pair.key) + strlen(bucket->pair.value) + 2 > UDP_MAX_SIZE) {
