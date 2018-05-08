@@ -7,35 +7,40 @@
 
 
 Htable_t construct_Htable(size_t size){
+	if (size == 0){
+		return NO_HTABLE;
+	}
 	Htable_t table = calloc(1, sizeof(Htable_t));
 	table->map = calloc(size, sizeof(bucket_t));
 	if (table->map == NULL) {
 		debug_print("%s", "Allocation error. Content for htable could not be allocated");
-		return table;
+		return NO_HTABLE;
 	}
 	table->size = size;
 	return table;
 }
 
 void delete_Htable_and_content(Htable_t* table){
-	 for (int i = 0; i < (*table)->size; ++i) {
-	 	//first bucket is not allocated, no need to free
-	 	bucket_t* bucket = &(*table)->map[i];
-	 	if (bucket->pair.key != NULL) {
-	 		kv_pair_free(&bucket->pair);
-	 	}
-	 	bucket = bucket->next;
-	 	//freeing the linked list
-	 	while(bucket != NULL && bucket->pair.key != NULL){
-	 		bucket_t* next = bucket->next;
-	 		kv_pair_free(&bucket->pair);
-	 		free(bucket);
-	 		bucket = bucket->next;
-	 	}
-	 }
-	free((*table)->map);
-	(*table)->map = NULL;
-	*table = NULL;
+	if (*table != NULL){
+		 for (int i = 0; i < (*table)->size; ++i) {
+		 	//first bucket is not allocated, no need to free
+		 	bucket_t* bucket = &(*table)->map[i];
+		 	if (bucket->pair.key != NULL) {
+		 		kv_pair_free(&bucket->pair);
+		 	}
+		 	bucket = bucket->next;
+		 	//freeing the linked list
+		 	while(bucket != NULL && bucket->pair.key != NULL){
+		 		bucket_t* next = bucket->next;
+		 		kv_pair_free(&bucket->pair);
+		 		free(bucket);
+		 		bucket = bucket->next;
+		 	}
+		 }
+		free((*table)->map);
+		(*table)->map = NULL;
+		*table = NULL;
+	}
 };
 
 void kv_pair_free(kv_pair_t *kv){
@@ -47,7 +52,7 @@ void kv_pair_free(kv_pair_t *kv){
 
 
 error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
-	if (table->map == NULL || value == NULL) {
+	if (table->map == NULL || value == NULL || table == NULL || key == NULL) {
 		return ERR_BAD_PARAMETER;
 	} else {
 		size_t index = hash_function(key,table->size);
@@ -101,7 +106,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 }
 
 pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
-	if (table->map == NULL || key == NULL) {
+	if (table->map == NULL || key == NULL || table == NULL) {
 		return NULL;
 	}
 	size_t index = hash_function(key, table->size);
