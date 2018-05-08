@@ -7,6 +7,13 @@
 #include "args.h"
 #include "error.h"
 
+void printsha(unsigned char sha[]){
+    printf("(");
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i){
+        printf("%02x", sha[i]);
+    }
+    printf(")");
+}
 
 int main(int argc,char *argv[]){
     client_init_args_t init_client;
@@ -24,6 +31,8 @@ int main(int argc,char *argv[]){
     char* msg[1];
     char* buffer[1];
 
+    //sort the list
+
     for (int i = 0; i < client->node_list->size; ++i) {
         size_t flag = 1;
         if (sendto(client->socket, msg, 0, 0, (struct sockaddr *) &client->node_list->nodes[i].address, sizeof(client->node_list->nodes[i].address)) == -1){
@@ -33,6 +42,8 @@ int main(int argc,char *argv[]){
 
         flag =  recv(client->socket, buffer, 1, 0);
         printf("%s %d ", client->node_list->nodes[i].ip,client->node_list->nodes[i].port);
+        printsha(client->node_list->nodes[i].SHA);
+        printf(" ");
         if(flag == 0){
             printf("OK\n");
         } else {

@@ -21,7 +21,7 @@ typedef struct{
 	size_t ip_size;
 	uint16_t port;
 	struct sockaddr_in address;
-	unsigned char SHA[SHA_DIGEST_LENGTH];
+	unsigned char* SHA;
 }node_t;
 
 /**

@@ -7,6 +7,9 @@
 #include <stdlib.h>
 #include <openssl/sha.h>
 
+#define UINT_MAX_SIZE 6
+#define SIZET_MAX_SIZE 2
+
 error_code node_init(node_t *node, const char *ip, uint16_t port, size_t node_id){
 	char* ip_copied = calloc(strlen(ip), sizeof(char));
 	node->ip_size = strlen(ip);
@@ -16,12 +19,30 @@ error_code node_init(node_t *node, const char *ip, uint16_t port, size_t node_id
 	strncpy(ip_copied, ip, strlen(ip));
 	node->ip = ip_copied;
 	node->port = port;
-	//TODO add SHA1 to node
+	char buf[UINT_MAX_SIZE];
+	char buf2[SIZET_MAX_SIZE];
+	sprintf(buf, "%u", port);
+	sprintf(buf2, "%zu", node_id);
+
+	char line[strlen(ip) + 1 + strlen(buf) + 1 + strlen(buf2)];
+	strcpy(&line[0], ip);
+	line[strlen(ip)] = ' ';
+	strcpy(&line[strlen(ip) + 1], buf);
+	line[strlen(ip) + 1 + strlen(buf)] = ' ';
+	strcpy(&line[strlen(ip) + 1 + strlen(buf) + 1], buf2);
+	line[strlen(ip) + 1 + strlen(buf) + 1 + strlen(buf2)] = '\n';
+
+	unsigned char* sha = calloc(SHA_DIGEST_LENGTH, sizeof(char));
+	SHA1((unsigned char*) &line[0], strlen(ip) + 1 + strlen(buf) + 1 + strlen(buf2), sha);
+	node->SHA = sha;
+
 	return get_server_addr(ip, port,&node->address);
 }
 
 void node_end(node_t *node){
 	free_const_ptr(node->ip);
+	free(node->SHA);
+	node->SHA = NULL;
 }
 
 int node_cmp_sha(const node_t *first, const node_t *second){
