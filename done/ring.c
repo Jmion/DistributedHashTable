@@ -1,6 +1,7 @@
 #include "ring.h"
 #include "error.h"
 #include <stdlib.h>
+#include <stdio.h>
 #include "node_list.h"
 #include <openssl/sha.h>
 #include "node.h"
@@ -13,6 +14,13 @@ ring_t* ring_alloc(){
 	return ring;
 }
 
+void print_sha(unsigned char sha[]){
+    fprintf(stderr,"(");
+	for (int j = 0; j < SHA_DIGEST_LENGTH; ++j){
+		fprintf(stderr,"%02x", sha[j]);
+	}
+	fprintf(stderr,")");
+}
 
 error_code ring_init(ring_t* ring){
 	ring_t* list = get_nodes();
@@ -21,15 +29,35 @@ error_code ring_init(ring_t* ring){
 		return ERR_BAD_PARAMETER;
 	}
 	*ring = *list;
+//-------------------Debug block--------------------------
+	#ifdef DEBUG
+	for (size_t i = 0; i < ring->size; ++i) {
+		fprintf(stderr,"%s %d ", ring->nodes[i].ip, ring->nodes[i].port);
+		print_sha(ring->nodes[i].SHA);
+		fprintf(stderr, "\n");
+	}
+	#endif
+//------------------- End Debug block--------------------------  
+
 	return ERR_NONE;
 
 }
+
 
 node_list_t *ring_get_nodes_for_key(const ring_t *ring, size_t wanted_list_size, pps_key_t key){
 	node_list_t* list = node_list_new();
 	size_t index = 0;
 	unsigned char sha[SHA_DIGEST_LENGTH];
 	SHA1((const unsigned char* )key, strlen(key),sha);
+
+//-------------------Debug block--------------------------
+	#ifdef DEBUG
+	debug_print("%s","SHA of key is : ");
+	print_sha(sha);
+	fprintf(stderr, "\n");
+	#endif
+//------------------- End Debug block--------------------------  
+
 	node_t artificial_node;
 	memset(&artificial_node, 0, sizeof(node_t));
 	artificial_node.SHA = sha;
@@ -38,6 +66,7 @@ node_list_t *ring_get_nodes_for_key(const ring_t *ring, size_t wanted_list_size,
 	}
 	size_t nbNodes = 0;
 	size_t i = 0;
+	debug_print("%s", "Key added to following nodes : ");
 	while (nbNodes < wanted_list_size && i < ring->size) {
     	size_t flag = 0;
     	for (size_t j = 0; j < list->size; ++j) {
@@ -48,12 +77,11 @@ node_list_t *ring_get_nodes_for_key(const ring_t *ring, size_t wanted_list_size,
     	if (flag != 1){
 
 //-------------------Debug block--------------------------
-			debug_print("%s %d ", ring->nodes[(index + i) % ring->size].ip, ring->nodes[(index + i) % ring->size].port);
-		    debug_print("%s","(");
-    		for (int j = 0; j < SHA_DIGEST_LENGTH; ++j){
-        		debug_print("%02x", ring->nodes[(index + i) % ring->size].SHA[j]);
-    		}
-    		debug_print("%s",")\n");
+    		#ifdef DEBUG
+			fprintf(stderr,"%s %d ", ring->nodes[(index + i) % ring->size].ip, ring->nodes[(index + i) % ring->size].port);
+    		print_sha(ring->nodes[(index + i) % ring->size].SHA);
+			fprintf(stderr, "\n");
+    		#endif
 //------------------- End Debug block--------------------------   
 
     		node_list_add(list,ring->nodes[(index + i) % ring->size]);

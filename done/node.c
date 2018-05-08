@@ -4,6 +4,7 @@
 #include "util.h"
 #include "system.h"
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <openssl/sha.h>
 
@@ -86,5 +87,5 @@ int node_cmp_server_addr(const node_t *first, const node_t *second){
 	} else if(first->port < second->port){
 		return -1;
 	}
-	return 0;
+	return node_cmp_sha(first, second);
 }
