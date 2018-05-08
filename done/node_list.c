@@ -69,13 +69,13 @@ node_list_t *get_nodes(){
 }
 
 //Modular
-#define ENLARGE_PADDING 2
+#define ENLARGE_PADDING 4
 node_list_t* node_list_enlarge(node_list_t* list) {
 	node_list_t *result = list;
 	if (result != NULL) {
 		node_t *oldNode = list->nodes;
 		result->allocated += ENLARGE_PADDING;
-		debug_print("Allocated is %zu",result->allocated);
+		//debug_print("Allocated is %zu",result->allocated);
 		if ((result->allocated > SIZE_MAX / sizeof(node_t)) ||
 		    ((result->nodes = realloc(result->nodes, result->allocated * sizeof(node_t))) == NULL)) {
 			result->nodes = oldNode;
@@ -89,7 +89,7 @@ node_list_t* node_list_enlarge(node_list_t* list) {
 
 error_code node_list_add(node_list_t *list, node_t const node){
 	M_REQUIRE_NON_NULL(list);
-	debug_print("The size is : %zu and the allocated size is : %zu", list->size, list->allocated);
+	//debug_print("The size is : %zu and the allocated size is : %zu", list->size, list->allocated);
 	while(list->size >= list->allocated) {
 		if (node_list_enlarge(list) == NULL) {
 			return ERR_NOMEM;
