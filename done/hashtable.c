@@ -22,7 +22,7 @@ Htable_t construct_Htable(size_t size){
 }
 
 void delete_Htable_and_content(Htable_t* table){
-	if (*table != NULL){
+	if (table != NULL && *table != NULL){
 		 for (int i = 0; i < (*table)->size; ++i) {
 		 	//first bucket is not allocated, no need to free
 		 	bucket_t* bucket = &(*table)->map[i];
@@ -53,7 +53,7 @@ void kv_pair_free(kv_pair_t *kv){
 
 
 error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
-	if (table->map == NULL || value == NULL || table == NULL || key == NULL) {
+	if (table == NULL || table->map == NULL || value == NULL || key == NULL) {
 		return ERR_BAD_PARAMETER;
 	} else {
 		size_t index = hash_function(key,table->size);
@@ -109,7 +109,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 }
 
 pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
-	if (table->map == NULL || key == NULL || table == NULL) {
+	if (table == NULL || table->map == NULL || key == NULL ) {
 		return NULL;
 	}
 	size_t index = hash_function(key, table->size);
