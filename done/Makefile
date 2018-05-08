@@ -1,4 +1,4 @@
-LDLIBS = -lcheck -lm -pthread -lsubunit
+LDLIBS = -lcheck -lm -lrt -pthread -lsubunit -lcrypto
 #debug flag
 CFLAGS += -g 
 CFLAGS += -DDEBUG
