@@ -31,6 +31,7 @@
 ssize_t send_and_get(int socket, struct sockaddr_in* address, const void* msg, size_t msg_size, void* buffer, size_t buffer_size){
 	if (sendto(socket, msg, msg_size, 0, (struct sockaddr *) address, sizeof(*address)) == -1){
 		debug_print("%s", "Sending failed.");
+		debug_print("errno : %d", errno);
 		return -1;
 	}
 	return recv(socket, buffer, buffer_size, 0);

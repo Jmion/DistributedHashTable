@@ -4,7 +4,7 @@
 #include "node_list.h"
 
 ring_t* ring_alloc(){
-	ring_t* ring = malloc(sizeof(ring));
+	ring_t* ring = calloc(1,sizeof(ring_t));
 	if (ring == NULL){
 		debug_print("%s", "Allocation error");
 	}
@@ -13,8 +13,8 @@ ring_t* ring_alloc(){
 
 
 error_code ring_init(ring_t* ring){
-	node_list_t* list = get_nodes();
-	node_list_sort(list, &node_cmp_sha);
+	ring_t* list = get_nodes();
+	node_list_sort(list, node_cmp_sha);
 	if (list == NULL){
 		return ERR_BAD_PARAMETER;
 	}
