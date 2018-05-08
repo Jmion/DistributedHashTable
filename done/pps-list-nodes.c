@@ -32,6 +32,7 @@ int main(int argc,char *argv[]){
     char* buffer[1];
 
     //sort the list
+    node_list_sort(client->node_list, node_cmp_server_addr);
 
     for (int i = 0; i < client->node_list->size; ++i) {
         size_t flag = 1;
