@@ -59,9 +59,6 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 	Htable_t local_htable = construct_Htable(HTABLE_SIZE);
 	size_t max_value = 0;
 	node_list_t* storingList = ring_get_nodes_for_key(client.node_list, client.args->N, key);
-	for (int i = 0; i < storingList->size; ++i) {
-		printf("%u\n", storingList->nodes[i].port);
-	}
 
 	if (storingList->size < client.args->N){
 		debug_print("%s","Size problem");
@@ -76,8 +73,8 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 				pps_key_t tempKey = buffer;
 				pps_value_t responsePoint = get_Htable_value(local_htable, tempKey);
 				if (responsePoint == NULL) { //first time the receive this value
-		debug_print("%u",storingList->nodes[index].port);
-					add_Htable_value(local_htable, tempKey, "\x01"); //initialising count to 1 //this lines fucks up the port number idky
+					uint16_t d = storingList->nodes[index].port;
+					add_Htable_value(local_htable, tempKey, "\x01"); //initialising count to 1
 					max_value = max_value > 1 ? max_value : 1;
 					if (1 >= client.args->R) {
 						//node_list_free(storingList);

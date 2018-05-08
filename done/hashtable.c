@@ -14,7 +14,6 @@ Htable_t construct_Htable(size_t size){
 		return table;
 	}
 	table->size = size;
-	table->nbElements = 0;
 	return table;
 }
 
@@ -83,7 +82,6 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			first->pair = pair;
 			first->next = NULL;
 			debug_print("%s %s %s","FIRST KEY", pair.key, "(end of key)");
-			table->nbElements += 1;
 		} else {
 			while(first->next != NULL) {
 				first = first->next;
@@ -97,7 +95,6 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			bucket->pair = pair;
 			bucket->next = NULL;
 			first->next = bucket;
-			table->nbElements += 1;
 		}
 		return ERR_NONE;
 	}

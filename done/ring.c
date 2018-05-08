@@ -47,14 +47,14 @@ node_list_t *ring_get_nodes_for_key(const ring_t *ring, size_t wanted_list_size,
     	}
     	if (flag != 1){
 
-		#ifdef DEBUG
-			fprintf(stderr,"%s %d ", ring->nodes[(index + i) % ring->size].ip, ring->nodes[(index + i) % ring->size].port);
-		    fprintf(stderr,"(");
+//-------------------Debug block--------------------------
+			debug_print("%s %d ", ring->nodes[(index + i) % ring->size].ip, ring->nodes[(index + i) % ring->size].port);
+		    debug_print("%s","(");
     		for (int j = 0; j < SHA_DIGEST_LENGTH; ++j){
-        		fprintf(stderr,"%02x", ring->nodes[(index + i) % ring->size].SHA[j]);
+        		debug_print("%02x", ring->nodes[(index + i) % ring->size].SHA[j]);
     		}
-    		fprintf(stderr,")\n");
-		#endif
+    		debug_print("%s",")\n");
+//------------------- End Debug block--------------------------   
 
     		node_list_add(list,ring->nodes[(index + i) % ring->size]);
     		++nbNodes;
