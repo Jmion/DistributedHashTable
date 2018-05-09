@@ -9,9 +9,7 @@
 
 
 void client_end(client_t *client){
-    for (int i = 0; i < client->node_list->size; ++i) {
-	    node_end(&client->node_list->nodes[i]);
-    }
+	node_list_free(client->node_list);
     free(client->args);
     client->args = NULL;
 }
