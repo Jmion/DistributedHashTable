@@ -48,9 +48,7 @@ ssize_t send_and_get(int socket, struct sockaddr_in* address, const void* msg, s
  */
 ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buffer, size_t buffer_size, int putRequest){
 	size_t index = 0;
-	size_t nbValidAnswers = 0;
 	size_t nbResponse = 0;
-	ssize_t length = -1;
 	Htable_t local_htable = construct_Htable(HTABLE_SIZE);
 	size_t max_value = 0;
 
@@ -62,7 +60,10 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 				pps_key_t tempKey = buffer;
 				pps_value_t responsePoint = get_Htable_value(local_htable, tempKey);
 				if (responsePoint == NULL) { //first time the receive this value
-					add_Htable_value(local_htable, tempKey, "\x01"); //initialising count to 1
+					error_code err = add_Htable_value(local_htable, tempKey, "\x01"); //initialising count to 1
+					if (err != ERR_NONE){
+						return -1;
+					}
 					max_value = max_value > 1 ? max_value : 1;
 					if (1 >= client.args->R) {
 						return msg_length;

@@ -32,7 +32,6 @@ void delete_Htable_and_content(Htable_t* table){
 		 	bucket = bucket->next;
 		 	//freeing the linked list
 		 	while(bucket != NULL && bucket->pair.key != NULL){
-		 		bucket_t* next = bucket->next;
 		 		kv_pair_free(&bucket->pair);
 		 		free(bucket);
 		 		bucket = bucket->next;
