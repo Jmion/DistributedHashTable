@@ -24,11 +24,12 @@ void print_sha(unsigned char sha[]){
 
 error_code ring_init(ring_t* ring){
 	ring_t* list = get_nodes();
-	node_list_sort(list, node_cmp_sha);
 	if (list == NULL){
 		return ERR_BAD_PARAMETER;
 	}
+	node_list_sort(list, node_cmp_sha);
 	*ring = *list;
+	free(list);
 //-------------------Debug block--------------------------
 	#ifdef DEBUG
 	for (size_t i = 0; i < ring->size; ++i) {

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include "config.h"
 #include "ring.h"
+#include <stdlib.h>
 
 
 #define PUT_REQUEST 1
@@ -71,13 +72,19 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 					error_code err = add_Htable_value(local_htable, tempKey, "\x01"); //initialising count to 1
 					if (err != ERR_NONE){
 						delete_Htable_and_content(&local_htable);
-						//node_list_free(storingList);
+						//nodes IP and SHA are freed in client
+						free(storingList->nodes);
+						free(storingList);
+						storingList = NULL;
 						return -1;
 					}
 					max_value = max_value > 1 ? max_value : 1;
 					if (1 >= client.args->R) {
 						delete_Htable_and_content(&local_htable);
-						//node_list_free(storingList);
+						//nodes IP and SHA are freed in client
+						free(storingList->nodes);
+						free(storingList);
+						storingList = NULL;
 						return msg_length;
 					}
 				} else {
@@ -88,7 +95,10 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 					max_value = max_value > nbRes ? max_value : nbRes;
 					if (nbRes >= client.args->R) {
 						delete_Htable_and_content(&local_htable);
-						//xnode_list_free(storingList);
+						//nodes IP and SHA are freed in client
+						free(storingList->nodes);
+						free(storingList);
+						storingList = NULL;
 						return msg_length;
 					}
 				}
@@ -97,7 +107,11 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 		++index;
 	}
 	delete_Htable_and_content(&local_htable);
-	//node_list_free(storingList);
+	//nodes IP and SHA are freed in client
+	free(storingList->nodes);
+	free(storingList);
+	storingList = NULL;
+
 	if ((nbResponse < client.args->W && putRequest) ) {
 		debug_print("%s %zu %s %zu", "Missing response from server, only got ", nbResponse, "response(s), needing ", client.args->W);
 		return -1;
