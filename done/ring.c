@@ -70,7 +70,7 @@ node_list_t *ring_get_nodes_for_key(const ring_t *ring, size_t wanted_list_size,
 	while (nbNodes < wanted_list_size && i < ring->size) {
     	size_t flag = 0;
     	for (size_t j = 0; j < list->size; ++j) {
-    		if (node_cmp_server_addr(&list->nodes[j],&ring->nodes[(index + i) % ring->size]) == 0){
+    		if (strcmp(list->nodes[j].ip,ring->nodes[(index + i) % ring->size].ip) == 0 && list->nodes[j].port == ring->nodes[(index + i) % ring->size].port){
     			flag = 1;
     		}
     	}

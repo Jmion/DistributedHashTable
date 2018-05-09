@@ -10,3 +10,4 @@ done/*
 !done/Makefile*
 done/servers.txt
 done/hash.txt
+done/*.log
