@@ -111,6 +111,4 @@ void node_list_free(node_list_t *list){
     }
     free(list->nodes);
     list->nodes = NULL;
-    free(list);
-    list = NULL;
 }

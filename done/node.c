@@ -1,4 +1,4 @@
-
+#include "util.h"
 #include "error.h"
 #include "node.h"
 #include "util.h"
@@ -13,28 +13,28 @@
 #define SIZET_MAX_SIZE 20
 
 error_code node_init(node_t *node, const char *ip, uint16_t port, size_t node_id){
-	char* ip_copied = calloc(strlen(ip), sizeof(char));
+	node->ip = strdup(ip);
 	node->ip_size = strlen(ip);
-	if (ip_copied == NULL){
+	if (node->ip == NULL){
 		return ERR_NOMEM;
 	}
-	strncpy(ip_copied, ip, strlen(ip));
-	node->ip = ip_copied;
 	node->port = port;
 	char line[IP_MAX_SIZE + 1 + UINT_MAX_SIZE + 1 + SIZET_MAX_SIZE];
 	memset(line, 0,IP_MAX_SIZE + 1 + UINT_MAX_SIZE + 1 + SIZET_MAX_SIZE);
 	sprintf(line, "%s %u %zu",ip, port,node_id);
 
-	unsigned char* sha = calloc(SHA_DIGEST_LENGTH, sizeof(char));
-	SHA1((unsigned char*) &line[0], strlen(line), sha);
-	node->SHA = sha;
+	node->SHA = calloc(SHA_DIGEST_LENGTH, sizeof(char));
+	if (node->SHA == NULL){
+		return ERR_NOMEM;
+	}
+	SHA1((unsigned char*) &line[0], strlen(line), node->SHA);
 
 	return get_server_addr(ip, port,&node->address);
 }
 
 void node_end(node_t *node){
-	free_const_ptr(node->ip);
-	free(node->SHA);
+	//free_const_ptr(node->ip);
+	//free(node->SHA);
 	node->SHA = NULL;
 }
 
