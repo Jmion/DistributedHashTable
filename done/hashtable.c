@@ -10,7 +10,7 @@ Htable_t construct_Htable(size_t size){
 	if (size == 0){
 		return NO_HTABLE;
 	}
-	Htable_t table = calloc(1, sizeof(Htable_t));
+	Htable_t table = calloc(1, sizeof(Htable));
 	table->map = calloc(size, sizeof(bucket_t));
 	if (table->map == NULL) {
 		debug_print("%s", "Allocation error. Content for htable could not be allocated");
@@ -38,6 +38,7 @@ void delete_Htable_and_content(Htable_t* table){
 		 }
 		free((*table)->map);
 		(*table)->map = NULL;
+		free(*table);
 		*table = NULL;
 	}
 };
