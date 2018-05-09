@@ -33,8 +33,8 @@ error_code node_init(node_t *node, const char *ip, uint16_t port, size_t node_id
 }
 
 void node_end(node_t *node){
-	//free_const_ptr(node->ip);
-	//free(node->SHA);
+	free_const_ptr(node->ip);
+	free(node->SHA);
 	node->SHA = NULL;
 }
 

@@ -70,11 +70,12 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 				if (responsePoint == NULL) { //first time the receive this value
 					error_code err = add_Htable_value(local_htable, tempKey, "\x01"); //initialising count to 1
 					if (err != ERR_NONE){
+						//node_list_free(storingList);
 						return -1;
 					}
 					max_value = max_value > 1 ? max_value : 1;
 					if (1 >= client.args->R) {
-						node_list_free(storingList);
+						//node_list_free(storingList);
 						return msg_length;
 					}
 				} else {
@@ -84,7 +85,7 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 					                 (pps_value_t) (&nbRes)); // increasing the count of the know value
 					max_value = max_value > nbRes ? max_value : nbRes;
 					if (nbRes >= client.args->R) {
-						node_list_free(storingList);
+						//xnode_list_free(storingList);
 						return msg_length;
 					}
 				}
@@ -92,7 +93,7 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 		}
 		++index;
 	}
-	 node_list_free(storingList);
+	//node_list_free(storingList);
 	if ((nbResponse < client.args->W && putRequest) ) {
 		debug_print("%s %zu %s %zu", "Missing response from server, only got ", nbResponse, "response(s), needing ", client.args->W);
 		return -1;
