@@ -71,7 +71,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		//checking if key already here
 		while(first != NULL && first->pair.key != NULL){
 			if (strcmp(first->pair.key, key) == 0) {
-				debug_print("%s","VALUE MODIFIED");
+				debug_print("%s%s%s%s","VALUE MODIFIED.\nKEY : ", pair.key, "\nVALUE : ",pair.value);
 				first->pair.value = pair.value;
 				return ERR_NONE;
 			} else {
@@ -86,12 +86,12 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 			//first one to be inserted in the list
 			first->pair = pair;
 			first->next = NULL;
-			debug_print("%s %s %s","FIRST KEY", pair.key, "(end of key)");
+			debug_print("%s%s%s%s","FIRST KEY.\nKEY : ", pair.key, "\nVALUE : ", pair.value);
 		} else {
 			while(first->next != NULL) {
 				first = first->next;
 			}
-			debug_print("%s","COLLISION");
+			debug_print("%s%s%s%s","COLLISION.\nKEY : ", pair.key, "\nVALUE : ", pair.value);
 			bucket_t* bucket = calloc(1, sizeof(bucket_t));
 			if (bucket == NULL) {
 				debug_print("%s", "Could not create new bucket");
@@ -114,7 +114,6 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 
 	while(first != NULL && first->pair.key != NULL){
 		if (strcmp(first->pair.key, key) == 0) {
-			debug_print("%s","returning value");
 			return first->pair.value;
 		} else {
 			first = first->next;

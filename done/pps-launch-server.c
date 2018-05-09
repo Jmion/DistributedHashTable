@@ -22,6 +22,7 @@ int main(void) {
 
 	if (bind_server(socket, IP, port)) {
 		debug_print("%s\n", "Server failed to bind to socket");
+		return 1;
 	}
 
 	Htable_t htable = construct_Htable(HTABLE_SIZE);
