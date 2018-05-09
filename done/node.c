@@ -8,8 +8,9 @@
 #include <stdlib.h>
 #include <openssl/sha.h>
 
-#define UINT_MAX_SIZE 6
-#define SIZET_MAX_SIZE 2
+#define IP_MAX_SIZE 15
+#define UINT_MAX_SIZE 5
+#define SIZET_MAX_SIZE 20
 
 error_code node_init(node_t *node, const char *ip, uint16_t port, size_t node_id){
 	char* ip_copied = calloc(strlen(ip), sizeof(char));
@@ -20,21 +21,12 @@ error_code node_init(node_t *node, const char *ip, uint16_t port, size_t node_id
 	strncpy(ip_copied, ip, strlen(ip));
 	node->ip = ip_copied;
 	node->port = port;
-	char buf[UINT_MAX_SIZE];
-	char buf2[SIZET_MAX_SIZE];
-	sprintf(buf, "%u", port);
-	sprintf(buf2, "%zu", node_id);
-
-	char line[strlen(ip) + 1 + strlen(buf) + 1 + strlen(buf2)];
-	strcpy(&line[0], ip);
-	line[strlen(ip)] = ' ';
-	strcpy(&line[strlen(ip) + 1], buf);
-	line[strlen(ip) + 1 + strlen(buf)] = ' ';
-	strcpy(&line[strlen(ip) + 1 + strlen(buf) + 1], buf2);
-	line[strlen(ip) + 1 + strlen(buf) + 1 + strlen(buf2)] = '\n';
+	char line[IP_MAX_SIZE + 1 + UINT_MAX_SIZE + 1 + SIZET_MAX_SIZE];
+	memset(line, 0,IP_MAX_SIZE + 1 + UINT_MAX_SIZE + 1 + SIZET_MAX_SIZE);
+	sprintf(line, "%s %u %zu",ip, port,node_id);
 
 	unsigned char* sha = calloc(SHA_DIGEST_LENGTH, sizeof(char));
-	SHA1((unsigned char*) &line[0], strlen(ip) + 1 + strlen(buf) + 1 + strlen(buf2), sha);
+	SHA1((unsigned char*) &line[0], strlen(line), sha);
 	node->SHA = sha;
 
 	return get_server_addr(ip, port,&node->address);
@@ -69,7 +61,7 @@ int node_cmp_server_addr(const node_t *first, const node_t *second){
 	size_t min = first->ip_size > second->ip_size ? second->ip_size : first->ip_size;
 	size_t longest_ip = first->ip_size > second->ip_size ? FIRST : SECOND;
 	if (first->ip_size  ==  second->ip_size){
-		longest_ip = 0;
+		longest_ip = EQUAL_SIZE;
 	}
 	for (size_t i = 0; i < min ; ++i) {
 		if (IP_first[i] > IP_second[i]){
@@ -78,7 +70,7 @@ int node_cmp_server_addr(const node_t *first, const node_t *second){
 			return -1;
 		}
 	}
-	if (longest_ip != 0){
+	if (longest_ip != EQUAL_SIZE){
 		return longest_ip;
 	}
 

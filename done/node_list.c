@@ -105,9 +105,7 @@ error_code node_list_add(node_list_t *list, node_t const node){
 
 
 void node_list_sort(node_list_t *list, int (*comparator)(const node_t *, const node_t *)){
-    //how to avoid this casting???
-    //int (*comparator2)(const void *, const void*) = comparator;
-    qsort(list->nodes, list->size, sizeof(*list->nodes), comparator);
+    qsort(list->nodes, list->size, sizeof(*list->nodes), (int(*) (const void*, const void*)) comparator);
 }
 
 

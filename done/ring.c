@@ -69,8 +69,9 @@ node_list_t *ring_get_nodes_for_key(const ring_t *ring, size_t wanted_list_size,
 	debug_print("%s", "Key added to following nodes : ");
 	while (nbNodes < wanted_list_size && i < ring->size) {
     	size_t flag = 0;
+		size_t index_ring = (index + i) % ring->size;
     	for (size_t j = 0; j < list->size; ++j) {
-    		if (node_cmp_server_addr(&list->nodes[j],&ring->nodes[(index + i) % ring->size]) == 0){
+    		if (strcmp(list->nodes[j].ip,ring->nodes[index_ring].ip) == 0 && list->nodes[j].port == ring->nodes[index_ring].port){
     			flag = 1;
     		}
     	}
@@ -78,13 +79,13 @@ node_list_t *ring_get_nodes_for_key(const ring_t *ring, size_t wanted_list_size,
 
 //-------------------Debug block--------------------------
     		#ifdef DEBUG
-			fprintf(stderr,"%s %d ", ring->nodes[(index + i) % ring->size].ip, ring->nodes[(index + i) % ring->size].port);
-    		print_sha(ring->nodes[(index + i) % ring->size].SHA);
+			fprintf(stderr,"%s %d ", ring->nodes[index_ring].ip, ring->nodes[index_ring].port);
+    		print_sha(ring->nodes[index_ring].SHA);
 			fprintf(stderr, "\n");
     		#endif
 //------------------- End Debug block--------------------------   
 
-    		node_list_add(list,ring->nodes[(index + i) % ring->size]);
+    		node_list_add(list,ring->nodes[index_ring]);
     		++nbNodes;
     	}
     	++i;
