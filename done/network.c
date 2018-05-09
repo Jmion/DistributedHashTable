@@ -1,6 +1,3 @@
-//
-// Created by Simon Wicky on 20.03.18.
-//
 #include "error.h"
 #include "hashtable.h"
 #include "client.h"

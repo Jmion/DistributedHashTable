@@ -1,7 +1,3 @@
-//
-// Created by Simon Wicky on 27.03.18.
-//
-
 #include "node_list.h"
 #include "node.h"
 #include "error.h"

@@ -1,7 +1,3 @@
-//
-// Created by Simon Wicky on 20.03.18.
-//
-
 #include "client.h"
 #include "node.h"
 #include "network.h"
