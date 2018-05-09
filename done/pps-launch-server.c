@@ -27,8 +27,6 @@ int main(void) {
 
 	Htable_t htable = construct_Htable(HTABLE_SIZE);
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-noreturn"
 	while (1) {
 		struct sockaddr_in addr_cli;
 		socklen_t addr_cli_len = sizeof(addr_cli);
@@ -143,7 +141,6 @@ int main(void) {
 				}
 		}
 	}
-#pragma clang diagnostic pop
 	return 0;
 }
 
