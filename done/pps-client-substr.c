@@ -86,7 +86,6 @@ int main(int argc,char *argv[]){
     memset(value2,0,MAX_MSG_ELEM_SIZE+1);
     strncpy(value2, &value[position], length);
     debug_print("New value is '%s'", value2);
-    pps_value_t value_get2 = (pps_value_t) value2;
     error = network_put(*client, argv[3], value2);
 
     if (error != ERR_NONE){
