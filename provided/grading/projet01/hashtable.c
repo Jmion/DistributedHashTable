@@ -5,44 +5,46 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+struct bucket_t{
+	kv_pair_t pair;
+	bucket_t* next;
+};
 
 Htable_t construct_Htable(size_t size){
-	if (size <= 0){
-		return NO_HTABLE;
-	}
-	Htable_t table = calloc(1, sizeof(Htable));
-	table->map = calloc(size, sizeof(bucket_t));
-	if (table->map == NULL) {
+	Htable_t table;
+	//correcteur: check size value
+	table.content = calloc(size, sizeof(bucket_t));
+	if (table.content == NULL) {
 		debug_print("%s", "Allocation error. Content for htable could not be allocated");
-		return NO_HTABLE;
+		//correcteur: return NULL
+		return table;
 	}
-	memset(table->map, 0,  size * sizeof(bucket_t));
-	table->size = size;
+	table.size = size;
+	//correcteur: memset le content
 	return table;
 }
 
 void delete_Htable_and_content(Htable_t* table){
-	if (table != NULL && *table != NULL){
-		 for (int i = 0; i < (*table)->size; ++i) {
-		 	bucket_t* bucket = &(*table)->map[i];
-		 	if (bucket->pair.key != NULL) {
-		 		kv_pair_free(&bucket->pair);
-		 	}
-		 	
-		 	//first bucket is not allocated, no need to free
-		 	bucket = bucket->next;
-		 	//freeing the linked list
-		 	while(bucket != NULL && bucket->pair.key != NULL){
-		 		kv_pair_free(&bucket->pair);
-		 		free(bucket);
-		 		bucket = bucket->next;
-		 	}
-		 }
-		free((*table)->map);
-		(*table)->map = NULL;
-		free(*table);
-		*table = NULL;
-	}
+	 for (int i = 0; i < table->size; ++i) {
+	 	//first bucket is not allocated, no need to free
+	 	bucket_t* bucket = &table->content[i];
+	 	if (bucket->pair.key != NULL) {
+	 		kv_pair_free(&bucket->pair);
+	 	}
+	 	bucket = bucket->next;
+		//correcteur: il faut free aussi bucket.
+	 	//freeing the linked list
+		//correcteur: modulariser le code : bucket_free
+	 	while(bucket != NULL && bucket->pair.key != NULL){
+	 		bucket_t* next = bucket->next;
+	 		kv_pair_free(&bucket->pair);
+	 		free(bucket);
+	 		bucket = bucket->next;
+	 	}
+	 }
+	free(table->content);
+	table->content = NULL;
+	table = NULL;
 };
 
 void kv_pair_free(kv_pair_t *kv){
@@ -54,12 +56,12 @@ void kv_pair_free(kv_pair_t *kv){
 
 
 error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
-	if (table == NULL || table->map == NULL || value == NULL || key == NULL) {
+	if (table.content == NULL || value == NULL) {
 		return ERR_BAD_PARAMETER;
 	} else {
-		size_t index = hash_function(key,table->size);
+		size_t index = hash_function(key,table.size);
 
-		bucket_t* first = &table->map[index];
+		bucket_t* first = &table.content[index];
 		kv_pair_t pair;
 
 		char* key_final = calloc(strlen(key) + 1, sizeof(char));
@@ -73,7 +75,7 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		//checking if key already here
 		while(first != NULL && first->pair.key != NULL){
 			if (strcmp(first->pair.key, key) == 0) {
-				debug_print("%s%s%s%s","VALUE MODIFIED.\nKEY : ", pair.key, "\nVALUE : ",pair.value);
+				debug_print("%s","VALUE MODIFIED");
 				first->pair.value = pair.value;
 				return ERR_NONE;
 			} else {
@@ -82,18 +84,18 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 		}
 
 		 //new key in this bucket
-		first = &table->map[index];
+		first = &table.content[index];
 
 		if (first->pair.key == NULL) {
 			//first one to be inserted in the list
 			first->pair = pair;
 			first->next = NULL;
-			debug_print("%s%s%s%s","FIRST KEY.\nKEY : ", pair.key, "\nVALUE : ", pair.value);
+			debug_print("%s","FIRST KEY");
 		} else {
 			while(first->next != NULL) {
 				first = first->next;
 			}
-			debug_print("%s%s%s%s","COLLISION.\nKEY : ", pair.key, "\nVALUE : ", pair.value);
+			debug_print("%s","COLLISION");
 			bucket_t* bucket = calloc(1, sizeof(bucket_t));
 			if (bucket == NULL) {
 				debug_print("%s", "Could not create new bucket");
@@ -108,16 +110,18 @@ error_code add_Htable_value(Htable_t table, pps_key_t key, pps_value_t value) {
 }
 
 pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
-	if (table == NULL || table->map == NULL || key == NULL ) {
+	if (table.content == NULL || key == NULL) {
 		return NULL;
 	}
-	size_t index = hash_function(key, table->size);
-	bucket_t *first = &table->map[index];
+	size_t index = hash_function(key, table.size);
+	bucket_t *first = &table.content[index];
 
 	while(first != NULL && first->pair.key != NULL){
+		//if (strncmp(first->pair.key, key, strlen(key)&& strlen(key) == strlen(first->pair.key)) == 0) {
 		if (strcmp(first->pair.key, key) == 0) {
 			debug_print("%s","returning value");
-			return strdup(first->pair.value);
+			//correcteur: return a copy of the value
+			return first->pair.value;
 		} else {
 			first = first->next;
 		}
