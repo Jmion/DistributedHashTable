@@ -16,7 +16,8 @@ int main(int argc,char *argv[]){
     init_client.client = &cl;
     init_client.argv = &argv;
     init_client.argc = argc;
-    init_client.nodes_list = get_nodes();
+    init_client.nodes_list = ring_alloc();
+    ring_init(init_client.nodes_list);
     init_client.argsRequired = TOTAL_SERVERS | GET_NEEDED;
     char** first = &argv[0];
     error_code errCode = client_init(init_client);

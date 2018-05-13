@@ -18,9 +18,10 @@
  */
 typedef struct{
 	const char *ip;
+	size_t ip_size;
 	uint16_t port;
-	size_t id;
 	struct sockaddr_in address;
+	unsigned char* SHA;
 }node_t;
 
 /**

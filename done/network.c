@@ -3,6 +3,8 @@
 #include "client.h"
 #include <stdio.h>
 #include "config.h"
+#include "ring.h"
+#include <stdlib.h>
 
 
 #define PUT_REQUEST 1
@@ -27,6 +29,7 @@
 ssize_t send_and_get(int socket, struct sockaddr_in* address, const void* msg, size_t msg_size, void* buffer, size_t buffer_size){
 	if (sendto(socket, msg, msg_size, 0, (struct sockaddr *) address, sizeof(*address)) == -1){
 		debug_print("%s", "Sending failed.");
+		debug_print("errno : %d", errno);
 		return -1;
 	}
 	struct sockaddr_in serv_address;
@@ -49,14 +52,20 @@ ssize_t send_and_get(int socket, struct sockaddr_in* address, const void* msg, s
  *
  * @return     the length of the last answer, or -1 if something failed
  */
-ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buffer, size_t buffer_size, int putRequest){
+ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buffer, size_t buffer_size, int putRequest, pps_key_t key){
 	size_t index = 0;
 	size_t nbResponse = 0;
 	Htable_t local_htable = construct_Htable(HTABLE_SIZE);
 	size_t max_value = 0;
+	node_list_t* storingList = ring_get_nodes_for_key(client.node_list, client.args->N, key);
+
+	if (storingList->size < client.args->N){
+		debug_print("%s","Size problem");
+		return -1;
+	}
 
 	while(index < client.args->N){
-		ssize_t msg_length = send_and_get(client.socket, &client.node_list->nodes[index].address, msg, msg_size, buffer, buffer_size);
+		ssize_t msg_length = send_and_get(client.socket, &storingList->nodes[index].address, msg, msg_size, buffer, buffer_size);
 		if(msg_length != -1){
 			nbResponse += 1;
 			if(msg_length != 0 && ((char*) buffer)[0] != '\0') {
@@ -66,11 +75,19 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 					error_code err = add_Htable_value(local_htable, tempKey, "\x01"); //initialising count to 1
 					if (err != ERR_NONE){
 						delete_Htable_and_content(&local_htable);
+						//nodes IP and SHA are freed in client
+						free(storingList->nodes);
+						free(storingList);
+						storingList = NULL;
 						return -1;
 					}
 					max_value = max_value > 1 ? max_value : 1;
 					if (1 >= client.args->R) {
 						delete_Htable_and_content(&local_htable);
+						//nodes IP and SHA are freed in client
+						free(storingList->nodes);
+						free(storingList);
+						storingList = NULL;
 						return msg_length;
 					}
 				} else {
@@ -81,6 +98,10 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 					max_value = max_value > nbRes ? max_value : nbRes;
 					if (nbRes >= client.args->R) {
 						delete_Htable_and_content(&local_htable);
+						//nodes IP and SHA are freed in client
+						free(storingList->nodes);
+						free(storingList);
+						storingList = NULL;
 						return msg_length;
 					}
 				}
@@ -89,6 +110,11 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 		++index;
 	}
 	delete_Htable_and_content(&local_htable);
+	//nodes IP and SHA are freed in client
+	free(storingList->nodes);
+	free(storingList);
+	storingList = NULL;
+
 	if ((nbResponse < client.args->W && putRequest) ) {
 		debug_print("%s %zu %s %zu", "Missing response from server, only got ", nbResponse, "response(s), needing ", client.args->W);
 		return -1;
@@ -104,8 +130,6 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 //*******END NEW MODULARISATION***
 
 
-#define nbValidAnswersNeeded 1
-
 error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 	M_EXIT_IF_TOO_LONG(key, MAX_MSG_ELEM_SIZE, "Key too long");
 
@@ -115,7 +139,7 @@ error_code network_get(client_t client, pps_key_t key, pps_value_t* value){
 	char key_msg[strlen(key)];
 	strncpy(key_msg,key,strlen(key));
 	char value_msg[MAX_MSG_ELEM_SIZE];
-	ssize_t msg_length = network_comm(client, key_msg, strlen(key), value_msg, MAX_MSG_ELEM_SIZE,GET_REQUEST);
+	ssize_t msg_length = network_comm(client, key_msg, strlen(key), value_msg, MAX_MSG_ELEM_SIZE,GET_REQUEST, key);
 
 	if (msg_length == -1) {
 		debug_print("%s", "NETWORK_COMM : Something failed");
@@ -143,7 +167,7 @@ error_code network_put(client_t client, pps_key_t key, pps_value_t value){
 
 	char in_msg[1];
 
-	ssize_t msg_length = network_comm(client, msg, size +1, in_msg, 1,PUT_REQUEST);
+	ssize_t msg_length = network_comm(client, msg, size +1, in_msg, 1,PUT_REQUEST, key);
 
 	if (msg_length == -1) {
 		debug_print("%s", "NETWORK_COMM : Something failed");

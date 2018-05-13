@@ -52,7 +52,17 @@ int main(void) {
 			char msg[UDP_MAX_SIZE];
 			memset(msg,0,UDP_MAX_SIZE);
 			size_t msg_len = 0;
-			unsigned int size_send = htonl(htable->nbElements);
+			unsigned int size = 0;
+
+			for (int i = 0; i < htable->size; ++i) {
+				bucket_t* bucket = &htable->map[i];
+				while(bucket != NULL && bucket->pair.key != NULL){
+					size += 1;
+					bucket = bucket->next;
+				}
+			}
+			unsigned int size_send = htonl(size);
+
 			memcpy(&msg[0],&size_send,sizeof(size_send));
 			msg_len += sizeof(unsigned int);
 

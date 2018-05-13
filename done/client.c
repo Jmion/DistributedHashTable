@@ -9,7 +9,9 @@
 
 
 void client_end(client_t *client){
-	node_list_free(client->node_list);
+    ring_free(client->node_list);
+    free(client->node_list);
+    client->node_list = NULL;
     free(client->args);
     client->args = NULL;
 }

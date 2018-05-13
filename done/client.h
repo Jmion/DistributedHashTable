@@ -20,7 +20,7 @@
  */
 typedef struct{
 	const char *name;
-	node_list_t* node_list;
+	ring_t* node_list;
 	int socket;
 	args_t* args;
 }client_t;
@@ -30,7 +30,7 @@ typedef struct{
  */
 typedef struct{
 	client_t* client;
-	node_list_t* nodes_list;
+	ring_t* nodes_list;
 	char*** argv;
 	size_t argsRequired;
 	size_t argc;

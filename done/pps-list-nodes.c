@@ -7,6 +7,13 @@
 #include "args.h"
 #include "error.h"
 
+void printsha(unsigned char sha[]){
+    printf("(");
+    for (int i = 0; i < SHA_DIGEST_LENGTH; ++i){
+        printf("%02x", sha[i]);
+    }
+    printf(")");
+}
 
 int main(int argc,char *argv[]){
     client_init_args_t init_client;
@@ -14,7 +21,8 @@ int main(int argc,char *argv[]){
     init_client.client = &cl;
     init_client.argv = &argv;
     init_client.argc = argc;
-    init_client.nodes_list = get_nodes();
+    init_client.nodes_list = ring_alloc();
+    ring_init(init_client.nodes_list);
     init_client.argsRequired = 0;
     error_code errCode = client_init(init_client);
     M_EXIT_IF_ERR(errCode,"Error initializing client");
@@ -22,6 +30,9 @@ int main(int argc,char *argv[]){
 
     char* msg[1];
     char* buffer[1];
+
+    //sort the list
+    node_list_sort(client->node_list, node_cmp_server_addr);
 
     for (int i = 0; i < client->node_list->size; ++i) {
         size_t flag = 1;
@@ -32,6 +43,8 @@ int main(int argc,char *argv[]){
 
         flag =  recv(client->socket, buffer, 1, 0);
         printf("%s %d ", client->node_list->nodes[i].ip,client->node_list->nodes[i].port);
+        printsha(client->node_list->nodes[i].SHA);
+        printf(" ");
         if(flag == 0){
             printf("OK\n");
         } else {

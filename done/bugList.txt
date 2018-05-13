@@ -1,4 +1,1 @@
 Not a bug, but good to know : key "abd" is in collision with key "EPF" whithout quote
-
-If -r 5 when n = 3 sucess.
-repost wrong number of arguments is we where expecting "./pps-client-get -n 2 -r 1 qqq" but was given "./pps-client-get -r 1 -n 2 qqq"

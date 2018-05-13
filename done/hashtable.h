@@ -48,7 +48,6 @@ struct bucket_t{
 typedef struct{
 	bucket_t* map;
 	size_t size;
-	unsigned int nbElements;
 }Htable;
 
 typedef Htable* Htable_t;

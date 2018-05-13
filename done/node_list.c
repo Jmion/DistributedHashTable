@@ -39,22 +39,23 @@ node_list_t *get_nodes(){
             int read = 0;
             read += fscanf(in, "%s", IP);
             read += fscanf(in, "%d", &port);
-            if (read == 2){
+            read += fscanf(in, "%zu", &index);
+            if (read == 3){
                 if (port <= 0 || port > 65535) {
                     return NULL;
                 }
+                for (size_t i = 1; i <= index; ++i) {
+                    node_t tempNode;
+                    memset(&tempNode, 0, sizeof(node_t));
+                    if(node_init(&tempNode, IP, port, i) != ERR_NONE){
+                        debug_print("%s\n","Error initialising node");
+                        return NULL;
+                    }
 
-                node_t tempNode;
-                memset(&tempNode, 0, sizeof(node_t));
-                if(node_init(&tempNode, IP, port, index) != ERR_NONE){
-                    debug_print("%s\n","Error initialising node");
-                    return NULL;
-                }
-
-                ++index;
-                if(node_list_add(list,tempNode) != ERR_NONE){
-                    debug_print("%s\n", "issue with adding a node to the list.");
-                    return NULL;
+                    if(node_list_add(list,tempNode) != ERR_NONE){
+                        debug_print("%s\n", "issue with adding a node to the list.");
+                        return NULL;
+                    }
                 }
             }
         }
@@ -64,13 +65,13 @@ node_list_t *get_nodes(){
 }
 
 //Modular
-#define ENLARGE_PADDING 2
+#define ENLARGE_PADDING 4
 node_list_t* node_list_enlarge(node_list_t* list) {
 	node_list_t *result = list;
 	if (result != NULL) {
 		node_t *oldNode = list->nodes;
 		result->allocated += ENLARGE_PADDING;
-		debug_print("Allocated is %zu",result->allocated);
+		//debug_print("Allocated is %zu",result->allocated);
 		if ((result->allocated > SIZE_MAX / sizeof(node_t)) ||
 		    ((result->nodes = realloc(result->nodes, result->allocated * sizeof(node_t))) == NULL)) {
 			result->nodes = oldNode;
@@ -84,7 +85,7 @@ node_list_t* node_list_enlarge(node_list_t* list) {
 
 error_code node_list_add(node_list_t *list, node_t const node){
 	M_REQUIRE_NON_NULL(list);
-	debug_print("The size is : %zu and the allocated size is : %zu", list->size, list->allocated);
+	//debug_print("The size is : %zu and the allocated size is : %zu", list->size, list->allocated);
 	while(list->size >= list->allocated) {
 		if (node_list_enlarge(list) == NULL) {
 			return ERR_NOMEM;
@@ -100,7 +101,7 @@ error_code node_list_add(node_list_t *list, node_t const node){
 
 
 void node_list_sort(node_list_t *list, int (*comparator)(const node_t *, const node_t *)){
-    //not yet to be implemented
+    qsort(list->nodes, list->size, sizeof(*list->nodes), (int(*) (const void*, const void*)) comparator);
 }
 
 
@@ -110,6 +111,4 @@ void node_list_free(node_list_t *list){
     }
     free(list->nodes);
     list->nodes = NULL;
-    free(list);
-    list = NULL;
 }

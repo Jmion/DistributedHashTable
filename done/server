@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "127.0.0.1 1234" | ./pps-launch-server 2>&1 | tee out1234.log &
+echo "127.0.0.1 1235" | ./pps-launch-server 2>&1 | tee out1235.log &
+echo "127.0.0.1 1236" | ./pps-launch-server 2>&1 | tee out1236.log &
