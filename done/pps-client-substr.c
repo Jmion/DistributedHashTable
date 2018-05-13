@@ -27,6 +27,7 @@ int main(int argc,char *argv[]){
     size_t nbArgsLeft = argc - (&argv[0] - first);
 
 
+    //checking if enough argument
     if ( nbArgsLeft != 4) {
         debug_print("Wrong number of arguments, %zu arguments", nbArgsLeft);
         printf("FAIL\n");
@@ -35,7 +36,6 @@ int main(int argc,char *argv[]){
     }
 
 
-    //checking if enough argument
 
     //getting key
     pps_value_t value;
