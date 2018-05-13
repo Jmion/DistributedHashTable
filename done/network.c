@@ -29,7 +29,16 @@ ssize_t send_and_get(int socket, struct sockaddr_in* address, const void* msg, s
 		debug_print("%s", "Sending failed.");
 		return -1;
 	}
-	return recv(socket, buffer, buffer_size, 0);
+	struct sockaddr_in serv_address;
+	socklen_t serv_size = 0;
+	ssize_t length = recvfrom(socket, buffer, buffer_size, 0,(struct sockaddr *) &serv_address, &serv_size);
+	if (address->sin_addr.s_addr != serv_address.sin_addr.s_addr || address->sin_port != serv_address.sin_port){
+		debug_print("%d, %d", address->sin_port, serv_address.sin_port);
+		debug_print("%s", "Different server address");
+		return -1;
+	}
+
+	return length;
 }
 
 

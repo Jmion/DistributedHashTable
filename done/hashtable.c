@@ -7,7 +7,7 @@
 
 
 Htable_t construct_Htable(size_t size){
-	if (size == 0){
+	if (size <= 0){
 		return NO_HTABLE;
 	}
 	Htable_t table = calloc(1, sizeof(Htable));
@@ -16,6 +16,7 @@ Htable_t construct_Htable(size_t size){
 		debug_print("%s", "Allocation error. Content for htable could not be allocated");
 		return NO_HTABLE;
 	}
+	memset(table->map, 0,  size * sizeof(bucket_t));
 	table->size = size;
 	table->nbElements = 0;
 	return table;
@@ -24,11 +25,12 @@ Htable_t construct_Htable(size_t size){
 void delete_Htable_and_content(Htable_t* table){
 	if (table != NULL && *table != NULL){
 		 for (int i = 0; i < (*table)->size; ++i) {
-		 	//first bucket is not allocated, no need to free
 		 	bucket_t* bucket = &(*table)->map[i];
 		 	if (bucket->pair.key != NULL) {
 		 		kv_pair_free(&bucket->pair);
 		 	}
+		 	
+		 	//first bucket is not allocated, no need to free
 		 	bucket = bucket->next;
 		 	//freeing the linked list
 		 	while(bucket != NULL && bucket->pair.key != NULL){
@@ -118,7 +120,7 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	while(first != NULL && first->pair.key != NULL){
 		if (strcmp(first->pair.key, key) == 0) {
 			debug_print("%s","returning value");
-			return first->pair.value;
+			return strdup(first->pair.value);
 		} else {
 			first = first->next;
 		}
