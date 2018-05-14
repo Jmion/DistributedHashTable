@@ -51,7 +51,7 @@ int main(int argc,char *argv[]){
 	if(location == NULL){
 		fprintf(stdout,"OK -1\n");
 	}else{
-		fprintf(stdout,"OK %ld\n",location - value1);
+		fprintf(stdout,"OK %d\n",location - value1);
 	}
 
 
