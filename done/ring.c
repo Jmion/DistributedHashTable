@@ -66,9 +66,11 @@ node_list_t *ring_get_nodes_for_key(const ring_t *ring, size_t wanted_list_size,
 	node_t artificial_node; //pseudo node used to store sha of key, to use node_cmp_sha
 	memset(&artificial_node, 0, sizeof(node_t));
 	artificial_node.SHA = sha;
-	while(node_cmp_sha(&ring->nodes[index], &artificial_node) < 0){
+	while(index < ring->size && node_cmp_sha(&ring->nodes[index], &artificial_node) < 0){
 		++index;
 	}
+	//if key sha is greater than all the nodes sha, index is too large
+	index = index % ring->size;
 	size_t nbNodes = 0;
 	size_t i = 0;
 	debug_print("%s", "Key added to following nodes : ");
