@@ -17,9 +17,9 @@
  * @brief list of nodes
  */
 struct node_list {
-        node_t* nodes;
-        size_t size;
-		size_t allocated;
+	node_t* nodes;
+	size_t size;
+	size_t allocated;
 };
 typedef struct node_list node_list_t;
 

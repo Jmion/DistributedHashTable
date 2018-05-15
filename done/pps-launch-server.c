@@ -11,16 +11,16 @@
 int main(void) {
 	int socket = get_socket(0);
 
-    char IP[IP_SIZE+1];
-    int port = 0;
+	char IP[IP_SIZE + 1];
+	int port = 0;
 
 
-    fprintf(stdout, "IP Port? ");
-    fflush(stdout);
-    fscanf(stdin, "%s", &IP[0]);
-    fscanf(stdin,"%d", &port);
+	fprintf(stdout, "IP Port? ");
+	fflush(stdout);
+	fscanf(stdin, "%s", &IP[0]);
+	fscanf(stdin, "%d", &port);
 
-    //scanf indirectly verified by bind server.
+	//scanf indirectly verified by bind server.
 	if (bind_server(socket, IP, port)) {
 		debug_print("%s\n", "Server failed to bind to socket");
 		return 1;
@@ -40,45 +40,45 @@ int main(void) {
 		if (msg_len == -1) {
 			M_EXIT_IF_ERR(ERR_NETWORK, "Message received in not of appropriate length.");
 
-		} else if (msg_len == 0){ //check request
+		} else if (msg_len == 0) { //check request
 			debug_print("%s", "Check request OK");
-			if(sendto(socket, NULL, 0, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
-				debug_print("%s\n","Error sending acknoledgement of check request.");
+			if (sendto(socket, NULL, 0, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1) {
+				debug_print("%s\n", "Error sending acknoledgement of check request.");
 			}
 
-			
-		} else if (msg_len == 1 && in_msg[0] == '\0'){//dump request
+
+		} else if (msg_len == 1 && in_msg[0] == '\0') { //dump request
 			debug_print("%s", "Dump request OK");
 			char msg[UDP_MAX_SIZE];
-			memset(msg,0,UDP_MAX_SIZE);
+			memset(msg, 0, UDP_MAX_SIZE);
 			size_t msg_len = 0;
 			unsigned int size = 0;
 
 			for (int i = 0; i < htable->size; ++i) {
 				bucket_t* bucket = &htable->map[i];
-				while(bucket != NULL && bucket->pair.key != NULL){
+				while (bucket != NULL && bucket->pair.key != NULL) {
 					size += 1;
 					bucket = bucket->next;
 				}
 			}
 			unsigned int size_send = htonl(size);
 
-			memcpy(&msg[0],&size_send,sizeof(size_send));
+			memcpy(&msg[0], &size_send, sizeof(size_send));
 			msg_len += sizeof(unsigned int);
 
 
 
 			for (int i = 0; i < htable->size; ++i) {
 				bucket_t* bucket = &htable->map[i];
-				while(bucket != NULL && bucket->pair.key != NULL){
+				while (bucket != NULL && bucket->pair.key != NULL) {
 
 					if (msg_len + strlen(bucket->pair.key) + strlen(bucket->pair.value) + 2 > UDP_MAX_SIZE) {
-						if(sendto(socket, &msg, msg_len, 0, (struct sockaddr *) &addr_cli, addr_cli_len)== -1){
-							debug_print("%s","Could not send ");
+						if (sendto(socket, &msg, msg_len, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1) {
+							debug_print("%s", "Could not send ");
 						}
-						debug_print("%s","New message");
+						debug_print("%s", "New message");
 						msg_len = 0;
-						memset(msg,0,UDP_MAX_SIZE);
+						memset(msg, 0, UDP_MAX_SIZE);
 
 					}
 					debug_print("%s", "Copying key-value");
@@ -95,51 +95,51 @@ int main(void) {
 				}
 			}
 
-			if(sendto(socket, &msg, msg_len, 0, (struct sockaddr *) &addr_cli, addr_cli_len)== -1){
-				debug_print("%s","Could not send ");
+			if (sendto(socket, &msg, msg_len, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1) {
+				debug_print("%s", "Could not send ");
 			}
 
 
-		} else if (memchr(&in_msg,'\0', msg_len) != NULL) { //put request
+		} else if (memchr(&in_msg, '\0', msg_len) != NULL) { //put request
 			debug_print("%s", "Put request OK");
 
 			size_t key_len = strlen(in_msg); // locates the \0 in the string
 			size_t value_len = msg_len - key_len - 1;
-			char key[key_len+1]; //extra space of '\0' at the end
+			char key[key_len + 1]; //extra space of '\0' at the end
 			char value [value_len + 1];
-			strncpy(key,in_msg,key_len);
-			strncpy(value, &in_msg[key_len+1], value_len);
+			strncpy(key, in_msg, key_len);
+			strncpy(value, &in_msg[key_len + 1], value_len);
 			key[key_len] = '\0';
 			value[value_len] = '\0';
 
-			
+
 
 
 			error_code e = add_Htable_value(htable, key, value);
 			M_EXIT_IF_ERR(e, "Issue adding key to hasahtable");
 
-			if(sendto(socket, &key, 0, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
-				debug_print("%s\n","Error sending acknoledgement of put request.");
+			if (sendto(socket, &key, 0, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1) {
+				debug_print("%s\n", "Error sending acknoledgement of put request.");
 			}
 		} else { //get request
 			debug_print("%s", "get request OK");
-			char key[msg_len+1];
+			char key[msg_len + 1];
 			strncpy(key, in_msg, msg_len);
 			key[msg_len] = '\0';
 
 			pps_value_t value = get_Htable_value(htable, key);
 			size_t length;
-			if (value == NULL){
+			if (value == NULL) {
 				value = "\0";
 				length = 1;
-				debug_print("%s","NULL value");
+				debug_print("%s", "NULL value");
 			} else {
 				length = strlen(value);
 			}
 
-				if(sendto(socket, value, length, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1){
-					debug_print("%s","Error responding to get request. Sending value failed");
-				}
+			if (sendto(socket, value, length, 0, (struct sockaddr *) &addr_cli, addr_cli_len) == -1) {
+				debug_print("%s", "Error responding to get request. Sending value failed");
+			}
 		}
 	}
 	return 0;

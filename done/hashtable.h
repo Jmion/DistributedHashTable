@@ -26,14 +26,14 @@ typedef const char* pps_value_t;
  */
 typedef struct {
 	pps_value_t value;
-	pps_key_t key;	
+	pps_key_t key;
 } kv_pair_t;
 /*
  * Definition of type for local hash-tables buckets
  */
 typedef struct bucket_t bucket_t;
 
-struct bucket_t{
+struct bucket_t {
 	kv_pair_t pair;
 	bucket_t* next;
 };
@@ -45,10 +45,10 @@ struct bucket_t{
  */
 #define HTABLE_SIZE 256
 
-typedef struct{
+typedef struct {
 	bucket_t* map;
 	size_t size;
-}Htable;
+} Htable;
 
 typedef Htable* Htable_t;
 
