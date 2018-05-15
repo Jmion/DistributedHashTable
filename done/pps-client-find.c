@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 	client_t* client = init_client.client;
 	size_t nbArgsLeft = argc - (&argv[0] - first);
 
-	if ( nbArgsLeft != 2) {
+	if (nbArgsLeft != 2) {
 		debug_print("Wrong number of arguments, %zu arguments", nbArgsLeft);
 		printf("FAIL\n");
 		client_end(client);

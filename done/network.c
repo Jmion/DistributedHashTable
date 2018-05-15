@@ -62,6 +62,7 @@ ssize_t get_serv(int socket, void* buffer, size_t buffer_size) {
  */
 ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buffer, size_t buffer_size, int putRequest, pps_key_t key) {
 	size_t nbResponse = 0;
+	size_t emptyValue = 0;
 	Htable_t local_htable = construct_Htable(HTABLE_SIZE);
 	size_t max_value = 0;
 	node_list_t* storingList = ring_get_nodes_for_key(client.node_list, client.args->N, key);
@@ -77,6 +78,7 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 	}
 	for (int index = 0; index < client.args->N; ++index) {
 		ssize_t msg_length = get_serv(socket, buffer, buffer_size);
+		printf("%zd\n", msg_length);
 		if (msg_length != -1) {
 			nbResponse += 1;
 			if (msg_length != 0 && ((char*) buffer)[0] != '\0') {
@@ -115,6 +117,16 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 						storingList = NULL;
 						return msg_length;
 					}
+				}
+			} else if (msg_length == 0 && !putRequest){
+				emptyValue += 1;
+				if (emptyValue >= client.args->R){
+					delete_Htable_and_content(&local_htable);
+					//nodes IP and SHA are freed in client
+					free(storingList->nodes);
+					free(storingList);
+					storingList = NULL;
+					return msg_length;
 				}
 			}
 		}
