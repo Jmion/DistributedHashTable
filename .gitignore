@@ -1,13 +1,5 @@
-done/week04
-done/.idea/*
-done/cmake-build-debug
-done/CMakeLists.txt
-done/*.o
-done/*.dSYM
 done/*
 !done/*.c
 !done/*.h
 !done/Makefile*
-done/servers.txt
-done/hash.txt
-done/*.log
+!done/servers.txt
