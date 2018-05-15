@@ -1,6 +1,5 @@
 #include "client.h"
 #include "error.h"
-#include "system.h"
 #include "config.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,7 +17,6 @@ void client_end(client_t *client){
 
 error_code client_init(client_init_args_t client_init){
 	client_t* client = client_init.client;
-	client->socket = get_socket(1);
 	client->node_list = client_init.nodes_list;
 	error_code errCode = ERR_NONE;
 	if (client->node_list == NULL) {

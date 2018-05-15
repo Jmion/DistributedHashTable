@@ -5,6 +5,7 @@
 #include "config.h"
 #include "ring.h"
 #include <stdlib.h>
+#include "system.h"
 
 
 #define PUT_REQUEST 1
@@ -26,15 +27,22 @@
  *
  * @return     the length of the answer or -1 if something failed
  */
-ssize_t send_and_get(int socket, struct sockaddr_in* address, const void* msg, size_t msg_size, void* buffer, size_t buffer_size){
+ssize_t send_serv(int socket, struct sockaddr_in* address, const void* msg, size_t msg_size){
 	if (sendto(socket, msg, msg_size, 0, (struct sockaddr *) address, sizeof(*address)) == -1){
 		debug_print("%s", "Sending failed.");
 		debug_print("errno : %d", errno);
 		return -1;
 	}
+	return 0;
+}
+
+ssize_t get_serv(int socket, void* buffer, size_t buffer_size){
 	struct sockaddr_in serv_address;
-	socklen_t serv_size = 0;
+	socklen_t serv_size = sizeof(serv_address);
 	ssize_t length = recvfrom(socket, buffer, buffer_size, 0,(struct sockaddr *) &serv_address, &serv_size);
+	if (length == -1){
+		debug_print("%s", "Problem to receive message");
+	}
 	return length;
 }
 
@@ -53,7 +61,6 @@ ssize_t send_and_get(int socket, struct sockaddr_in* address, const void* msg, s
  * @return     the length of the last answer, or -1 if something failed
  */
 ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buffer, size_t buffer_size, int putRequest, pps_key_t key){
-	size_t index = 0;
 	size_t nbResponse = 0;
 	Htable_t local_htable = construct_Htable(HTABLE_SIZE);
 	size_t max_value = 0;
@@ -63,9 +70,13 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 		debug_print("%s","Size problem");
 		return -1;
 	}
+	int socket = get_socket(1);
 
-	while(index < client.args->N){
-		ssize_t msg_length = send_and_get(client.socket, &storingList->nodes[index].address, msg, msg_size, buffer, buffer_size);
+	for(int index = 0; index < client.args->N; ++index){
+		send_serv(socket, &storingList->nodes[index].address, msg, msg_size);
+	}
+	for(int index = 0; index < client.args->N; ++index){
+		ssize_t msg_length = get_serv(socket, buffer, buffer_size);
 		if(msg_length != -1){
 			nbResponse += 1;
 			if(msg_length != 0 && ((char*) buffer)[0] != '\0') {
@@ -107,7 +118,6 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 				}
 			}
 		}
-		++index;
 	}
 	delete_Htable_and_content(&local_htable);
 	//nodes IP and SHA are freed in client
