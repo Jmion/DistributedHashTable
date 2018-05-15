@@ -36,15 +36,20 @@ int main(int argc, char *argv[]) {
 	pps_value_t value_get;
 
 	error_code error1 = network_get(*client, argv[0], &value_get);
-	strcpy(value1, value_get);
-	error_code error2 = network_get(*client, argv[1], &value_get);
-	strcpy(value2, value_get);
-
-	if (error1 != 0 || error2 != 0) {
+	if (error1 != 0) {
 		printf("FAIL\n");
 		client_end(client);
 		return 1;
 	}
+	strcpy(value1, value_get);
+	error_code error2 = network_get(*client, argv[1], &value_get);
+	if (error2 != 0) {
+		printf("FAIL\n");
+		client_end(client);
+		return 1;		
+	}
+	strcpy(value2, value_get);
+
 
 	debug_print("Searching for '%s' in '%s'", value2, value1);
 	const char * location = strstr(value1, value2);
