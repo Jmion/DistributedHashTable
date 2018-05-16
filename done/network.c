@@ -73,10 +73,10 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 	}
 	int socket = get_socket(1);
 
-	for (int index = 0; index < client.args->N; ++index) {
+	for (size_t index = 0; index < client.args->N; ++index) {
 		send_serv(socket, &storingList->nodes[index].address, msg, msg_size);
 	}
-	for (int index = 0; index < client.args->N; ++index) {
+	for (size_t index = 0; index < client.args->N; ++index) {
 		ssize_t msg_length = get_serv(socket, buffer, buffer_size);
 		if (msg_length != -1) {
 			nbResponse += 1;
