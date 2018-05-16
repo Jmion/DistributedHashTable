@@ -78,7 +78,6 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 	}
 	for (int index = 0; index < client.args->N; ++index) {
 		ssize_t msg_length = get_serv(socket, buffer, buffer_size);
-		printf("%zd\n", msg_length);
 		if (msg_length != -1) {
 			nbResponse += 1;
 			if (msg_length != 0 && ((char*) buffer)[0] != '\0') {
@@ -118,6 +117,7 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 						return msg_length;
 					}
 				}
+				//handling the empty value
 			} else if (msg_length == 0 && !putRequest){
 				emptyValue += 1;
 				if (emptyValue >= client.args->R){

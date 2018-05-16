@@ -8,6 +8,9 @@
 #include "error.h"
 #include "system.h"
 
+#define TRUE 1
+#define FALSE 0
+
 void printsha(unsigned char sha[]) {
     printf("(");
     for (size_t i = 0; i < SHA_DIGEST_LENGTH; ++i) {
@@ -60,12 +63,16 @@ int main(int argc, char *argv[]) {
         }
 
         //checking who replied
-        for (size_t j = 0; j < client->node_list->size; ++j) {
+        size_t j = 0;
+        int found = FALSE;
+        while(j < client->node_list->size && !found) {
             if (client->node_list->nodes[j].address.sin_port == serv_address.sin_port && client->node_list->nodes[j].address.sin_addr.s_addr == serv_address.sin_addr.s_addr ) {
                 if (flags[j] == 1 && flag == 1) {
                     flags[j] = 2;
+                    found = TRUE; 
                 }
             }
+            ++j;
         }
 
     }
