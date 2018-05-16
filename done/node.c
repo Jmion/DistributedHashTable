@@ -36,6 +36,7 @@ void node_end(node_t *node) {
 	free_const_ptr(node->ip);
 	free(node->SHA);
 	node->SHA = NULL;
+	node->ip = NULL;
 }
 
 int node_cmp_sha(const node_t *first, const node_t *second) {

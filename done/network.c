@@ -6,6 +6,7 @@
 #include "ring.h"
 #include <stdlib.h>
 #include "system.h"
+#include <errno.h>
 
 
 #define PUT_REQUEST 1
@@ -60,9 +61,8 @@ ssize_t get_serv(int socket, void* buffer, size_t buffer_size) {
  *
  * @return     the length of the last answer, or -1 if something failed
  */
-ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buffer, size_t buffer_size, int putRequest, pps_key_t key) {
+ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void* buffer, size_t buffer_size, int putRequest, pps_key_t key) {
 	size_t nbResponse = 0;
-	size_t emptyValue = 0;
 	Htable_t local_htable = construct_Htable(HTABLE_SIZE);
 	size_t max_value = 0;
 	node_list_t* storingList = ring_get_nodes_for_key(client.node_list, client.args->N, key);
@@ -80,7 +80,8 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 		ssize_t msg_length = get_serv(socket, buffer, buffer_size);
 		if (msg_length != -1) {
 			nbResponse += 1;
-			if (msg_length != 0 && ((char*) buffer)[0] != '\0') {
+			if (!putRequest && (msg_length != 1 || ((char*) buffer)[0] != '\0')) {
+				debug_print("%s", "Value valid");
 				pps_key_t tempKey = buffer;
 				pps_value_t responsePoint = get_Htable_value(local_htable, tempKey);
 				if (responsePoint == NULL) { //first time the receive this value
@@ -116,17 +117,6 @@ ssize_t network_comm(client_t client, const void* msg, size_t msg_size, void*buf
 						storingList = NULL;
 						return msg_length;
 					}
-				}
-				//handling the empty value
-			} else if (msg_length == 0 && !putRequest){
-				emptyValue += 1;
-				if (emptyValue >= client.args->R){
-					delete_Htable_and_content(&local_htable);
-					//nodes IP and SHA are freed in client
-					free(storingList->nodes);
-					free(storingList);
-					storingList = NULL;
-					return msg_length;
 				}
 			}
 		}
