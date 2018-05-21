@@ -1,13 +1,13 @@
 #!/bin/bash
-./pps-client-put abc de
-./pps-client-put def za
-./pps-client-put abd fr
-./pps-client-put Cervin Zermatt
-./pps-client-put DentBlanche 4357
-./pps-client-put Salut Simon
-./pps-client-put EPFL Lausanne
-./pps-client-put ETH Zurich
-./pps-client-put Bulle 1630
-./pps-client-put Bern Suisse
-./pps-client-put not_a_key not_a_value
-./pps-client-put abc xy
+./pps-client-put -n 2 -w 2 abc de
+./pps-client-put -n 2 -w 2 def za
+./pps-client-put -n 2 -w 2 abd fr
+./pps-client-put -n 2 -w 2 Cervin Zermatt
+./pps-client-put -n 2 -w 2 DentBlanche 4357
+./pps-client-put -n 2 -w 2 Salut Simon
+./pps-client-put -n 2 -w 2 EPFL Lausanne
+./pps-client-put -n 2 -w 2 ETH Zurich
+./pps-client-put -n 2 -w 2 Bulle 1630
+./pps-client-put -n 2 -w 2 Bern Suisse
+./pps-client-put -n 2 -w 2 not_a_key not_a_value
+./pps-client-put -n 2 -w 2 abc xy

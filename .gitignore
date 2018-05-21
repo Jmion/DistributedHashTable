@@ -2,5 +2,4 @@ done/*
 !done/*.c
 !done/*.h
 !done/Makefile*
-!done/servers.txt
 !done/server
