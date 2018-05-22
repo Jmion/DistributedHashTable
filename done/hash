@@ -1,18 +1,18 @@
 #!/bin/bash
 MYFILE=out.txt;
 
-{ time ./pps-client-put -n 2 -w 2 abc de 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 def za 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 abd fr 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 Cervin Zermatt 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 DentBlanche 4357 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 Salut Simon 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 EPFL Lausanne 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 ETH Zurich 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 Bulle 1630 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 Bern Suisse 2> /dev/null; } 2>> $MYFILE
-{ time ./pps-client-put -n 2 -w 2 not_a_key not_a_value 2> /dev/null; } 2>> $MYFILE
-{ time  ./pps-client-put -n 2 -w 2 abc xy 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 abc de 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 def za 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 abd fr 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 Cervin Zermatt 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 DentBlanche 4357 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 Salut Simon 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 EPFL Lausanne 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 ETH Zurich 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 Bulle 1630 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 Bern Suisse 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 not_a_key not_a_value 2> /dev/null; } 2>> $MYFILE
+{ time ./pps-client-put -n 4 -w 2 abc xy 2> /dev/null; } 2>> $MYFILE
 
 grep user $MYFILE >> user.txt
 grep sys $MYFILE >> sys.txt
