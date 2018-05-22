@@ -16,15 +16,15 @@ typedef struct {
 	size_t N;
 	size_t R;
 	size_t W;
-}args_t;
+} args_t;
 
 /**
  * @brief enum for the supported_args flag of parse_opt_args
  */
 typedef enum {
-    TOTAL_SERVERS = 1 << 0,
-    GET_NEEDED    = 1 << 1,
-    PUT_NEEDED    = 1 << 2
+	TOTAL_SERVERS = 1 << 0,
+	GET_NEEDED    = 1 << 1,
+	PUT_NEEDED    = 1 << 2
 } args_kind;
 
 /**

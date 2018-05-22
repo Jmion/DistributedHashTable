@@ -1,1 +1,43 @@
 Not a bug, but good to know : key "abd" is in collision with key "EPF" whithout quote
+
+following commands will yield :
+	put a f
+	substr a 3 2 b 
+
+	This will yield weird binary being dumped. Probably reading memory outside of buffer. Could lead to segmentation fault.
+
+		127.0.0.1 1235 (1bcd2db55b43d8c6b50583892f141a6bb3224c04)
+		127.0.0.1 1236 (5f26268754fcf2a51fcfacaaa2aaf4f0d83f6d67)
+		127.0.0.1 1235 (914f6ade5b49a3a9be257f8a56bbde9a83fa46aa)
+		83.76.236.181 9234 (92f5a2ec80cb00fe027fdb758f39ad34d904873b)
+		127.0.0.1 1236 (93149f866bf3acc9710375cb46706bf09960a6ab)
+		127.0.0.1 1234 (a902e3a5aa4f73150f459436b0580cb7ad72b566)
+		127.0.0.1 1234 (aa66f3e5a8d9cdc5c0bd49708bc59847e6915634)
+		127.0.0.1 1235 (c484ea9b3b14d139b1456032a49990367b857fe6)
+		127.0.0.1 1234 (e9b9c7e5d1569abaf1dc5b0ce2958f14ef831770)
+		83.76.236.181 9234 (edccc75696bc4f10cb5cb10eb9d594ab3017b6dc)
+		127.0.0.1 1236 (ee482fd6bcd8a1eb2a929a0d284b563404b64d19)
+		83.76.236.181 9234 (fac76cd2c3965e49ffb2914ef1f24ce97d7a5a1d)
+		network.c:158:network_get: N is 3
+		network.c:159:network_get: R is 2
+		ring.c:60:ring_get_nodes_for_key: SHA of key is : 
+		(86f7e437faa5a7fce15d1ddcb9eaeaea377667b8)
+		ring.c:76:ring_get_nodes_for_key: Key added to following nodes : 
+		127.0.0.1 1235 (914f6ade5b49a3a9be257f8a56bbde9a83fa46aa)
+		83.76.236.181 9234 (92f5a2ec80cb00fe027fdb758f39ad34d904873b)
+		127.0.0.1 1236 (93149f866bf3acc9710375cb46706bf09960a6ab)
+		system.c:22:get_socket: get_socket(): fd=3
+		pps-launch-server.c:125:main: get request OK
+		hashtable.c:119:get_Htable_value: returning value
+		pps-launch-server.c:125:main: get request OK
+		hashtable.c:119:get_Htable_value: returning value
+		1
+		hashtable.c:91:add_Htable_value: FIRST KEY.
+		KEY : f
+		VALUE : 
+		1
+		hashtable.c:119:get_Htable_value: returning value
+		hashtable.c:76:add_Htable_value: VALUE MODIFIED.
+		KEY : f
+		VALUE : 
+		FAIL

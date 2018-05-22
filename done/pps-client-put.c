@@ -8,7 +8,7 @@
 #include "args.h"
 
 
-int main(int argc,char *argv[]){
+int main(int argc, char *argv[]) {
     client_init_args_t init_client;
     client_t cl;
     init_client.client = &cl;
@@ -19,7 +19,7 @@ int main(int argc,char *argv[]){
     init_client.argsRequired = TOTAL_SERVERS | PUT_NEEDED;
     char** first = &argv[0];
     error_code errCode = client_init(init_client);
-    M_EXIT_IF_ERR(errCode,"Error initializing client");
+    M_EXIT_IF_ERR(errCode, "Error initializing client");
     client_t* client = init_client.client;
     size_t nbArgsLeft = argc - (&argv[0] - first);
 
@@ -31,14 +31,14 @@ int main(int argc,char *argv[]){
     }
 
 
-	error_code error = network_put(*client, argv[0], argv[1]);
-	if (error != 0) {
-		printf("FAIL\n");
-	} else {
-		printf("OK\n");
-	}
+    error_code error = network_put(*client, argv[0], argv[1]);
+    if (error != 0) {
+        printf("FAIL\n");
+    } else {
+        printf("OK\n");
+    }
 
 
     client_end(client);
-	return 0;
+    return 0;
 }

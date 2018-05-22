@@ -1,6 +1,6 @@
 LDLIBS = -lm -lcheck -pthread -lcrypto
 #debug flag
-CFLAGS += -g 
+#CFLAGS += -g 
 CFLAGS += -DDEBUG
 CFLAGS += -Wall
 

@@ -18,23 +18,22 @@
 /**
  * @brief client state
  */
-typedef struct{
+typedef struct {
 	const char *name;
 	ring_t* node_list;
-	int socket;
 	args_t* args;
-}client_t;
+} client_t;
 
 /**
  * @brief client_init function arguments.
  */
-typedef struct{
+typedef struct {
 	client_t* client;
 	ring_t* nodes_list;
 	char*** argv;
 	size_t argsRequired;
 	size_t argc;
-}client_init_args_t;
+} client_init_args_t;
 
 /**
  * @brief does all the work to be done at the end of life of a client

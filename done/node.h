@@ -16,13 +16,13 @@
 /**
  * @brief node data structure
  */
-typedef struct{
+typedef struct {
 	const char *ip;
 	size_t ip_size;
 	uint16_t port;
 	struct sockaddr_in address;
 	unsigned char* SHA;
-}node_t;
+} node_t;
 
 /**
  * @brief node initialization function

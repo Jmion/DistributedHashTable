@@ -10,7 +10,7 @@
 #define strtol(x) strtol(x, NULL, 10)
 
 
-int main(int argc,char *argv[]) {
+int main(int argc, char *argv[]) {
     if (argc != 3) {
         debug_print("%s", "Wrong number of arguments");
         printf("FAIL\n");
@@ -24,20 +24,20 @@ int main(int argc,char *argv[]) {
     }
 
     struct sockaddr_in address;
-    get_server_addr(argv[1], port,&address);
+    get_server_addr(argv[1], port, &address);
     int socket = get_socket(1);
     char msg = '\0';
-    if (sendto(socket, &msg, 1, 0, (struct sockaddr *) &address, sizeof(address)) == -1){
-		debug_print("%s", "Sending failed.");
-		fprintf(stdout, "FAIL\n");
-		return 1;
-	}
+    if (sendto(socket, &msg, 1, 0, (struct sockaddr *) &address, sizeof(address)) == -1) {
+        debug_print("%s", "Sending failed.");
+        fprintf(stdout, "FAIL\n");
+        return 1;
+    }
 
-	unsigned int nbAnswers = 1;
+    unsigned int nbAnswers = 1;
     char buffer[UDP_MAX_SIZE];
     size_t msg_length;
     msg_length = recv(socket, &buffer, UDP_MAX_SIZE, 0);
-    if( msg_length== -1){
+    if ( msg_length == -1) {
         debug_print("%s", "No answers");
         fprintf(stdout, "FAIL\n");
         return 1;
@@ -47,25 +47,25 @@ int main(int argc,char *argv[]) {
     nbAnswers = ntohl(nbAnswers);
     size_t index = sizeof(unsigned int);
 
-    while(nbAnswers > 0){
+    while (nbAnswers > 0) {
         if (index < msg_length) {
             printf("%s", &buffer[index]);
             index += strlen(&buffer[index]) + 1;
-            printf(" = %s\n",&buffer[index]);
+            printf(" = %s\n", &buffer[index]);
             index += strlen(&buffer[index]) + 1;
             nbAnswers -= 1;
         } else {
             msg_length = recv(socket, &buffer, UDP_MAX_SIZE, 0);
             index = 0;
-            if( msg_length== -1){
+            if ( msg_length == -1) {
                 debug_print("%s", "No answers");
                 fprintf(stdout, "FAIL\n");
-            return 1;
+                return 1;
             }
         }
 
     }
 
-	return 0;
+    return 0;
 }
 
