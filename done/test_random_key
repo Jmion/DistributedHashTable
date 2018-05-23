@@ -1,0 +1,8 @@
+#!/bin/bash
+for (( i = 0; i < 10; i++ )); do
+	var=$(gshuf -i 1-1000 -n 1)
+	key=$(pwgen $var 1)
+	value=$(pwgen 100 1)
+	./pps-client-put $key $value
+	./pps-client-get $key
+done
