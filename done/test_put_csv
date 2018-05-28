@@ -6,5 +6,4 @@ for (( i = 1; i < 101; i++ )); do
 	mv measure_put.txt test_out/measure_put_$i.txt 
 done
 paste -d ';' test_out/* >> final_put.csv
-rm test_out/*
-rmdir test_out
+rm -rf test_out

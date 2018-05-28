@@ -4,3 +4,4 @@ done/*
 !done/Makefile*
 !done/server
 !done/test_*
+!done/servers_local.txt
