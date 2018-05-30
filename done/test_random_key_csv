@@ -1,0 +1,14 @@
+#!/bin/bash
+mkdir test_put_random
+mkdir test_get_random
+rm final_random_key.csv
+for (( i = 1; i < 101; i++ )); do
+	./test_random_key
+	mv measure_put.txt test_put_random/measure_random_$i.txt 
+	mv measure_get.txt test_get_random/measure_random_$i.txt 
+
+done
+paste -d ';' test_get_random/* >> final_random_key_get.csv
+paste -d ';' test_put_random/* >> final_random_key_put.csv
+rm -rf test_put_random
+rm -rf test_get_random
