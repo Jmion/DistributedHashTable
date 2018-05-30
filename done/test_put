@@ -1,0 +1,4 @@
+#!/bin/bash
+for (( i = 1; i < 11; i++ )); do
+	./pps-client-put -n 10 -w $i abcdefghijkl mnopqrstuvwxyz 
+done

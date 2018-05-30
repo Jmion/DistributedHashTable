@@ -3,4 +3,6 @@ done/*
 !done/*.h
 !done/Makefile*
 !done/server
-!done/server11
+!done/test_*
+!done/servers_local.txt
+!done/final_*

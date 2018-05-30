@@ -6,6 +6,12 @@
 #include "config.h"
 #include "error.h"
 #include "args.h"
+#include <time.h>
+
+#define OUT_NAME "measure_put.txt"
+
+
+static void print_time(const struct timespec*, const struct timespec*, char*);
 
 
 int main(int argc, char *argv[]) {
@@ -31,7 +37,14 @@ int main(int argc, char *argv[]) {
     }
 
 
+    struct timespec time_start, time_end;
+    clock_gettime(CLOCK_MONOTONIC, &time_start);
+
     error_code error = network_put(*client, argv[0], argv[1]);
+
+    clock_gettime(CLOCK_MONOTONIC, &time_end);
+    print_time(&time_start, &time_end, OUT_NAME);
+
     if (error != 0) {
         printf("FAIL\n");
     } else {
@@ -41,4 +54,17 @@ int main(int argc, char *argv[]) {
 
     client_end(client);
     return 0;
+}
+
+
+static void print_time(const struct timespec* p_time_start,
+const struct timespec* p_time_end, char* fname) {
+FILE* out = fopen(fname,"a");
+if (out == NULL){
+    return;
+}
+long nsec = p_time_end->tv_nsec - p_time_start->tv_nsec;
+while (nsec < 0) nsec += 1000000000;
+fprintf(out, "%ld%09ld\n", p_time_end->tv_sec - p_time_start->tv_sec, nsec);
+fclose(out);
 }
