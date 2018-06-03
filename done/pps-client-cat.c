@@ -38,16 +38,20 @@ int main(int argc, char *argv[]) {
 
 	for (size_t i = 0; i < nbArgsLeft - 1; ++i) {
 		pps_value_t value_get;
-		error += network_get(*client, argv[i], &value_get);
+		error = network_get(*client, argv[i], &value_get);
 		if (error == 0) {
 			strcpy(&value[value_len], value_get);
 			value_len = strlen(value);
+		} else {
+			printf("FAIL\n");
+			client_end(client);
+			return 0;
 		}
 		debug_print("New value is currently '%s'. Error code is %d", value, error);
 	}
 
 	if (error == 0){
-		error += network_put(*client, argv[nbArgsLeft - 1], value);		
+		error = network_put(*client, argv[nbArgsLeft - 1], value);		
 	}
 
 	if (error == 0) {
