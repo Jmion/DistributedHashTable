@@ -125,6 +125,40 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	return NULL;
 }
 
+kv_list_t *get_Htable_content(Htable_t table){
+	unsigned int size = 0;
+	for (int i = 0; i < table->size; ++i) {
+		bucket_t* bucket = &table->map[i];
+		while (bucket != NULL && bucket->pair.key != NULL) {
+			size += 1;
+			bucket = bucket->next;
+		}
+	}
+
+	
+	kv_list_t* kv_list = calloc(1,sizeof(kv_list_t));
+	kv_list->list_pair = calloc(size,sizeof(kv_pair_t));
+	if(kv_list->list_pair == NULL){
+		debug_print("%s", "Memory allocation failed. Exiting");
+		return NULL;
+	}
+
+	size_t j = 0;
+	for (int i = 0; i < table->size; ++i) {
+		bucket_t* bucket = &table->map[i];
+		for( ; j < size && bucket != NULL && bucket->pair.key != NULL ; j++){
+			kv_list->list_pair[j] = bucket->pair;
+			bucket = bucket->next;
+		}
+	}
+	return kv_list;
+}
+
+void kv_list_free(kv_list_t *list){
+	free(list->list_pair);
+	free(list);
+}
+
 
 /** ----------------------------------------------------------------------
  ** Hash a string for a given hashtable size.
