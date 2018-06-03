@@ -23,7 +23,7 @@ Htable_t construct_Htable(size_t size) {
 
 void delete_Htable_and_content(Htable_t* table) {
 	if (table != NULL && *table != NULL) {
-		for (int i = 0; i < (*table)->size; ++i) {
+		for (size_t i = 0; i < (*table)->size; ++i) {
 			bucket_t* bucket = &(*table)->map[i];
 			if (bucket->pair.key != NULL) {
 				kv_pair_free(&bucket->pair);
@@ -127,7 +127,7 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 
 kv_list_t *get_Htable_content(Htable_t table){
 	unsigned int size = 0;
-	for (int i = 0; i < table->size; ++i) {
+	for (size_t i = 0; i < table->size; ++i) {
 		bucket_t* bucket = &table->map[i];
 		while (bucket != NULL && bucket->pair.key != NULL) {
 			size += 1;
@@ -144,7 +144,7 @@ kv_list_t *get_Htable_content(Htable_t table){
 	}
 
 	size_t j = 0;
-	for (int i = 0; i < table->size; ++i) {
+	for (size_t i = 0; i < table->size; ++i) {
 		bucket_t* bucket = &table->map[i];
 		for( ; j < size && bucket != NULL && bucket->pair.key != NULL ; j++){
 			kv_list->list_pair[j] = bucket->pair;
