@@ -152,8 +152,13 @@ kv_list_t *get_Htable_content(Htable_t table){
 		}
 	}
 	return kv_list;
-
 }
+
+void kv_list_free(kv_list_t *list){
+	free(list->list_pair);
+	free(*list);
+}
+
 
 /** ----------------------------------------------------------------------
  ** Hash a string for a given hashtable size.
