@@ -25,9 +25,9 @@ int main(int argc, char *argv[]) {
     }
 
     struct sockaddr_in address;
-    errorcode err = get_server_addr(argv[1], port, &address);
+    error_code err = get_server_addr(argv[1], port, &address);
     if (err != ERR_NONE){
-        debug_print("%s", "Failed gettint server_addr.");
+        debug_print("%s", "Failed getting server_addr.");
         return 1;
     }
     int socket = get_socket(1);
@@ -41,8 +41,11 @@ int main(int argc, char *argv[]) {
     unsigned int nbAnswers = 1;
     char buffer[UDP_MAX_SIZE];
     size_t msg_length;
-    msg_length = recv(socket, &buffer, UDP_MAX_SIZE, 0);
-    if ( msg_length == -1) {
+    struct sockaddr_in serv_address;
+    socklen_t sock_len = sizeof(serv_address);
+
+    msg_length = recvfrom(socket, &buffer, UDP_MAX_SIZE, 0,(struct sockaddr*) &serv_address, &sock_len);
+    if ( msg_length == -1 || address.sin_port != serv_address.sin_port || address.sin_addr.s_addr != serv_address.sin_addr.s_addr) {
         debug_print("%s", "No answers");
         fprintf(stdout, "FAIL\n");
         return 1;
@@ -60,9 +63,9 @@ int main(int argc, char *argv[]) {
             index += strlen(&buffer[index]) + 1;
             nbAnswers -= 1;
         } else {
-            msg_length = recv(socket, &buffer, UDP_MAX_SIZE, 0);
+            msg_length = recvfrom(socket, &buffer, UDP_MAX_SIZE, 0, (struct sockaddr*) &serv_address, &sock_len);
             index = 0;
-            if ( msg_length == -1) {
+            if ( msg_length == -1 || address.sin_port != serv_address.sin_port || address.sin_addr.s_addr != serv_address.sin_addr.s_addr) {
                 debug_print("%s", "No answers");
                 fprintf(stdout, "FAIL\n");
                 return 1;

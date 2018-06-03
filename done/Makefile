@@ -11,7 +11,7 @@ pps-client-put : hashtable.o node.o node_list.o client.o network.o system.o erro
 pps-client-get : hashtable.o node.o node_list.o client.o network.o system.o error.o args.o ring.o
 pps-launch-server : system.o hashtable.o error.o
 pps-list-nodes : node.o node_list.o client.o system.o error.o args.o ring.o
-pps-dump-node : system.o
+pps-dump-node : system.o error.o
 pps-client-cat : hashtable.o node.o node_list.o client.o network.o system.o error.o args.o ring.o
 pps-client-substr : hashtable.o node.o node_list.o client.o network.o system.o error.o args.o ring.o
 pps-client-find : hashtable.o node.o node_list.o client.o network.o system.o error.o args.o ring.o
