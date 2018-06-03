@@ -125,6 +125,7 @@ pps_value_t get_Htable_value(Htable_t table, pps_key_t key) {
 	return NULL;
 }
 
+//Done because points lost in project02. Not used in code.
 kv_list_t *get_Htable_content(Htable_t table){
 	unsigned int size = 0;
 	for (size_t i = 0; i < table->size; ++i) {
@@ -154,6 +155,7 @@ kv_list_t *get_Htable_content(Htable_t table){
 	return kv_list;
 }
 
+//done because we lost points on project02 feedback. Not used in code.
 void kv_list_free(kv_list_t *list){
 	free(list->list_pair);
 	free(list);
