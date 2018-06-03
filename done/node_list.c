@@ -106,7 +106,7 @@ void node_list_sort(node_list_t *list, int (*comparator)(const node_t *, const n
 
 
 void node_list_free(node_list_t *list) {
-    for (int i = 0; i < list->size; ++i) {
+    for (size_t i = 0; i < list->size; ++i) {
         node_end(&list->nodes[i]);
     }
     free(list->nodes);

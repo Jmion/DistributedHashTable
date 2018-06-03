@@ -54,7 +54,7 @@ int main(void) {
 			size_t msg_len = 0;
 			unsigned int size = 0;
 
-			for (int i = 0; i < htable->size; ++i) {
+			for (size_t i = 0; i < htable->size; ++i) {
 				bucket_t* bucket = &htable->map[i];
 				while (bucket != NULL && bucket->pair.key != NULL) {
 					size += 1;
@@ -68,7 +68,7 @@ int main(void) {
 
 
 			 //no need for get_htable_content
-			for (int i = 0; i < htable->size; ++i) {
+			for (size_t i = 0; i < htable->size; ++i) {
 				bucket_t* bucket = &htable->map[i];
 				while (bucket != NULL && bucket->pair.key != NULL) {
 

@@ -16,7 +16,7 @@ ring_t* ring_alloc() {
 
 void print_sha(unsigned char sha[]) {
 	fprintf(stderr, "(");
-	for (int j = 0; j < SHA_DIGEST_LENGTH; ++j) {
+	for (size_t j = 0; j < SHA_DIGEST_LENGTH; ++j) {
 		fprintf(stderr, "%02x", sha[j]);
 	}
 	fprintf(stderr, ")");
