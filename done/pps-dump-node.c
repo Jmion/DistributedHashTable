@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
     }
 
     struct sockaddr_in address;
-    errorcode err = get_server_addr(argv[1], port, &address);
+    error_code err = get_server_addr(argv[1], port, &address);
     if (err != ERR_NONE){
         debug_print("%s", "Failed gettint server_addr.");
         return 1;
