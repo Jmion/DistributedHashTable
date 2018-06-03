@@ -13,17 +13,16 @@ void client_end(client_t *client) {
 	client->node_list = NULL;
 	free(client->args);
 	client->args = NULL;
+	//client not allocated, check with valgrind, no leak
 }
 
 error_code client_init(client_init_args_t client_init) {
 	client_t* client = client_init.client;
+	//get_node done in the client
 	client->node_list = client_init.nodes_list;
-	error_code errCode = ERR_NONE;
 	if (client->node_list == NULL) {
 		return ERR_BAD_PARAMETER;
 	}
-
-	M_EXIT_IF_ERR(errCode, "error client_init");
 
 	//args parsing
 
@@ -36,6 +35,7 @@ error_code client_init(client_init_args_t client_init) {
 		return ERR_BAD_PARAMETER;
 	}
 
+	//no node_list->size in parse_opt. 
 	args->N = args->N > client->node_list->size ? client->node_list->size : args->N;
 	args->R = args->R > args->N ? args->N : args->R;
 	args->W = args->W > args->N ? args->N : args->W;
