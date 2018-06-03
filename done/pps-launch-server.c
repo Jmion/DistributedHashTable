@@ -20,8 +20,8 @@ int main(void) {
 	fscanf(stdin, "%s", &IP[0]);
 	fscanf(stdin, "%d", &port);
 
-	//scanf indirectly verified by bind server.
-	if (bind_server(socket, IP, port)) {
+	//scanf IP indirectly verified by bind server.
+	if (bind_server(socket, IP, port) || port <= 0 || port > 65535) {
 		debug_print("%s\n", "Server failed to bind to socket");
 		return 1;
 	}
@@ -67,7 +67,7 @@ int main(void) {
 			msg_len += sizeof(unsigned int);
 
 
-
+			 //no need for get_htable_content
 			for (int i = 0; i < htable->size; ++i) {
 				bucket_t* bucket = &htable->map[i];
 				while (bucket != NULL && bucket->pair.key != NULL) {
