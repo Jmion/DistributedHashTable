@@ -61,7 +61,7 @@ typedef Htable* Htable_t;
 typedef struct kv_list_t{
 	kv_pair_t* list_pair;
 	size_t size;
-}kv_list_t
+}kv_list_t;
 
 /**
  * @brief construct a hash-table of the given size.

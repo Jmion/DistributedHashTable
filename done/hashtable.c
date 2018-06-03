@@ -156,7 +156,7 @@ kv_list_t *get_Htable_content(Htable_t table){
 
 void kv_list_free(kv_list_t *list){
 	free(list->list_pair);
-	free(*list);
+	free(list);
 }
 
 
