@@ -40,6 +40,6 @@ error_code client_init(client_init_args_t client_init) {
 	args->R = args->R > args->N ? args->N : args->R;
 	args->W = args->W > args->N ? args->N : args->W;
 
-	return errCode;
+	return ERR_NONE;
 
 }
