@@ -1,0 +1,9 @@
+#!/bin/bash
+mkdir test_out
+rm final_put.csv
+for (( i = 1; i < 101; i++ )); do
+	./test_put
+	mv measure_put.txt test_out/measure_put_$i.txt 
+done
+paste -d ';' test_out/* >> final_put.csv
+rm -rf test_out
