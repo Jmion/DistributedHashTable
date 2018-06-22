@@ -1,0 +1,2 @@
+name,ratio,comment
+FlyingNerds,46.6666666666667,"You mix time out events with normal latency measurements, which messes up statistics. Your second experiment mixes all key sizes. You should break down by key size and show latency and variability for each."
